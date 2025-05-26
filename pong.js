@@ -7,6 +7,7 @@ const player2ScoreDisplay = document.getElementById('player2Score');
 const paddleHeight = 100;
 const paddleWidth = 10;
 const ballRadius = 10;
+
 let ballX = canvas.width / 2;
 let ballY = canvas.height / 2;
 let ballSpeedX = 5;
@@ -28,6 +29,12 @@ document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
 function keyDownHandler(e) {
+    // Impede a rolagem da página para as teclas de controle do jogo
+    const relevantKeys = ['Up', 'ArrowUp', 'Down', 'ArrowDown', 'w', 'W', 's', 'S'];
+    if (relevantKeys.includes(e.key)) {
+        e.preventDefault();
+    }
+
     if (e.key === 'Up' || e.key === 'ArrowUp') { upPressed = true; }
     if (e.key === 'Down' || e.key === 'ArrowDown') { downPressed = true; }
     if (e.key === 'w' || e.key === 'W') { wPressed = true; }
@@ -93,19 +100,23 @@ function update() {
 
     // Colisão com Paddles
     // Jogador 1 (Esquerda)
-    if (ballX - ballRadius < paddleWidth &&
+    if (ballX - ballRadius < paddleWidth && // Verifica se a bola está na "largura" do paddle
+        ballX - ballRadius > 0 && // Garante que não atravesse completamente
         ballY > player1Y &&
         ballY < player1Y + paddleHeight) {
         ballSpeedX = -ballSpeedX;
-        // Aumenta a velocidade (opcional)
-        // ballSpeedX *= 1.1;
-        // ballSpeedY *= 1.1;
+        // Ajuste opcional para mudar o ângulo da bola dependendo de onde atinge o paddle
+        let deltaY = ballY - (player1Y + paddleHeight / 2);
+        ballSpeedY = deltaY * 0.35; // Ajuste este valor para mudar a sensibilidade
     }
     // Jogador 2 (Direita)
-    if (ballX + ballRadius > canvas.width - paddleWidth &&
+    if (ballX + ballRadius > canvas.width - paddleWidth && // Verifica se a bola está na "largura" do paddle
+        ballX + ballRadius < canvas.width && // Garante que não atravesse completamente
         ballY > player2Y &&
         ballY < player2Y + paddleHeight) {
         ballSpeedX = -ballSpeedX;
+        let deltaY = ballY - (player2Y + paddleHeight / 2);
+        ballSpeedY = deltaY * 0.35; // Ajuste este valor para mudar a sensibilidade
     }
 
     // Ponto marcado
