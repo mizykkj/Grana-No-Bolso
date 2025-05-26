@@ -1,242 +1,134 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap');
-
-:root {
-    --bg-dark: #121212;
-    --primary-dark: #1e1e1e;
-    --secondary-dark: #2a2a2a;
-    --accent-color: #00bcd4; /* Ciano - Mude para sua cor preferida */
-    --accent-hover: #0097a7;
-    --text-light: #e0e0e0;
-    --text-medium: #b0b0b0;
-    --text-dark: #333;
-    --white: #ffffff;
-    --border-color: #444;
-}
-
-* {
-    box-sizing: border-box;
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
     margin: 0;
     padding: 0;
-}
-
-body {
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.7;
-    background-color: var(--bg-dark);
-    color: var(--text-light);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Alinha no topo */
-    min-height: 100vh;
-    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 .container {
-    background-color: var(--primary-dark);
-    width: 100%;
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 30px 40px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    border-radius: 12px;
+    max-width: 960px;
+    margin: 30px auto;
+    background-color: #fff;
+    padding: 20px 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
     text-align: center;
-    border: 1px solid var(--border-color);
 }
 
-/* --- Header --- */
 header {
-    margin-bottom: 40px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
+    background-color: #007bff;
+    color: #fff;
+    padding: 1rem 0;
+    border-radius: 8px 8px 0 0;
+    margin: -20px -30px 20px -30px;
 }
 
 header h1 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 2.8em;
-    color: var(--white);
-    margin-bottom: 10px;
-    letter-spacing: -1px;
-}
-
-header p {
-    font-size: 1.1em;
-    color: var(--text-medium);
-}
-
-/* --- Game Selection --- */
-.game-selection h2 {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.8em;
-    color: var(--accent-color);
-    margin-bottom: 30px;
+    margin: 0;
+    padding-bottom: 10px;
 }
 
 .game-selection ul {
     list-style: none;
     padding: 0;
-    display: flex; /* Usa Flexbox */
-    justify-content: center; /* Centraliza os itens */
-    gap: 30px; /* Espaço entre os itens */
-    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
 }
 
 .game-selection li {
-    flex-basis: 250px; /* Largura base de cada item */
+    margin: 20px 0;
 }
 
 .game-link {
-    display: block;
-    background-color: var(--secondary-dark);
-    color: var(--text-light);
-    padding: 40px 20px;
+    display: inline-block;
+    background-color: #28a745;
+    color: #fff;
+    padding: 15px 30px;
     text-decoration: none;
-    border-radius: 8px;
-    font-size: 1.5em;
-    font-weight: 500;
-    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    font-size: 1.2em;
+    transition: background-color 0.3s ease;
 }
 
 .game-link:hover {
-    background-color: var(--accent-color);
-    color: var(--white);
-    transform: translateY(-5px); /* Efeito de elevação */
-    box-shadow: 0 8px 16px rgba(0, 188, 212, 0.2);
+    background-color: #218838;
 }
 
-/* --- AdSense Area --- */
 .adsense-area {
-    margin: 60px 0;
-    padding: 30px;
-    background-color: var(--secondary-dark);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    min-height: 120px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    margin: 40px 0;
+    padding: 20px;
+    background-color: #e9ecef;
+    border: 1px dashed #ccc;
+    min-height: 100px; /* Dê um tamanho mínimo para a área */
 }
 
 .adsense-area h2 {
     margin-top: 0;
-    margin-bottom: 15px;
-    color: var(--text-medium);
-    font-size: 1.2em;
-    font-weight: 400;
+    color: #555;
 }
 
-.adsense-area p {
-    color: var(--text-medium);
-    font-style: italic;
-}
-
-/* --- Footer --- */
 footer {
     margin-top: 40px;
-    padding-top: 20px;
     font-size: 0.9em;
-    color: var(--text-medium);
-    border-top: 1px solid var(--border-color);
+    color: #777;
 }
 
-/* --- Game Page Styles --- */
+/* Estilos para Páginas de Jogo */
 .game-page header {
-    border-bottom: none; /* Remove a borda inferior no header da página de jogo */
-    margin-bottom: 20px;
-    position: relative; /* Para posicionar o link de voltar */
-}
-
-.game-page header h1 {
-     font-size: 2.2em; /* Título um pouco menor */
+    background-color: #333;
 }
 
 .back-link {
-    position: absolute; /* Posição absoluta */
-    top: 5px; /* Ajuste conforme necessário */
-    left: 5px; /* Ajuste conforme necessário */
-    color: var(--accent-color);
+    color: #fff;
     text-decoration: none;
-    display: inline-flex; /* Para alinhar ícone e texto */
-    align-items: center;
-    padding: 8px 15px;
-    background-color: var(--secondary-dark);
-    border-radius: 20px;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-    border: 1px solid var(--border-color);
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #555;
+    border-radius: 4px;
 }
 
 .back-link:hover {
-    background-color: var(--accent-hover);
-    color: var(--white);
+    background-color: #777;
 }
 
 .game-area {
-    margin: 40px 0;
-    background-color: var(--secondary-dark);
-    padding: 30px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
+    margin: 30px 0;
 }
 
 canvas {
-    border: 3px solid var(--accent-color);
+    border: 2px solid #333;
     background-color: #000;
-    display: block;
-    margin: 0 auto 25px auto; /* Centraliza e adiciona margem inferior */
-    max-width: 100%; /* Garante que o canvas não saia da tela */
-    height: auto; /* Mantém a proporção */
-    border-radius: 4px;
-    box-shadow: 0 0 15px rgba(0, 188, 212, 0.3);
+    display: block; /* Para centralizar */
+    margin: 20px auto; /* Centraliza o canvas */
 }
 
 .game-area p {
     font-size: 1.1em;
-    margin-top: 10px;
-    color: var(--text-light);
+    margin-top: 15px;
 }
 
-.game-area p strong {
-    color: var(--accent-color);
-    font-weight: 700;
+/* Estilos para a Seção Sobre Nós */
+.about-us {
+    background-color: #f9f9f9; /* Um fundo levemente diferente para destacar */
+    padding: 20px;
+    margin: 30px 0;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    text-align: left; /* Alinhar o texto à esquerda para melhor leitura */
 }
 
-/* --- Responsividade (Exemplo Básico) --- */
-@media (max-width: 768px) {
-    .container {
-        padding: 20px;
-    }
-
-    header h1 {
-        font-size: 2.2em;
-    }
-
-    .game-selection ul {
-        flex-direction: column; /* Empilha os botões */
-        gap: 20px;
-    }
-
-    .game-selection li {
-        flex-basis: auto; /* Deixa ocupar a largura total */
-    }
-
-    .back-link {
-        position: static; /* Volta ao fluxo normal */
-        display: block; /* Ocupa a linha toda */
-        margin: 20px auto 0 auto; /* Centraliza */
-        width: fit-content; /* Ajusta a largura ao conteúdo */
-    }
+.about-us h2 {
+    color: #333;
+    text-align: center; /* Centralizar o título da seção */
+    margin-bottom: 15px;
 }
 
-@media (max-width: 480px) {
-    header h1 {
-        font-size: 1.8em;
-    }
-    
-    .game-link {
-        font-size: 1.2em;
-        padding: 30px 15px;
-    }
+.about-us p {
+    color: #555;
+    line-height: 1.7;
+}
+
+.about-us strong {
+    color: #007bff; /* Dar um destaque para o nome do dev */
 }
