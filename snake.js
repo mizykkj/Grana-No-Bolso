@@ -1,0 +1,133 @@
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const scoreDisplay = document.getElementById('score');
+
+const gridSize = 20;
+let snake = [{ x: 10, y: 10 }];
+let food = {};
+let direction = 'right';
+let score = 0;
+let changingDirection = false;
+let gameSpeed = 150; // Milliseconds
+let gameLoop;
+
+function main() {
+    if (didGameEnd()) {
+        alert("Fim de Jogo! Pontuação: " + score);
+        clearInterval(gameLoop);
+        document.location.reload(); // Recarrega para jogar de novo ou voltar
+        return;
+    }
+
+    changingDirection = false;
+    setTimeout(function onTick() {
+        clearCanvas();
+        drawFood();
+        advanceSnake();
+        drawSnake();
+        main(); // Chama a próxima iteração
+    }, gameSpeed);
+}
+
+function clearCanvas() {
+    ctx.fillStyle = 'black';
+    ctx.strokeStyle = 'darkblue';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+}
+
+function drawSnakePart(snakePart) {
+    ctx.fillStyle = 'lightgreen';
+    ctx.strokeStyle = 'darkgreen';
+    ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+    ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
+}
+
+function drawSnake() {
+    snake.forEach(drawSnakePart);
+}
+
+function advanceSnake() {
+    const head = { x: snake[0].x, y: snake[0].y };
+
+    switch (direction) {
+        case 'up': head.y -= 1; break;
+        case 'down': head.y += 1; break;
+        case 'left': head.x -= 1; break;
+        case 'right': head.x += 1; break;
+    }
+
+    snake.unshift(head); // Adiciona nova cabeça
+
+    const didEatFood = snake[0].x === food.x && snake[0].y === food.y;
+    if (didEatFood) {
+        score += 10;
+        scoreDisplay.textContent = score;
+        createFood();
+    } else {
+        snake.pop(); // Remove a cauda se não comeu
+    }
+}
+
+function changeDirection(event) {
+    const LEFT_KEY = 37;
+    const RIGHT_KEY = 39;
+    const UP_KEY = 38;
+    const DOWN_KEY = 40;
+
+    if (changingDirection) return;
+    changingDirection = true;
+
+    const keyPressed = event.keyCode;
+    const goingUp = direction === 'up';
+    const goingDown = direction === 'down';
+    const goingLeft = direction === 'left';
+    const goingRight = direction === 'right';
+
+    if (keyPressed === LEFT_KEY && !goingRight) { direction = 'left'; }
+    if (keyPressed === UP_KEY && !goingDown) { direction = 'up'; }
+    if (keyPressed === RIGHT_KEY && !goingLeft) { direction = 'right'; }
+    if (keyPressed === DOWN_KEY && !goingUp) { direction = 'down'; }
+}
+
+function randomCoord(min, max) {
+    return Math.round((Math.random() * (max - min) + min) / gridSize) * gridSize;
+}
+
+function createFood() {
+    food.x = Math.round(Math.random() * (canvas.width - gridSize) / gridSize);
+    food.y = Math.round(Math.random() * (canvas.height - gridSize) / gridSize);
+
+    // Evita que a comida apareça na cobra
+    snake.forEach(function isFoodOnSnake(part) {
+        const foodIsOnSnake = part.x === food.x && part.y === food.y;
+        if (foodIsOnSnake) createFood();
+    });
+}
+
+function drawFood() {
+    ctx.fillStyle = 'red';
+    ctx.strokeStyle = 'darkred';
+    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+    ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+}
+
+function didGameEnd() {
+    // Colisão com a própria cobra
+    for (let i = 4; i < snake.length; i++) {
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
+    }
+
+    // Colisão com as paredes
+    const hitLeftWall = snake[0].x < 0;
+    const hitRightWall = snake[0].x > (canvas.width - gridSize) / gridSize;
+    const hitTopWall = snake[0].y < 0;
+    const hitBottomWall = snake[0].y > (canvas.height - gridSize) / gridSize;
+
+    return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
+}
+
+// Inicia o Jogo
+document.addEventListener('keydown', changeDirection);
+createFood();
+main(); // Inicia o loop principal

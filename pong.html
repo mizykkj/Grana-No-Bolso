@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Clássico - Central de Jogos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container game-page">
+        <header>
+            <h1>Pong Clássico</h1>
+            <a href="index.html" class="back-link">&larr; Voltar para a Página Inicial</a>
+        </header>
+
+        <main class="game-area">
+            <canvas id="gameCanvas" width="600" height="400"></canvas>
+            <p>Jogador 1 (Esquerda): <strong>W</strong> (Cima) e <strong>S</strong> (Baixo)</p>
+            <p>Jogador 2 (Direita): <strong>Seta Cima</strong> e <strong>Seta Baixo</strong></p>
+            <p>Pontuação: <span id="player1Score">0</span> - <span id="player2Score">0</span></p>
+        </main>
+
+        <section class="adsense-area">
+            <h2>Anúncios</h2>
+            <p>Espaço reservado para anúncios.</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Central de Jogos.</p>
+        </footer>
+    </div>
+    <script src="pong.js"></script>
+</body>
+</html>
