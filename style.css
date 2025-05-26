@@ -15,6 +15,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     text-align: center;
+    position: relative; /* Para posicionar o botão 'Sobre' dentro dele */
 }
 
 header {
@@ -22,7 +23,7 @@ header {
     color: #fff;
     padding: 1rem 0;
     border-radius: 8px 8px 0 0;
-    margin: -20px -30px 20px -30px;
+    margin: -20px -30px 20px -30px; /* Ajusta para colar nas bordas do container arredondado */
 }
 
 header h1 {
@@ -59,7 +60,7 @@ header h1 {
     padding: 20px;
     background-color: #e9ecef;
     border: 1px dashed #ccc;
-    min-height: 100px; /* Dê um tamanho mínimo para a área */
+    min-height: 100px;
 }
 
 .adsense-area h2 {
@@ -75,7 +76,7 @@ footer {
 
 /* Estilos para Páginas de Jogo */
 .game-page header {
-    background-color: #333;
+    background-color: #333; /* Cor diferente para cabeçalho da página de jogo */
 }
 
 .back-link {
@@ -86,6 +87,7 @@ footer {
     padding: 5px 10px;
     background-color: #555;
     border-radius: 4px;
+    transition: background-color 0.3s ease;
 }
 
 .back-link:hover {
@@ -98,8 +100,8 @@ footer {
 
 canvas {
     border: 2px solid #333;
-    background-color: #000;
-    display: block; /* Para centralizar */
+    background-color: #000; /* Fundo preto para o canvas do jogo */
+    display: block; /* Para centralizar se tiver margem auto */
     margin: 20px auto; /* Centraliza o canvas */
 }
 
@@ -108,27 +110,98 @@ canvas {
     margin-top: 15px;
 }
 
-/* Estilos para a Seção Sobre Nós */
-.about-us {
-    background-color: #f9f9f9; /* Um fundo levemente diferente para destacar */
-    padding: 20px;
-    margin: 30px 0;
-    border-radius: 8px;
-    border: 1px solid #eee;
-    text-align: left; /* Alinhar o texto à esquerda para melhor leitura */
+/* Estilo para o Botão "Sobre" */
+.about-button {
+    position: absolute;
+    top: 25px; /* Ajustado para alinhar melhor com o padding do container */
+    right: 30px; /* Ajustado para alinhar melhor com o padding do container */
+    background-color: #6c757d; /* Cor um pouco mais neutra */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    z-index: 1001;
+    transition: background-color 0.3s ease;
 }
 
-.about-us h2 {
+.about-button:hover {
+    background-color: #5a6268;
+}
+
+/* Estilos para o Modal (Pop-up) */
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fica fixo na tela */
+    z-index: 1000; /* Fica na frente de tudo */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permite scroll se o conteúdo for grande */
+    background-color: rgba(0,0,0,0.6); /* Fundo preto semi-transparente */
+    padding-top: 60px; /* Espaço para não colar no topo */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* 5% do topo e centralizado horizontalmente */
+    padding: 25px 30px;
+    border: 1px solid #bbb;
+    width: 80%; /* Largura do conteúdo do modal */
+    max-width: 650px; /* Largura máxima */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative; /* Para posicionar o botão de fechar */
+    text-align: left;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
     color: #333;
-    text-align: center; /* Centralizar o título da seção */
-    margin-bottom: 15px;
+    font-size: 1.8em;
 }
 
-.about-us p {
-    color: #555;
+.modal-content p {
     line-height: 1.7;
+    color: #444;
+    margin-bottom: 15px;
+    font-size: 1em;
 }
 
-.about-us strong {
-    color: #007bff; /* Dar um destaque para o nome do dev */
+.modal-content strong {
+    color: #007bff;
+}
+
+.modal-content em {
+    display: block;
+    text-align: right;
+    color: #777;
+    font-style: italic;
+    margin-top: 20px;
+}
+
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #333; /* Cor mais escura no hover para melhor feedback */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Opcional: para impedir o scroll da página de fundo quando o modal está aberto */
+body.modal-open {
+    overflow: hidden;
 }
