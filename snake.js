@@ -10,9 +10,7 @@ let score = 0;
 let changingDirection = false; // Flag para evitar múltiplas mudanças de direção no mesmo tick
 
 // AJUSTE PARA FLUIDEZ/VELOCIDADE:
-// Valor original era 150. Valores menores tornam o jogo mais rápido e podem parecer mais fluidos.
-// Experimente valores como 100, 80, ou até menos se quiser mais velocidade/fluidez.
-// Lembre-se que isso também aumenta a dificuldade.
+// Valor original era 150. Valores menores tornam o jogo mais rápido.
 let gameSpeed = 100; // Milliseconds (intervalo entre cada movimento da cobra)
 
 function main() {
@@ -34,7 +32,9 @@ function main() {
 
 function clearCanvas() {
     ctx.fillStyle = '#0a0a0a'; // Cor de fundo do canvas (deve combinar com o CSS)
-    ctx.strokeStyle = 'var(--border-color)'; // Usando variável CSS para a borda, se possível, ou cor fixa
+    // Se você estiver usando variáveis CSS no seu JS através de alguma técnica,
+    // senão, use uma cor hexadecimal diretamente, ex: '#383838' para var(--border-color)
+    ctx.strokeStyle = '#383838'; // Exemplo de cor fixa para a borda do canvas
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.strokeRect(0, 0, canvas.width, canvas.height);
 }
@@ -79,10 +79,12 @@ function changeDirection(event) {
     const UP_KEY = 38;
     const DOWN_KEY = 40;
 
-    // CORREÇÃO BUG DE ROLAGEM: Impede a rolagem da página para as teclas de seta
+    // >>> CORREÇÃO BUG DE ROLAGEM <<<
+    // Verifica se a tecla pressionada é uma das setas direcionais
     if ([LEFT_KEY, RIGHT_KEY, UP_KEY, DOWN_KEY].includes(event.keyCode)) {
-        event.preventDefault();
+        event.preventDefault(); // Impede o comportamento padrão do navegador (rolar a página)
     }
+    // >>> FIM DA CORREÇÃO <<<
 
     if (changingDirection) return; // Impede mudança de direção múltipla antes do próximo movimento
     changingDirection = true;
