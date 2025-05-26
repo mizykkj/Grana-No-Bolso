@@ -36,36 +36,44 @@
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Sobre a Central de Jogos</h2>
-            <p>Bem-vindo à Central de Jogos! Este espaço foi cuidadosamente desenvolvido por <strong>Mizy Dev</strong>.</p>
+            <p>Bem-vindo à Central de Jogos! Este espaço foi cuidadosamente desenvolvido por <strong><a href="https://www.instagram.com/mizy_cs/" target="_blank" rel="noopener noreferrer" class="inline-link">Mizy Dev</a></strong>.</p>
             <p>A principal motivação por trás da criação deste site é simples: trazer diversão e um toque de nostalgia através de jogos clássicos que marcaram gerações. Queremos oferecer um local onde você possa relaxar, desafiar a si mesmo e, quem sabe, relembrar bons momentos.</p>
             <p>Cada jogo foi implementado com o intuito de ser leve, acessível e fácil de jogar. Esperamos que você desfrute da experiência tanto quanto nós gostamos de criá-la.</p>
             <p>Divirta-se!</p>
-            <p><em>- Mizy Dev</em></p>
+            <p><em>- <a href="https://www.instagram.com/mizy_cs/" target="_blank" rel="noopener noreferrer" class="inline-link">Mizy Dev</a></em></p>
         </div>
     </div>
 
     <script>
-        // JavaScript para controlar o Modal
         const modal = document.getElementById('aboutModal');
-        const btn = document.getElementById('aboutButton');
-        const span = document.getElementsByClassName('close-button')[0];
+        const aboutBtn = document.getElementById('aboutButton');
+        const closeBtn = modal.querySelector('.close-button');
 
-        // Quando o usuário clica no botão, abre o modal
-        btn.onclick = function() {
-            modal.style.display = 'block';
+        aboutBtn.onclick = function() {
+            modal.style.display = 'flex';
+            setTimeout(function() {
+                modal.classList.add('modal-visible');
+            }, 10);
+            document.body.classList.add('modal-open');
         }
 
-        // Quando o usuário clica no <span> (x), fecha o modal
-        span.onclick = function() {
-            modal.style.display = 'none';
+        function closeModalFunction() {
+            modal.classList.remove('modal-visible');
+            document.body.classList.remove('modal-open');
+            setTimeout(function() {
+                if (!modal.classList.contains('modal-visible')) {
+                    modal.style.display = 'none';
+                }
+            }, 300); // Deve corresponder à duração da transição no CSS (0.3s)
         }
 
-        // Quando o usuário clica em qualquer lugar fora do modal, fecha-o
+        closeBtn.onclick = closeModalFunction;
+
         window.onclick = function(event) {
             if (event.target == modal) {
-                modal.style.display = 'none';
+                closeModalFunction();
             }
         }
     </script>
-</body>
+    </body>
 </html>
