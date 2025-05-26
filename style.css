@@ -1,18 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Roboto:wght@400;500&display=swap');
 
 :root {
     --bg-dark: #121212;
-    --primary-dark: #1e1e1e;
-    --secondary-dark: #2a2a2a;
+    --primary-dark: #1a1a1a; /* Um pouco mais claro que o bg para sutil diferenciação */
+    --secondary-dark: #2c2c2c; /* Um pouco mais claro */
     --accent-color: #00bcd4; /* Ciano */
     --accent-hover: #0097a7;
     --text-light: #e0e0e0;
-    --text-medium: #b0b0b0;
+    --text-medium: #a0a0a0; /* Ligeiramente mais claro para melhor contraste em alguns casos */
     --text-dark: #333;
     --white: #ffffff;
-    --border-color: #444;
-    --modal-overlay-color: rgba(0, 0, 0, 0.75); /* Aumentei um pouco a opacidade do overlay */
+    --border-color: #383838; /* Borda um pouco mais sutil */
+    --shadow-color-soft: rgba(0, 0, 0, 0.2);
+    --shadow-color-medium: rgba(0, 0, 0, 0.3);
+    --shadow-color-strong: rgba(0, 0, 0, 0.4);
     --accent-color-rgb: 0, 188, 212; /* Para usar em box-shadow com transparência */
+    --modal-overlay-color: rgba(0, 0, 0, 0.75);
 }
 
 * {
@@ -23,15 +26,15 @@
 
 body {
     font-family: 'Roboto', sans-serif;
+    font-weight: 400;
     line-height: 1.7;
     background-color: var(--bg-dark);
     color: var(--text-light);
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column; /* Para alinhar o footer corretamente se o conteúdo for pouco */
+    align-items: center; /* Centraliza o container */
     min-height: 100vh;
-    padding: 20px;
-    transition: background-color 0.3s;
+    padding: 25px; /* Aumentar um pouco o padding geral */
 }
 
 body.modal-open {
@@ -41,11 +44,11 @@ body.modal-open {
 .container {
     background-color: var(--primary-dark);
     width: 100%;
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 30px 40px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    border-radius: 12px;
+    max-width: 980px; /* Levemente menor para mais "ar" nas laterais em telas grandes */
+    margin: 25px auto; /* Margem consistente */
+    padding: 35px 45px; /* Aumentar padding interno */
+    box-shadow: 0 8px 20px var(--shadow-color-medium); /* Sombra mais suave */
+    border-radius: 10px; /* Borda um pouco menos arredondada, mais "sharp" */
     text-align: center;
     border: 1px solid var(--border-color);
     position: relative;
@@ -53,30 +56,35 @@ body.modal-open {
 
 /* --- Header --- */
 header {
-    margin-bottom: 40px;
-    padding-bottom: 20px;
+    margin-bottom: 45px; /* Mais espaço após o header */
+    padding-bottom: 25px;
     border-bottom: 1px solid var(--border-color);
 }
 
 header h1 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 2.8em;
+    font-size: 2.6em; /* Levemente menor para não dominar tanto */
+    font-weight: 700;
     color: var(--white);
-    margin-bottom: 10px;
-    letter-spacing: -1px;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px; /* Espaçamento entre letras mais sutil */
 }
 
 header p {
-    font-size: 1.1em;
+    font-size: 1.05em; /* Um pouco menor e mais sutil */
     color: var(--text-medium);
+    max-width: 700px; /* Limitar largura do parágrafo */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* --- Game Selection --- */
 .game-selection h2 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.8em;
+    font-size: 1.7em; /* Um pouco menor */
+    font-weight: 500; /* Menos pesado */
     color: var(--accent-color);
-    margin-bottom: 30px;
+    margin-bottom: 35px;
 }
 
 .game-selection ul {
@@ -84,43 +92,47 @@ header p {
     padding: 0;
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 25px; /* Espaçamento entre cards um pouco menor */
     flex-wrap: wrap;
 }
 
 .game-selection li {
-    flex-basis: 250px;
+    flex-basis: 260px; /* Largura base um pouco maior */
 }
 
 .game-link {
     display: block;
     background-color: var(--secondary-dark);
     color: var(--text-light);
-    padding: 40px 20px;
+    padding: 30px 25px; /* Padding ajustado */
     text-decoration: none;
     border-radius: 8px;
-    font-size: 1.5em;
+    font-family: 'Montserrat', sans-serif; /* Fonte do título nos cards */
+    font-size: 1.3em; /* Tamanho da fonte do link */
     font-weight: 500;
-    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
     border: 1px solid var(--border-color);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 6px var(--shadow-color-soft); /* Sombra mais sutil */
 }
 
-.game-link:hover {
+.game-link:hover,
+.game-link:focus { /* Adicionado :focus para acessibilidade */
     background-color: var(--accent-color);
     color: var(--white);
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(var(--accent-color-rgb), 0.2);
+    transform: translateY(-4px) scale(1.02); /* Efeito de elevação e leve zoom */
+    box-shadow: 0 6px 12px rgba(var(--accent-color-rgb), 0.25); /* Sombra mais pronunciada no hover */
+    outline: none; /* Remover outline padrão no foco se for customizar */
 }
 
 /* --- AdSense Area --- */
 .adsense-area {
-    margin: 60px 0;
-    padding: 30px;
+    margin: 50px 0; /* Espaçamento vertical ajustado */
+    padding: 25px;
     background-color: var(--secondary-dark);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    min-height: 120px;
+    min-height: 100px; /* Altura mínima pode ser menor */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -129,111 +141,125 @@ header p {
 
 .adsense-area h2 {
     margin-top: 0;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: var(--text-medium);
-    font-size: 1.2em;
+    font-size: 1.1em; /* Menor */
     font-weight: 400;
 }
 
 .adsense-area p {
     color: var(--text-medium);
     font-style: italic;
+    font-size: 0.9em;
 }
 
 /* --- Footer --- */
 footer {
-    margin-top: 40px;
-    padding-top: 20px;
-    font-size: 0.9em;
+    width: 100%; /* Para ocupar a largura quando body é flex-column */
+    max-width: 980px; /* Mesma largura do container */
+    margin-top: auto; /* Empurra o footer para baixo */
+    padding: 25px 0; /* Padding vertical */
+    font-size: 0.85em; /* Menor */
     color: var(--text-medium);
     border-top: 1px solid var(--border-color);
+    text-align: center; /* Garantir centralização */
 }
 
 /* --- Game Page Styles (para snake.html e pong.html) --- */
-.game-page header { /* Aplicado em snake.html e pong.html */
+.game-page .container { /* Ser mais específico para páginas de jogo */
+    padding-top: 25px; /* Menos padding no topo para dar espaço ao back-link */
+}
+
+.game-page header {
     border-bottom: none;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     position: relative;
 }
 
-.game-page header h1 { /* Aplicado em snake.html e pong.html */
-    font-size: 2.2em;
+.game-page header h1 {
+    font-size: 2em; /* Menor título nas páginas de jogo */
+    margin-bottom: 0; /* Remover margem inferior se o back-link estiver abaixo */
 }
 
-.back-link { /* Aplicado em snake.html e pong.html */
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    color: var(--accent-color);
-    text-decoration: none;
+.back-link {
     display: inline-flex;
     align-items: center;
-    padding: 8px 15px;
+    gap: 8px; /* Espaço entre ícone (se houver) e texto */
+    position: absolute;
+    top: -5px; /* Ajustar para ficar acima do padding do container */
+    left: 0px; /* Alinhado à borda do padding do container */
+    color: var(--accent-color);
+    text-decoration: none;
+    padding: 9px 16px; /* Padding um pouco maior */
     background-color: var(--secondary-dark);
-    border-radius: 20px;
+    border-radius: 6px; /* Menos arredondado */
     font-size: 0.9em;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: 500;
+    transition: background-color 0.25s ease, color 0.25s ease;
     border: 1px solid var(--border-color);
 }
 
-.back-link:hover { /* Aplicado em snake.html e pong.html */
+.back-link:hover,
+.back-link:focus {
     background-color: var(--accent-hover);
     color: var(--white);
+    outline: none;
 }
 
-.game-area { /* Aplicado em snake.html e pong.html */
-    margin: 40px 0;
+.game-area {
+    margin: 30px 0; /* Espaçamento ajustado */
     background-color: var(--secondary-dark);
-    padding: 30px;
+    padding: 25px;
     border-radius: 8px;
     border: 1px solid var(--border-color);
 }
 
-canvas { /* Aplicado em snake.html e pong.html */
-    border: 3px solid var(--accent-color);
-    background-color: #000;
+canvas {
+    border: 2px solid var(--accent-color); /* Borda mais fina */
+    background-color: #0a0a0a; /* Fundo do canvas um pouco diferente do bg-dark */
     display: block;
-    margin: 0 auto 25px auto;
+    margin: 0 auto 20px auto;
     max-width: 100%;
     height: auto;
-    border-radius: 4px;
-    box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.3);
+    border-radius: 6px;
+    box-shadow: 0 0 12px rgba(var(--accent-color-rgb), 0.2); /* Sombra do canvas mais suave */
 }
 
-.game-area p { /* Aplicado em snake.html e pong.html */
-    font-size: 1.1em;
-    margin-top: 10px;
+.game-area p {
+    font-size: 1em; /* Tamanho padrão */
+    margin-top: 12px;
     color: var(--text-light);
 }
 
-.game-area p strong { /* Aplicado em snake.html e pong.html */
+.game-area p strong {
     color: var(--accent-color);
-    font-weight: 700;
+    font-weight: 500; /* Peso do strong pode ser 500 se 700 for muito */
 }
 
 /* --- "Sobre" Button (index.html) --- */
 .about-button {
     position: absolute;
-    top: 25px;
-    right: 35px;
-    background-color: var(--secondary-dark);
-    color: var(--accent-color);
+    top: 30px; /* Alinhar melhor com o padding */
+    right: 40px; /* Alinhar melhor com o padding */
+    background-color: transparent; /* Botão mais sutil */
+    color: var(--text-medium);
     border: 1px solid var(--border-color);
-    padding: 10px 18px;
-    border-radius: 20px;
+    padding: 8px 16px; /* Padding ajustado */
+    border-radius: 6px;
     cursor: pointer;
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
-    font-size: 0.95em;
+    font-size: 0.9em;
     z-index: 1001;
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
-.about-button:hover {
-    background-color: var(--accent-color);
-    color: var(--white);
-    box-shadow: 0 4px 10px rgba(var(--accent-color-rgb), 0.3);
+.about-button:hover,
+.about-button:focus {
+    background-color: var(--secondary-dark);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    outline: none;
 }
 
 /* --- Modal (Pop-up) Styles (index.html) --- */
@@ -245,14 +271,14 @@ canvas { /* Aplicado em snake.html e pong.html */
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    overflow-y: auto; /* Scroll vertical apenas */
     background-color: var(--modal-overlay-color);
     justify-content: center;
     align-items: center;
     padding: 20px;
     opacity: 0;
-    transform: translateY(-30px) scale(0.97);
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+    transform: translateY(-20px) scale(0.98); /* Animação mais sutil */
+    transition: opacity 0.25s ease-out, transform 0.25s ease-out;
 }
 
 .modal.modal-visible {
@@ -264,107 +290,110 @@ canvas { /* Aplicado em snake.html e pong.html */
     background-color: var(--primary-dark);
     color: var(--text-light);
     margin: auto;
-    padding: 30px 35px;
+    padding: 30px 35px; /* Padding interno do modal */
     border: 1px solid var(--border-color);
     width: 90%;
-    max-width: 650px;
-    border-radius: 10px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    max-width: 600px; /* Modal um pouco mais estreito */
+    border-radius: 8px;
+    box-shadow: 0 10px 30px var(--shadow-color-strong); /* Sombra mais forte para destacar o modal */
     position: relative;
     text-align: left;
 }
 
 .modal-content h2 {
     font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
     color: var(--accent-color);
     text-align: center;
-    font-size: 1.9em;
+    font-size: 1.7em; /* Título do modal */
     margin-top: 0;
     margin-bottom: 25px;
 }
 
 .modal-content p {
-    line-height: 1.8;
+    line-height: 1.75; /* Espaçamento entre linhas do parágrafo */
     color: var(--text-medium);
-    margin-bottom: 18px;
-    font-size: 1em;
+    margin-bottom: 16px; /* Espaçamento entre parágrafos */
+    font-size: 0.95em; /* Tamanho da fonte do parágrafo */
 }
 
-.modal-content p:last-of-type { /* Para a assinatura */
+.modal-content p:last-of-type {
     margin-bottom: 0;
 }
 
-.modal-content strong { /* Estilo geral para strong dentro do modal */
-    color: var(--text-light);
-    font-weight: 700; /* Montserrat usa 700 para bold */
+.modal-content strong {
+    color: var(--text-light); /* Strong com mais destaque */
+    font-weight: 500;
 }
 
-.modal-content em { /* Para a assinatura "- Mizy Dev" */
+.modal-content em { /* Assinatura */
     display: block;
     text-align: right;
-    color: var(--text-medium); /* Cor da assinatura pode ser mais sutil */
-    font-style: normal; /* Ou italic, se preferir */
-    font-weight: 500; /* Roboto usa 500 para medium */
+    color: var(--text-medium);
+    font-style: normal;
+    font-weight: 500;
     margin-top: 25px;
+    font-size: 0.9em;
 }
 
-/* Estilo para os links inline (Instagram) dentro do modal */
-.inline-link {
+.inline-link { /* Link do Instagram */
     color: var(--accent-color);
     text-decoration: none;
-    font-weight: inherit; /* Para herdar o peso do strong ou em se estiver dentro deles */
-    transition: color 0.2s ease, text-decoration-color 0.2s ease;
-    /* text-decoration-color: transparent; /* Para animar a cor do sublinhado */
+    font-weight: inherit;
+    transition: color 0.2s ease;
 }
 
 .inline-link:hover,
 .inline-link:focus {
     color: var(--accent-hover);
     text-decoration: underline;
-    text-decoration-color: var(--accent-hover); /* Garante que o sublinhado tenha a cor do hover */
+    outline: none;
 }
 
-/* Garante que o strong dentro do link herde a cor do link */
 .inline-link strong {
-    color: inherit; /* Herda a cor do <a> pai */
-    font-weight: inherit; /* Mantém o peso do strong */
-}
-/* Garante que o em (itálico) dentro do link herde a cor do link */
-.modal-content em .inline-link { /* Mais específico para a assinatura */
-    color: var(--accent-color); /* A assinatura pode ter a cor de destaque */
-    font-weight: 500; /* Ajuste o peso se necessário para a assinatura */
-}
-.modal-content em .inline-link:hover {
-    color: var(--accent-hover);
+    color: inherit;
+    font-weight: inherit;
 }
 
+.modal-content em .inline-link {
+    font-weight: 500; /* Peso da fonte para a assinatura */
+}
 
 .close-button {
     color: var(--text-medium);
     position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 32px;
-    font-weight: bold;
+    top: 12px; /* Ajuste posição */
+    right: 15px; /* Ajuste posição */
+    font-size: 28px; /* Tamanho do X */
+    font-weight: 400; /* Menos bold */
     line-height: 1;
-    transition: color 0.2s ease;
+    padding: 5px; /* Área de clique maior */
+    transition: color 0.2s ease, transform 0.2s ease;
     cursor: pointer;
 }
 
 .close-button:hover,
 .close-button:focus {
     color: var(--accent-color);
-    text-decoration: none;
+    transform: scale(1.1); /* Leve aumento no hover */
+    outline: none;
 }
 
 /* --- Responsividade --- */
 @media (max-width: 768px) {
+    body {
+        padding: 20px;
+    }
     .container {
-        padding: 20px 25px;
+        padding: 25px 30px;
+        max-width: 95%;
     }
 
     header h1 {
-        font-size: 2.2em;
+        font-size: 2.1em;
+    }
+    header p {
+        font-size: 1em;
     }
 
     .game-selection ul {
@@ -375,58 +404,83 @@ canvas { /* Aplicado em snake.html e pong.html */
     .game-selection li {
         flex-basis: auto;
     }
-
-    .back-link { /* Estilo para páginas de jogo */
-        position: static;
-        display: block;
-        margin: 20px auto 0 auto;
-        width: fit-content;
+    .game-link {
+        font-size: 1.2em;
     }
 
-    .about-button { /* Botão Sobre na index */
-        top: 20px; /* Ajuste para telas menores */
-        right: 25px;
-        padding: 8px 15px;
-        font-size: 0.9em;
+    .back-link {
+        position: static; /* Volta ao fluxo normal */
+        display: block;
+        margin: 0 auto 20px auto; /* Centraliza e adiciona margem inferior */
+        width: fit-content;
+    }
+    .game-page header h1 { /* Para não ter tanto espaço quando o back-link vai pra baixo */
+        margin-bottom: 15px;
+    }
+
+
+    .about-button {
+        top: 22px;
+        right: 28px;
+        padding: 7px 14px;
+        font-size: 0.85em;
     }
 
     .modal-content {
-        padding: 25px 20px;
-        width: 95%;
+        padding: 25px;
+        width: 90%;
     }
 
     .modal-content h2 {
-        font-size: 1.6em;
+        font-size: 1.5em;
     }
 }
 
 @media (max-width: 480px) {
     body {
-        padding: 10px;
+        padding: 15px;
     }
     .container {
-        padding: 20px 15px;
+        padding: 20px;
+        border-radius: 8px;
     }
     header h1 {
-        font-size: 1.8em;
+        font-size: 1.7em;
     }
-    
+     header p {
+        font-size: 0.95em;
+    }
+    .game-selection h2 {
+        font-size: 1.5em;
+    }
     .game-link {
-        font-size: 1.2em;
-        padding: 30px 15px;
+        font-size: 1.1em;
+        padding: 25px 20px;
     }
 
-    .about-button { /* Botão Sobre na index */
-        top: 15px;
-        right: 15px;
-        padding: 7px 12px;
-        font-size: 0.85em;
+    .about-button {
+        top: 18px;
+        right: 18px;
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+    .game-page header h1 {
+        font-size: 1.6em;
     }
 
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+    }
     .modal-content h2 {
-        font-size: 1.4em;
+        font-size: 1.3em;
     }
     .modal-content p {
-        font-size: 0.95em;
+        font-size: 0.9em;
+    }
+    .close-button {
+        top: 8px;
+        right: 10px;
+        font-size: 26px;
     }
 }
