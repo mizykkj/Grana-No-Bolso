@@ -1,138 +1,29 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const scoreDisplay = document.getElementById('score');
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Cobrinha - Central de Jogos</title>
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <div class="container game-page"> <header>
+            <a href="index.html" class="back-link">&larr; Voltar para a Página Inicial</a>
+            <h1>Jogo da Cobrinha</h1>
+        </header>
 
-const gridSize = 20;
-let snake = [{ x: 10, y: 10 }];
-let food = {};
-let direction = 'right';
-let score = 0;
-let changingDirection = false;
-let gameSpeed = 150; // Milliseconds
-// let gameLoop; // Removido, pois main() se chama recursivamente com setTimeout
+        <main class="game-area">
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            <p>Use as <strong>Setas Direcionais</strong> para mover a cobrinha!</p>
+            <p>Pontuação: <span id="score">0</span></p>
+        </main>
 
-function main() {
-    if (didGameEnd()) {
-        alert("Fim de Jogo! Pontuação: " + score);
-        // clearInterval(gameLoop); // Não é mais necessário com setTimeout recursivo
-        document.location.reload(); // Recarrega para jogar de novo ou voltar
-        return;
-    }
+        <section class="adsense-area">
+            <h2>Anúncios</h2>
+            <p>Espaço reservado para anúncios.</p>
+        </section>
 
-    changingDirection = false;
-    setTimeout(function onTick() {
-        clearCanvas();
-        drawFood();
-        advanceSnake();
-        drawSnake();
-        main(); // Chama a próxima iteração
-    }, gameSpeed);
-}
-
-function clearCanvas() {
-    ctx.fillStyle = 'black';
-    ctx.strokeStyle = 'darkblue';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-}
-
-function drawSnakePart(snakePart) {
-    ctx.fillStyle = 'lightgreen';
-    ctx.strokeStyle = 'darkgreen';
-    ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
-    ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize);
-}
-
-function drawSnake() {
-    snake.forEach(drawSnakePart);
-}
-
-function advanceSnake() {
-    const head = { x: snake[0].x, y: snake[0].y };
-
-    switch (direction) {
-        case 'up': head.y -= 1; break;
-        case 'down': head.y += 1; break;
-        case 'left': head.x -= 1; break;
-        case 'right': head.x += 1; break;
-    }
-
-    snake.unshift(head); // Adiciona nova cabeça
-
-    const didEatFood = snake[0].x === food.x && snake[0].y === food.y;
-    if (didEatFood) {
-        score += 10;
-        scoreDisplay.textContent = score;
-        createFood();
-    } else {
-        snake.pop(); // Remove a cauda se não comeu
-    }
-}
-
-function changeDirection(event) {
-    const LEFT_KEY = 37;
-    const RIGHT_KEY = 39;
-    const UP_KEY = 38;
-    const DOWN_KEY = 40;
-
-    // Impede a rolagem da página para as teclas de seta
-    if ([LEFT_KEY, RIGHT_KEY, UP_KEY, DOWN_KEY].includes(event.keyCode)) {
-        event.preventDefault();
-    }
-
-    if (changingDirection) return;
-    changingDirection = true;
-
-    const keyPressed = event.keyCode;
-    const goingUp = direction === 'up';
-    const goingDown = direction === 'down';
-    const goingLeft = direction === 'left';
-    const goingRight = direction === 'right';
-
-    if (keyPressed === LEFT_KEY && !goingRight) { direction = 'left'; }
-    if (keyPressed === UP_KEY && !goingDown) { direction = 'up'; }
-    if (keyPressed === RIGHT_KEY && !goingLeft) { direction = 'right'; }
-    if (keyPressed === DOWN_KEY && !goingUp) { direction = 'down'; }
-}
-
-function randomCoord(min, max) { // Esta função não está sendo usada atualmente, mas pode ser útil
-    return Math.round((Math.random() * (max - min) + min) / gridSize) * gridSize;
-}
-
-function createFood() {
-    food.x = Math.round(Math.random() * (canvas.width - gridSize) / gridSize);
-    food.y = Math.round(Math.random() * (canvas.height - gridSize) / gridSize);
-
-    // Evita que a comida apareça na cobra
-    snake.forEach(function isFoodOnSnake(part) {
-        const foodIsOnSnake = part.x === food.x && part.y === food.y;
-        if (foodIsOnSnake) createFood();
-    });
-}
-
-function drawFood() {
-    ctx.fillStyle = 'red';
-    ctx.strokeStyle = 'darkred';
-    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-    ctx.strokeRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-}
-
-function didGameEnd() {
-    // Colisão com a própria cobra
-    for (let i = 4; i < snake.length; i++) {
-        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
-    }
-
-    // Colisão com as paredes
-    const hitLeftWall = snake[0].x < 0;
-    const hitRightWall = snake[0].x > (canvas.width - gridSize) / gridSize;
-    const hitTopWall = snake[0].y < 0;
-    const hitBottomWall = snake[0].y > (canvas.height - gridSize) / gridSize;
-
-    return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
-}
-
-// Inicia o Jogo
-document.addEventListener('keydown', changeDirection);
-createFood();
-main(); // Inicia o loop principal
+        <footer>
+            <p>&copy; 2025 Central de Jogos.</p> </footer>
+    </div>
+    <script src="snake.js"></script> </body>
+</html>
