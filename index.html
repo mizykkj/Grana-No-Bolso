@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="container">
+        <button id="aboutButton" class="about-button">Sobre</button>
         <header>
             <h1>Bem-vindo à Central de Jogos!</h1>
             <p>Escolha um dos nossos jogos clássicos para se divertir.</p>
@@ -21,12 +22,6 @@
             </ul>
         </nav>
 
-        <section class="about-us">
-            <h2>Sobre Nós</h2>
-            <p>Este site foi criado por <strong>Mizy Dev</strong> com o principal objetivo de proporcionar diversão através de jogos clássicos.</p>
-            <p>Esperamos que você aproveite!</p>
-        </section>
-
         <section class="adsense-area">
             <h2>Anúncios</h2>
             <p>Espaço reservado para anúncios do Google AdSense. <br> Configure sua conta AdSense e cole o código aqui para monetizar seu site.</p>
@@ -36,5 +31,41 @@
             <p>&copy; 2025 Central de Jogos - Todos os direitos reservados.</p>
         </footer>
     </div>
+
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Sobre a Central de Jogos</h2>
+            <p>Bem-vindo à Central de Jogos! Este espaço foi cuidadosamente desenvolvido por <strong>Mizy Dev</strong>.</p>
+            <p>A principal motivação por trás da criação deste site é simples: trazer diversão e um toque de nostalgia através de jogos clássicos que marcaram gerações. Queremos oferecer um local onde você possa relaxar, desafiar a si mesmo e, quem sabe, relembrar bons momentos.</p>
+            <p>Cada jogo foi implementado com o intuito de ser leve, acessível e fácil de jogar. Esperamos que você desfrute da experiência tanto quanto nós gostamos de criá-la.</p>
+            <p>Divirta-se!</p>
+            <p><em>- Mizy Dev</em></p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript para controlar o Modal
+        const modal = document.getElementById('aboutModal');
+        const btn = document.getElementById('aboutButton');
+        const span = document.getElementsByClassName('close-button')[0];
+
+        // Quando o usuário clica no botão, abre o modal
+        btn.onclick = function() {
+            modal.style.display = 'block';
+        }
+
+        // Quando o usuário clica no <span> (x), fecha o modal
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        // Quando o usuário clica em qualquer lugar fora do modal, fecha-o
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
