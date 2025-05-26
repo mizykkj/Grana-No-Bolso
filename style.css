@@ -1,207 +1,432 @@
-body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap');
+
+:root {
+    --bg-dark: #121212;
+    --primary-dark: #1e1e1e;
+    --secondary-dark: #2a2a2a;
+    --accent-color: #00bcd4; /* Ciano */
+    --accent-hover: #0097a7;
+    --text-light: #e0e0e0;
+    --text-medium: #b0b0b0;
+    --text-dark: #333;
+    --white: #ffffff;
+    --border-color: #444;
+    --modal-overlay-color: rgba(0, 0, 0, 0.75); /* Aumentei um pouco a opacidade do overlay */
+    --accent-color-rgb: 0, 188, 212; /* Para usar em box-shadow com transparência */
+}
+
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.7;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+    transition: background-color 0.3s;
+}
+
+body.modal-open {
+    overflow: hidden;
 }
 
 .container {
-    max-width: 960px;
-    margin: 30px auto;
-    background-color: #fff;
-    padding: 20px 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    background-color: var(--primary-dark);
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 30px 40px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
     text-align: center;
-    position: relative; /* Para posicionar o botão 'Sobre' dentro dele */
+    border: 1px solid var(--border-color);
+    position: relative;
 }
 
+/* --- Header --- */
 header {
-    background-color: #007bff;
-    color: #fff;
-    padding: 1rem 0;
-    border-radius: 8px 8px 0 0;
-    margin: -20px -30px 20px -30px; /* Ajusta para colar nas bordas do container arredondado */
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 header h1 {
-    margin: 0;
-    padding-bottom: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.8em;
+    color: var(--white);
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+header p {
+    font-size: 1.1em;
+    color: var(--text-medium);
+}
+
+/* --- Game Selection --- */
+.game-selection h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8em;
+    color: var(--accent-color);
+    margin-bottom: 30px;
 }
 
 .game-selection ul {
     list-style: none;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
 }
 
 .game-selection li {
-    margin: 20px 0;
+    flex-basis: 250px;
 }
 
 .game-link {
-    display: inline-block;
-    background-color: #28a745;
-    color: #fff;
-    padding: 15px 30px;
+    display: block;
+    background-color: var(--secondary-dark);
+    color: var(--text-light);
+    padding: 40px 20px;
     text-decoration: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    transition: background-color 0.3s ease;
+    border-radius: 8px;
+    font-size: 1.5em;
+    font-weight: 500;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .game-link:hover {
-    background-color: #218838;
+    background-color: var(--accent-color);
+    color: var(--white);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(var(--accent-color-rgb), 0.2);
 }
 
+/* --- AdSense Area --- */
 .adsense-area {
-    margin: 40px 0;
-    padding: 20px;
-    background-color: #e9ecef;
-    border: 1px dashed #ccc;
-    min-height: 100px;
+    margin: 60px 0;
+    padding: 30px;
+    background-color: var(--secondary-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .adsense-area h2 {
     margin-top: 0;
-    color: #555;
+    margin-bottom: 15px;
+    color: var(--text-medium);
+    font-size: 1.2em;
+    font-weight: 400;
 }
 
+.adsense-area p {
+    color: var(--text-medium);
+    font-style: italic;
+}
+
+/* --- Footer --- */
 footer {
     margin-top: 40px;
+    padding-top: 20px;
     font-size: 0.9em;
-    color: #777;
+    color: var(--text-medium);
+    border-top: 1px solid var(--border-color);
 }
 
-/* Estilos para Páginas de Jogo */
-.game-page header {
-    background-color: #333; /* Cor diferente para cabeçalho da página de jogo */
+/* --- Game Page Styles (para snake.html e pong.html) --- */
+.game-page header { /* Aplicado em snake.html e pong.html */
+    border-bottom: none;
+    margin-bottom: 20px;
+    position: relative;
 }
 
-.back-link {
-    color: #fff;
+.game-page header h1 { /* Aplicado em snake.html e pong.html */
+    font-size: 2.2em;
+}
+
+.back-link { /* Aplicado em snake.html e pong.html */
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    color: var(--accent-color);
     text-decoration: none;
-    display: inline-block;
-    margin-top: 10px;
-    padding: 5px 10px;
-    background-color: #555;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: var(--secondary-dark);
+    border-radius: 20px;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.back-link:hover { /* Aplicado em snake.html e pong.html */
+    background-color: var(--accent-hover);
+    color: var(--white);
+}
+
+.game-area { /* Aplicado em snake.html e pong.html */
+    margin: 40px 0;
+    background-color: var(--secondary-dark);
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+canvas { /* Aplicado em snake.html e pong.html */
+    border: 3px solid var(--accent-color);
+    background-color: #000;
+    display: block;
+    margin: 0 auto 25px auto;
+    max-width: 100%;
+    height: auto;
     border-radius: 4px;
-    transition: background-color 0.3s ease;
+    box-shadow: 0 0 15px rgba(var(--accent-color-rgb), 0.3);
 }
 
-.back-link:hover {
-    background-color: #777;
-}
-
-.game-area {
-    margin: 30px 0;
-}
-
-canvas {
-    border: 2px solid #333;
-    background-color: #000; /* Fundo preto para o canvas do jogo */
-    display: block; /* Para centralizar se tiver margem auto */
-    margin: 20px auto; /* Centraliza o canvas */
-}
-
-.game-area p {
+.game-area p { /* Aplicado em snake.html e pong.html */
     font-size: 1.1em;
-    margin-top: 15px;
+    margin-top: 10px;
+    color: var(--text-light);
 }
 
-/* Estilo para o Botão "Sobre" */
+.game-area p strong { /* Aplicado em snake.html e pong.html */
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+/* --- "Sobre" Button (index.html) --- */
 .about-button {
     position: absolute;
-    top: 25px; /* Ajustado para alinhar melhor com o padding do container */
-    right: 30px; /* Ajustado para alinhar melhor com o padding do container */
-    background-color: #6c757d; /* Cor um pouco mais neutra */
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
+    top: 25px;
+    right: 35px;
+    background-color: var(--secondary-dark);
+    color: var(--accent-color);
+    border: 1px solid var(--border-color);
+    padding: 10px 18px;
+    border-radius: 20px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 0.95em;
     z-index: 1001;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .about-button:hover {
-    background-color: #5a6268;
+    background-color: var(--accent-color);
+    color: var(--white);
+    box-shadow: 0 4px 10px rgba(var(--accent-color-rgb), 0.3);
 }
 
-/* Estilos para o Modal (Pop-up) */
+/* --- Modal (Pop-up) Styles (index.html) --- */
 .modal {
-    display: none; /* Escondido por padrão */
-    position: fixed; /* Fica fixo na tela */
-    z-index: 1000; /* Fica na frente de tudo */
+    display: none;
+    position: fixed;
+    z-index: 10000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Permite scroll se o conteúdo for grande */
-    background-color: rgba(0,0,0,0.6); /* Fundo preto semi-transparente */
-    padding-top: 60px; /* Espaço para não colar no topo */
+    overflow: auto;
+    background-color: var(--modal-overlay-color);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 0;
+    transform: translateY(-30px) scale(0.97);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.modal.modal-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; /* 5% do topo e centralizado horizontalmente */
-    padding: 25px 30px;
-    border: 1px solid #bbb;
-    width: 80%; /* Largura do conteúdo do modal */
-    max-width: 650px; /* Largura máxima */
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+    margin: auto;
+    padding: 30px 35px;
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 650px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    position: relative; /* Para posicionar o botão de fechar */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
     text-align: left;
 }
 
 .modal-content h2 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--accent-color);
     text-align: center;
+    font-size: 1.9em;
     margin-top: 0;
-    margin-bottom: 20px;
-    color: #333;
-    font-size: 1.8em;
+    margin-bottom: 25px;
 }
 
 .modal-content p {
-    line-height: 1.7;
-    color: #444;
-    margin-bottom: 15px;
+    line-height: 1.8;
+    color: var(--text-medium);
+    margin-bottom: 18px;
     font-size: 1em;
 }
 
-.modal-content strong {
-    color: #007bff;
+.modal-content p:last-of-type { /* Para a assinatura */
+    margin-bottom: 0;
 }
 
-.modal-content em {
+.modal-content strong { /* Estilo geral para strong dentro do modal */
+    color: var(--text-light);
+    font-weight: 700; /* Montserrat usa 700 para bold */
+}
+
+.modal-content em { /* Para a assinatura "- Mizy Dev" */
     display: block;
     text-align: right;
-    color: #777;
-    font-style: italic;
-    margin-top: 20px;
+    color: var(--text-medium); /* Cor da assinatura pode ser mais sutil */
+    font-style: normal; /* Ou italic, se preferir */
+    font-weight: 500; /* Roboto usa 500 para medium */
+    margin-top: 25px;
 }
 
+/* Estilo para os links inline (Instagram) dentro do modal */
+.inline-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: inherit; /* Para herdar o peso do strong ou em se estiver dentro deles */
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+    /* text-decoration-color: transparent; /* Para animar a cor do sublinhado */
+}
+
+.inline-link:hover,
+.inline-link:focus {
+    color: var(--accent-hover);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-hover); /* Garante que o sublinhado tenha a cor do hover */
+}
+
+/* Garante que o strong dentro do link herde a cor do link */
+.inline-link strong {
+    color: inherit; /* Herda a cor do <a> pai */
+    font-weight: inherit; /* Mantém o peso do strong */
+}
+/* Garante que o em (itálico) dentro do link herde a cor do link */
+.modal-content em .inline-link { /* Mais específico para a assinatura */
+    color: var(--accent-color); /* A assinatura pode ter a cor de destaque */
+    font-weight: 500; /* Ajuste o peso se necessário para a assinatura */
+}
+.modal-content em .inline-link:hover {
+    color: var(--accent-hover);
+}
+
+
 .close-button {
-    color: #aaa;
+    color: var(--text-medium);
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 15px;
+    right: 20px;
     font-size: 32px;
     font-weight: bold;
     line-height: 1;
+    transition: color 0.2s ease;
+    cursor: pointer;
 }
 
 .close-button:hover,
 .close-button:focus {
-    color: #333; /* Cor mais escura no hover para melhor feedback */
+    color: var(--accent-color);
     text-decoration: none;
-    cursor: pointer;
 }
 
-/* Opcional: para impedir o scroll da página de fundo quando o modal está aberto */
-body.modal-open {
-    overflow: hidden;
+/* --- Responsividade --- */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 25px;
+    }
+
+    header h1 {
+        font-size: 2.2em;
+    }
+
+    .game-selection ul {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .game-selection li {
+        flex-basis: auto;
+    }
+
+    .back-link { /* Estilo para páginas de jogo */
+        position: static;
+        display: block;
+        margin: 20px auto 0 auto;
+        width: fit-content;
+    }
+
+    .about-button { /* Botão Sobre na index */
+        top: 20px; /* Ajuste para telas menores */
+        right: 25px;
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+
+    .modal-content {
+        padding: 25px 20px;
+        width: 95%;
+    }
+
+    .modal-content h2 {
+        font-size: 1.6em;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        padding: 20px 15px;
+    }
+    header h1 {
+        font-size: 1.8em;
+    }
+    
+    .game-link {
+        font-size: 1.2em;
+        padding: 30px 15px;
+    }
+
+    .about-button { /* Botão Sobre na index */
+        top: 15px;
+        right: 15px;
+        padding: 7px 12px;
+        font-size: 0.85em;
+    }
+
+    .modal-content h2 {
+        font-size: 1.4em;
+    }
+    .modal-content p {
+        font-size: 0.95em;
+    }
 }
