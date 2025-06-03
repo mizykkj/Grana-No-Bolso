@@ -55,7 +55,8 @@
 
             </div>
 
-            <div id="userInfoContainer" style="display: none;"> <p>Bem-vindo(a), <span id="userEmailDisplay"></span>!</p>
+            <div id="userInfoContainer" style="display: none;">
+                <p>Bem-vindo(a), <span id="userEmailDisplay"></span>!</p>
                 <button id="logoutButton">Sair (Logout)</button>
             </div>
 
@@ -123,39 +124,163 @@
         }
     </script>
 
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-      // import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js"; // Descomente se for usar o Analytics
-
-      // Imports para Autenticação e Banco de Dados (Firestore)
-      import { getAuth } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-      import { getFirestore } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script>
       // Sua configuração do Firebase (use os valores REAIS do seu projeto)
       const firebaseConfig = {
         apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA PELO SEU VALOR REAL
         authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA PELO SEU VALOR REAL
         projectId: "central-de-jogos-4bdf1", // SUBSTITUA PELO SEU VALOR REAL
-        storageBucket: "central-de-jogos-4bdf1.appspot.com", // VERIFIQUE ESTE VALOR NO SEU CONSOLE FIREBASE (geralmente termina com .appspot.com)
+        storageBucket: "central-de-jogos-4bdf1.appspot.com", // VERIFIQUE ESTE VALOR NO SEU CONSOLE FIREBASE
         messagingSenderId: "552827412845", // SUBSTITUA PELO SEU VALOR REAL
         appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SUBSTITUA PELO SEU VALOR REAL
-        measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA PELO SEU VALOR REAL (opcional se não usar Analytics)
+        measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA PELO SEU VALOR REAL (opcional)
       };
 
       // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      // const analytics = getAnalytics(app); // Descomente se for usar o Analytics e importou o getAnalytics
+      firebase.initializeApp(firebaseConfig);
 
-      // Inicializar os serviços de Autenticação e Firestore
-      const auth = getAuth(app);
-      const db = getFirestore(app);
+      // Disponibilizar instâncias para uso posterior
+      const auth = firebase.auth(); // Usando a sintaxe 'compat'
+      const db = firebase.firestore(); // Usando a sintaxe 'compat'
 
-      // Tornar 'auth' e 'db' acessíveis globalmente para simplificar os próximos scripts
-      window.firebaseAuth = auth;
-      window.firebaseDb = db;
+      window.firebaseAuth = auth; // Para usar no script de lógica de auth
+      window.firebaseDb = db;   // Para usar no script de lógica de auth e rankings
 
-      console.log("Firebase Modular SDK inicializado com Auth e Firestore!");
+      console.log("Firebase Compat SDKs carregados e Firebase inicializado!");
+    </script>
+
+    <script>
+        // Acessando as instâncias globais que criamos acima
+        // const auth = window.firebaseAuth; // Já está disponível como 'auth' no escopo anterior, mas podemos pegar da window também
+        // const db = window.firebaseDb;
+
+        // Elementos do Formulário de Registro
+        const formRegistro = document.getElementById('formRegistro');
+        const registroEmailInput = document.getElementById('registroEmail');
+        const registroSenhaInput = document.getElementById('registroSenha');
+        const registroConfirmaSenhaInput = document.getElementById('registroConfirmaSenha');
+
+        // Elementos do Formulário de Login
+        const formLogin = document.getElementById('formLogin');
+        const loginEmailInput = document.getElementById('loginEmail');
+        const loginSenhaInput = document.getElementById('loginSenha');
+
+        // Elementos da UI para feedback e info do usuário
+        const authMessage = document.getElementById('authMessage');
+        const userInfoContainer = document.getElementById('userInfoContainer');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+        const logoutButton = document.getElementById('logoutButton');
+        const authFormsContainer = document.querySelector('.auth-forms-container');
+
+        function mostrarMensagemAuth(mensagem, tipo = 'error') {
+            authMessage.textContent = mensagem;
+            authMessage.className = 'auth-message ';
+            if (tipo === 'success') {
+                authMessage.classList.add('success');
+            } else {
+                authMessage.classList.add('error');
+            }
+            setTimeout(() => {
+                authMessage.textContent = '';
+                authMessage.className = 'auth-message';
+            }, 5000);
+        }
+
+        if (formRegistro) {
+            formRegistro.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = registroEmailInput.value;
+                const senha = registroSenhaInput.value;
+                const confirmaSenha = registroConfirmaSenhaInput.value;
+
+                if (senha.length < 6) {
+                    mostrarMensagemAuth('A senha precisa ter no mínimo 6 caracteres.');
+                    return;
+                }
+                if (senha !== confirmaSenha) {
+                    mostrarMensagemAuth('As senhas não coincidem!');
+                    return;
+                }
+
+                try {
+                    const userCredential = await window.firebaseAuth.createUserWithEmailAndPassword(email, senha);
+                    // console.log("Usuário registrado:", userCredential.user);
+                    // mostrarMensagemAuth('Usuário registrado com sucesso! Você já está logado.', 'success'); // Mensagem será mostrada pelo onAuthStateChanged
+                    formRegistro.reset();
+                } catch (error) {
+                    console.error("Erro no registro:", error);
+                    if (error.code === 'auth/email-already-in-use') {
+                        mostrarMensagemAuth('Este email já está em uso.');
+                    } else if (error.code === 'auth/weak-password') {
+                        mostrarMensagemAuth('Senha muito fraca. Tente uma mais forte.');
+                    } else {
+                        mostrarMensagemAuth('Erro ao registrar: Verifique os dados ou tente mais tarde.');
+                    }
+                }
+            });
+        }
+
+        if (formLogin) {
+            formLogin.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = loginEmailInput.value;
+                const senha = loginSenhaInput.value;
+
+                try {
+                    const userCredential = await window.firebaseAuth.signInWithEmailAndPassword(email, senha);
+                    // console.log("Usuário logado:", userCredential.user);
+                    // mostrarMensagemAuth('Login realizado com sucesso!', 'success'); // Mensagem será mostrada pelo onAuthStateChanged
+                    formLogin.reset();
+                } catch (error) {
+                    console.error("Erro no login:", error);
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                        mostrarMensagemAuth('Email ou senha inválidos.');
+                    } else {
+                        mostrarMensagemAuth('Erro ao fazer login: Verifique os dados ou tente mais tarde.');
+                    }
+                }
+            });
+        }
+
+        if (logoutButton) {
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    await window.firebaseAuth.signOut();
+                    // mostrarMensagemAuth('Você saiu da sua conta.', 'success'); // Mensagem será mostrada pelo onAuthStateChanged
+                } catch (error) {
+                    console.error("Erro no logout:", error);
+                    mostrarMensagemAuth('Erro ao sair: ' + error.message);
+                }
+            });
+        }
+
+        window.firebaseAuth.onAuthStateChanged(user => {
+            if (user) {
+                console.log("Usuário logado:", user.email);
+                if (userInfoContainer) userInfoContainer.style.display = 'block';
+                if (userEmailDisplay) userEmailDisplay.textContent = user.email;
+                if (authFormsContainer) authFormsContainer.style.display = 'none';
+                if (logoutButton) logoutButton.style.display = 'inline-block';
+                // Limpar qualquer mensagem de erro pendente de login/registro
+                authMessage.textContent = '';
+                authMessage.className = 'auth-message';
+                // Opcional: mostrar uma mensagem de boas-vindas aqui se for o primeiro login após registro/login
+                // if (!logoutButton.dataset.welcomed) { // Evitar mostrar toda vez que o estado muda
+                //    mostrarMensagemAuth(`Bem-vindo(a) de volta, ${user.email}!`, 'success');
+                //    logoutButton.dataset.welcomed = true;
+                // }
+
+            } else {
+                console.log("Nenhum usuário logado.");
+                if (userInfoContainer) userInfoContainer.style.display = 'none';
+                if (authFormsContainer) authFormsContainer.style.display = 'flex';
+                if (logoutButton) logoutButton.style.display = 'none';
+                // delete logoutButton.dataset.welcomed; // Resetar para próxima sessão de login
+            }
+        });
     </script>
 </body>
 </html>
