@@ -17,10 +17,33 @@
         </header>
 
         <section class="auth-section">
-            <div class="auth-forms-container">
 
-                <div class="auth-form" id="registroContainer">
-                    <h3>Crie sua Conta</h3>
+            <div id="authActionsContainer">
+                <h3>Acesse ou Crie sua Conta</h3>
+                <div class="auth-action-buttons">
+                    <button id="showLoginViewButton" class="auth-action-btn">Fazer Login</button>
+                    <button id="showRegisterViewButton" class="auth-action-btn">Criar Conta</button>
+                </div>
+            </div>
+
+            <div class="auth-forms-container" id="authFormsWrapper" style="display: none;">
+
+                <div class="auth-form" id="loginContainer" style="display: none;"> <h3>Acesse sua Conta</h3>
+                    <form id="formLogin">
+                        <div>
+                            <label for="loginEmail">Email:</label>
+                            <input type="email" id="loginEmail" name="loginEmail" required>
+                        </div>
+                        <div>
+                            <label for="loginSenha">Senha:</label>
+                            <input type="password" id="loginSenha" name="loginSenha" required>
+                        </div>
+                        <button type="submit">Entrar</button>
+                    </form>
+                    <p class="toggle-form-link">Não possui uma conta? <a href="#" id="switchToRegisterLink">Crie uma</a></p>
+                </div>
+
+                <div class="auth-form" id="registroContainer" style="display: none;"> <h3>Crie sua Conta</h3>
                     <form id="formRegistro">
                         <div>
                             <label for="registroEmail">Email:</label>
@@ -36,23 +59,8 @@
                         </div>
                         <button type="submit">Registrar</button>
                     </form>
+                    <p class="toggle-form-link">Já possui uma conta? <a href="#" id="switchToLoginLink">Faça login</a></p>
                 </div>
-
-                <div class="auth-form" id="loginContainer">
-                    <h3>Acesse sua Conta</h3>
-                    <form id="formLogin">
-                        <div>
-                            <label for="loginEmail">Email:</label>
-                            <input type="email" id="loginEmail" name="loginEmail" required>
-                        </div>
-                        <div>
-                            <label for="loginSenha">Senha:</label>
-                            <input type="password" id="loginSenha" name="loginSenha" required>
-                        </div>
-                        <button type="submit">Entrar</button>
-                    </form>
-                </div>
-
             </div>
 
             <div id="userInfoContainer" style="display: none;">
@@ -139,41 +147,39 @@
         measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA PELO SEU VALOR REAL (opcional)
       };
 
-      // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
-
-      // Disponibilizar instâncias para uso posterior
-      const auth = firebase.auth(); // Usando a sintaxe 'compat'
-      const db = firebase.firestore(); // Usando a sintaxe 'compat'
-
-      window.firebaseAuth = auth; // Para usar no script de lógica de auth
-      window.firebaseDb = db;   // Para usar no script de lógica de auth e rankings
-
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      window.firebaseAuth = auth;
+      window.firebaseDb = db;
       console.log("Firebase Compat SDKs carregados e Firebase inicializado!");
     </script>
 
     <script>
-        // Acessando as instâncias globais que criamos acima
-        // const auth = window.firebaseAuth; // Já está disponível como 'auth' no escopo anterior, mas podemos pegar da window também
-        // const db = window.firebaseDb;
+        // const auth = window.firebaseAuth; // Já acessível globalmente
 
-        // Elementos do Formulário de Registro
+        const authActionsContainer = document.getElementById('authActionsContainer');
+        const showLoginViewButton = document.getElementById('showLoginViewButton');
+        const showRegisterViewButton = document.getElementById('showRegisterViewButton');
+        const authFormsWrapper = document.getElementById('authFormsWrapper');
+
+        const loginContainer = document.getElementById('loginContainer');
+        const registroContainer = document.getElementById('registroContainer');
         const formRegistro = document.getElementById('formRegistro');
         const registroEmailInput = document.getElementById('registroEmail');
         const registroSenhaInput = document.getElementById('registroSenha');
         const registroConfirmaSenhaInput = document.getElementById('registroConfirmaSenha');
-
-        // Elementos do Formulário de Login
         const formLogin = document.getElementById('formLogin');
         const loginEmailInput = document.getElementById('loginEmail');
         const loginSenhaInput = document.getElementById('loginSenha');
 
-        // Elementos da UI para feedback e info do usuário
+        const switchToRegisterLink = document.getElementById('switchToRegisterLink');
+        const switchToLoginLink = document.getElementById('switchToLoginLink');
+
         const authMessage = document.getElementById('authMessage');
         const userInfoContainer = document.getElementById('userInfoContainer');
         const userEmailDisplay = document.getElementById('userEmailDisplay');
         const logoutButton = document.getElementById('logoutButton');
-        const authFormsContainer = document.querySelector('.auth-forms-container');
 
         function mostrarMensagemAuth(mensagem, tipo = 'error') {
             authMessage.textContent = mensagem;
@@ -187,6 +193,52 @@
                 authMessage.textContent = '';
                 authMessage.className = 'auth-message';
             }, 5000);
+        }
+
+        function showAuthView(view) {
+            if (authActionsContainer) authActionsContainer.style.display = 'none';
+            if (authFormsWrapper) authFormsWrapper.style.display = 'none';
+            if (loginContainer) loginContainer.style.display = 'none';
+            if (registroContainer) registroContainer.style.display = 'none';
+            if (userInfoContainer) userInfoContainer.style.display = 'none';
+            authMessage.textContent = '';
+            authMessage.className = 'auth-message';
+
+            if (view === 'actions' && authActionsContainer) {
+                authActionsContainer.style.display = 'block';
+            } else if (view === 'login' && authFormsWrapper && loginContainer) {
+                authFormsWrapper.style.display = 'block'; // Ou 'flex' se .auth-forms-container for flex
+                loginContainer.style.display = 'block'; // Ou 'flex' se .auth-form for flex
+            } else if (view === 'register' && authFormsWrapper && registroContainer) {
+                authFormsWrapper.style.display = 'block';
+                registroContainer.style.display = 'block';
+            } else if (view === 'loggedIn' && userInfoContainer) {
+                userInfoContainer.style.display = 'block';
+            }
+        }
+
+        if (showLoginViewButton) {
+            showLoginViewButton.addEventListener('click', () => {
+                showAuthView('login');
+            });
+        }
+        if (showRegisterViewButton) {
+            showRegisterViewButton.addEventListener('click', () => {
+                showAuthView('register');
+            });
+        }
+
+        if (switchToRegisterLink) {
+            switchToRegisterLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showAuthView('register');
+            });
+        }
+        if (switchToLoginLink) {
+            switchToLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                showAuthView('login');
+            });
         }
 
         if (formRegistro) {
@@ -204,11 +256,8 @@
                     mostrarMensagemAuth('As senhas não coincidem!');
                     return;
                 }
-
                 try {
-                    const userCredential = await window.firebaseAuth.createUserWithEmailAndPassword(email, senha);
-                    // console.log("Usuário registrado:", userCredential.user);
-                    // mostrarMensagemAuth('Usuário registrado com sucesso! Você já está logado.', 'success'); // Mensagem será mostrada pelo onAuthStateChanged
+                    await window.firebaseAuth.createUserWithEmailAndPassword(email, senha);
                     formRegistro.reset();
                 } catch (error) {
                     console.error("Erro no registro:", error);
@@ -228,15 +277,12 @@
                 e.preventDefault();
                 const email = loginEmailInput.value;
                 const senha = loginSenhaInput.value;
-
                 try {
-                    const userCredential = await window.firebaseAuth.signInWithEmailAndPassword(email, senha);
-                    // console.log("Usuário logado:", userCredential.user);
-                    // mostrarMensagemAuth('Login realizado com sucesso!', 'success'); // Mensagem será mostrada pelo onAuthStateChanged
+                    await window.firebaseAuth.signInWithEmailAndPassword(email, senha);
                     formLogin.reset();
                 } catch (error) {
                     console.error("Erro no login:", error);
-                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
                         mostrarMensagemAuth('Email ou senha inválidos.');
                     } else {
                         mostrarMensagemAuth('Erro ao fazer login: Verifique os dados ou tente mais tarde.');
@@ -249,7 +295,6 @@
             logoutButton.addEventListener('click', async () => {
                 try {
                     await window.firebaseAuth.signOut();
-                    // mostrarMensagemAuth('Você saiu da sua conta.', 'success'); // Mensagem será mostrada pelo onAuthStateChanged
                 } catch (error) {
                     console.error("Erro no logout:", error);
                     mostrarMensagemAuth('Erro ao sair: ' + error.message);
@@ -259,26 +304,10 @@
 
         window.firebaseAuth.onAuthStateChanged(user => {
             if (user) {
-                console.log("Usuário logado:", user.email);
-                if (userInfoContainer) userInfoContainer.style.display = 'block';
+                showAuthView('loggedIn');
                 if (userEmailDisplay) userEmailDisplay.textContent = user.email;
-                if (authFormsContainer) authFormsContainer.style.display = 'none';
-                if (logoutButton) logoutButton.style.display = 'inline-block';
-                // Limpar qualquer mensagem de erro pendente de login/registro
-                authMessage.textContent = '';
-                authMessage.className = 'auth-message';
-                // Opcional: mostrar uma mensagem de boas-vindas aqui se for o primeiro login após registro/login
-                // if (!logoutButton.dataset.welcomed) { // Evitar mostrar toda vez que o estado muda
-                //    mostrarMensagemAuth(`Bem-vindo(a) de volta, ${user.email}!`, 'success');
-                //    logoutButton.dataset.welcomed = true;
-                // }
-
             } else {
-                console.log("Nenhum usuário logado.");
-                if (userInfoContainer) userInfoContainer.style.display = 'none';
-                if (authFormsContainer) authFormsContainer.style.display = 'flex';
-                if (logoutButton) logoutButton.style.display = 'none';
-                // delete logoutButton.dataset.welcomed; // Resetar para próxima sessão de login
+                showAuthView('actions');
             }
         });
     </script>
