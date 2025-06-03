@@ -1,4 +1,4 @@
-// snake.js - ATUALIZADO COM BOTÃO DE INÍCIO E DEBUG
+// snake.js - ATUALIZADO para usar onAuthStateChanged
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
@@ -14,6 +14,28 @@ let changingDirection;
 let gameSpeed = 100;
 let gameLoopTimeout;
 
+// Variável para armazenar o usuário logado nesta página (snake.html)
+let snakeGameCurrentUser = null;
+
+// Configurar o listener onAuthStateChanged ASSIM que window.firebaseAuth estiver disponível
+if (window.firebaseAuth) {
+    window.firebaseAuth.onAuthStateChanged(user => {
+        if (user) {
+            // Usuário está logado
+            console.log("Snake.js - onAuthStateChanged: Usuário está LOGADO:", user.email);
+            snakeGameCurrentUser = user;
+        } else {
+            // Usuário está deslogado
+            console.log("Snake.js - onAuthStateChanged: Usuário está DESLOGADO.");
+            snakeGameCurrentUser = null;
+        }
+    });
+} else {
+    // Isso não deveria acontecer se o Firebase inicializou corretamente em snake.html
+    console.error("Snake.js: window.firebaseAuth não estava disponível para configurar onAuthStateChanged!");
+}
+
+
 function initializeGameVariables() {
     snake = [{ x: 10, y: 10 }];
     food = {};
@@ -21,7 +43,7 @@ function initializeGameVariables() {
     currentScore = 0;
     if (scoreDisplay) scoreDisplay.textContent = currentScore;
     changingDirection = false;
-    if (gameLoopTimeout) clearTimeout(gameLoopTimeout); // Limpa timeout anterior, se houver
+    if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
 }
 
 function startGame() {
@@ -42,22 +64,14 @@ if (startButtonSnake) {
 
 async function saveScoreToFirestore(gameScore) {
     console.log("Função saveScoreToFirestore FOI CHAMADA com score:", gameScore);
-    console.log("Valor de window.firebaseAuth neste momento:", window.firebaseAuth);
+    // Agora usamos a variável snakeGameCurrentUser que é atualizada pelo onAuthStateChanged
+    console.log("Objeto snakeGameCurrentUser obtido:", snakeGameCurrentUser);
 
-    if (!window.firebaseAuth) {
-        console.error("ERRO CRÍTICO: window.firebaseAuth está INDEFINIDO quando saveScoreToFirestore é chamada!");
-        alert("Erro crítico: Autenticação do Firebase não está pronta. A pontuação não pode ser salva.");
-        return;
-    }
-
-    const user = window.firebaseAuth.currentUser;
-    console.log("Objeto currentUser obtido:", user);
-
-    if (user) {
+    if (snakeGameCurrentUser) { // Verifica o usuário obtido pelo listener
         try {
             await window.firebaseDb.collection("pontuacoes").add({
-                userId: user.uid,
-                userEmail: user.email,
+                userId: snakeGameCurrentUser.uid,
+                userEmail: snakeGameCurrentUser.email,
                 gameId: "snake",
                 score: gameScore,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -67,7 +81,7 @@ async function saveScoreToFirestore(gameScore) {
             console.error("Erro ao salvar pontuação no Firestore: ", error);
         }
     } else {
-        console.log("Nenhum usuário logado (verificado dentro de saveScoreToFirestore). Pontuação não será salva no ranking.");
+        console.log("Nenhum usuário logado (verificado através de snakeGameCurrentUser). Pontuação não será salva no ranking.");
     }
 }
 
@@ -77,12 +91,7 @@ function main() {
         alert("Fim de Jogo! Pontuação: " + currentScore);
         saveScoreToFirestore(currentScore).then(() => {
             setTimeout(() => {
-                // Para testar sem recarregar e poder ver o console:
-                // console.log("Jogo terminado, pontuação processada.");
-                // if (startButtonSnake) startButtonSnake.style.display = 'block'; // Mostrar botão de novo
-                // if (canvas) canvas.style.display = 'none';
-                // if (snakeGameInstructions) snakeGameInstructions.style.display = 'none';
-                document.location.reload(); // Recarrega para jogar de novo
+                document.location.reload();
             }, 1500);
         });
         return;
@@ -98,6 +107,9 @@ function main() {
     }, gameSpeed);
 }
 
+// Funções clearCanvas, drawSnakePart, drawSnake, advanceSnake, createFood, drawFood, didGameEnd
+// permanecem as mesmas. Copie-as da sua versão anterior ou da que eu enviei antes.
+// Por exemplo:
 function clearCanvas() {
     ctx.fillStyle = '#0a0a0a';
     ctx.strokeStyle = '#383838';
@@ -153,7 +165,7 @@ function drawFood() {
 }
 
 function didGameEnd() {
-    if (!snake || snake.length === 0 || !snake[0]) return false; // Checagem de segurança
+    if (!snake || snake.length === 0 || !snake[0]) return false; 
     for (let i = 4; i < snake.length; i++) {
         if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true;
     }
@@ -163,6 +175,7 @@ function didGameEnd() {
     const hitBottomWall = snake[0].y >= canvas.height / gridSize;
     return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
 }
+
 
 function changeDirection(event) {
     const LEFT_KEY = 37;
@@ -175,7 +188,6 @@ function changeDirection(event) {
     }
 
     if (changingDirection) return;
-    // Só permite mudar direção se o jogo estiver ativo (canvas visível)
     if (canvas && canvas.style.display === 'block' && !didGameEnd()) {
         changingDirection = true;
         const keyPressed = event.keyCode;
@@ -192,6 +204,4 @@ function changeDirection(event) {
 }
 document.addEventListener('keydown', changeDirection);
 
-// Não inicia o jogo automaticamente aqui. O jogo começa com o clique no botão.
-// A UI inicial (score 0) é definida em initializeGameVariables() ou pode ser setada no HTML diretamente.
-if (scoreDisplay) scoreDisplay.textContent = 0; // Garante que o placar comece em 0 visualmente
+if (scoreDisplay) scoreDisplay.textContent = 0;
