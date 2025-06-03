@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quebra Blocos - Central de Jogos</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para esta página de jogo, se necessário */
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            max-width: 400px;
+            margin: 10px auto;
+            font-size: 1.1em;
+            color: var(--text-light);
+        }
+        .game-info span {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        canvas {
+             background-color: #0a0a0a; /* Fundo do canvas, se não for transparente */
+             /* Assegure que as dimensões aqui correspondam ao que o JS espera ou configure no JS */
+        }
+    </style>
+</head>
+<body>
+    <div class="container game-page">
+        <header>
+            <a href="index.html" class="back-link">&larr; Voltar para a Página Inicial</a>
+            <h1>Quebra Blocos</h1>
+        </header>
+
+        <main class="game-area">
+            <canvas id="gameCanvas" width="550" height="400"></canvas>
+            <div class="game-info">
+                <p>Pontuação: <span id="score">0</span></p>
+                <p>Vidas: <span id="lives">3</span></p>
+            </div>
+            <p>Use o <strong>Mouse</strong> ou as <strong>Setas Direcionais</strong> para mover a barra.</p>
+            <p>Quebre todos os tijolos para avançar de nível!</p>
+        </main>
+
+        <section class="adsense-area">
+            <h2>Anúncios</h2>
+            <p>Espaço reservado para anúncios.</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Central de Jogos.</p>
+        </footer>
+    </div>
+    <script src="quebra_blocos.js"></script>
+</body>
+</html>
