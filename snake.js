@@ -1,3 +1,4 @@
+// snake.js - ATUALIZADO PARA SALVAR PONTUAÇÕES
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
@@ -6,15 +7,46 @@ const gridSize = 20;
 let snake = [{ x: 10, y: 10 }];
 let food = {};
 let direction = 'right';
-let score = 0;
+let currentScore = 0; // Renomeado de 'score' para evitar conflito
 let changingDirection = false;
-let gameSpeed = 100; // Mais rápido para tentar mais fluidez
+let gameSpeed = 100; // Mantivemos a velocidade ajustada
+
+// Função para salvar a pontuação no Firestore
+async function saveScoreToFirestore(gameScore) {
+    // Acessa a instância de autenticação global do Firebase
+    const user = window.firebaseAuth.currentUser;
+
+    if (user) { // Só salva se houver um usuário logado
+        try {
+            // Acessa a instância 'db' do Firestore que tornamos global
+            await window.firebaseDb.collection("pontuacoes").add({
+                userId: user.uid,
+                userEmail: user.email,
+                gameId: "snake", // Identificador para o jogo da cobrinha
+                score: gameScore,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp() // Pega a data/hora do servidor Firebase
+            });
+            console.log("Pontuação salva com sucesso no Firestore! Score: " + gameScore);
+        } catch (error) {
+            console.error("Erro ao salvar pontuação no Firestore: ", error);
+        }
+    } else {
+        console.log("Nenhum usuário logado. Pontuação não será salva no ranking.");
+    }
+}
 
 function main() {
     if (didGameEnd()) {
-        alert("Fim de Jogo! Pontuação: " + score);
-        document.location.reload();
-        return;
+        alert("Fim de Jogo! Pontuação: " + currentScore);
+        // Chama a função para salvar a pontuação ANTES de recarregar
+        saveScoreToFirestore(currentScore).then(() => {
+            // Recarrega a página após a tentativa de salvar (bem-sucedida ou não)
+            // Adicionamos um pequeno delay para dar tempo de ver logs ou mensagens
+            setTimeout(() => {
+                document.location.reload();
+            }, 1500); // Espera 1.5 segundos
+        });
+        return; // Para a execução da função main aqui
     }
 
     changingDirection = false;
@@ -59,8 +91,8 @@ function advanceSnake() {
 
     const didEatFood = snake[0].x === food.x && snake[0].y === food.y;
     if (didEatFood) {
-        score += 10;
-        if (scoreDisplay) scoreDisplay.textContent = score;
+        currentScore += 10;
+        if (scoreDisplay) scoreDisplay.textContent = currentScore;
         createFood();
     } else {
         snake.pop();
@@ -123,7 +155,8 @@ function didGameEnd() {
     return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall;
 }
 
+// Inicia o Jogo
 document.addEventListener('keydown', changeDirection);
 createFood();
-if (scoreDisplay) scoreDisplay.textContent = score; // Atualiza pontuação inicial
+if (scoreDisplay) scoreDisplay.textContent = currentScore; // Atualiza pontuação inicial
 main();
