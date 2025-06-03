@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da Cobrinha - Central de Jogos</title>
-    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
     <div class="container game-page">
         <header>
@@ -13,9 +14,10 @@
         </header>
 
         <main class="game-area">
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
-            <p>Use as <strong>Setas Direcionais</strong> para mover a cobrinha!</p>
-            <p>Pontuação: <span id="score">0</span></p>
+            <button id="startButtonSnake" class="game-start-button">Iniciar Jogo</button>
+            <canvas id="gameCanvas" width="400" height="400" style="display: none;"></canvas> <div id="snakeGameInstructions" style="display: none;"> <p>Use as <strong>Setas Direcionais</strong> para mover a cobrinha!</p>
+                <p>Pontuação: <span id="score">0</span></p>
+            </div>
         </main>
 
         <section class="adsense-area">
@@ -24,7 +26,8 @@
         </section>
 
         <footer>
-            <p>&copy; 2025 Central de Jogos.</p> </footer>
+            <p>&copy; 2025 Central de Jogos.</p>
+        </footer>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
@@ -42,16 +45,11 @@
         measurementId: "SEU_MEASUREMENT_ID" // Opcional, se configurado
       };
 
-      // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
-
-      // Disponibilizar instâncias para uso no snake.js
       const auth = firebase.auth();
       const db = firebase.firestore();
-
       window.firebaseAuth = auth;
       window.firebaseDb = db;
-
       console.log("Firebase Compat SDKs carregados e Firebase inicializado em snake.html!");
     </script>
 
