@@ -5,29 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quebra Blocos - Central de Jogos</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Estilos específicos para esta página de jogo, se necessário */
-        .game-info {
-            display: flex;
-            justify-content: space-around;
-            width: 80%;
-            max-width: 400px;
-            margin: 10px auto;
-            font-size: 1.1em;
-            color: var(--text-light);
-        }
-        .game-info span {
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-        canvas {
-             background-color: #0a0a0a; /* Fundo do canvas, se não for transparente */
-             /* Assegure que as dimensões aqui correspondam ao que o JS espera ou configure no JS */
-        }
-    </style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9402908836616610"
-     crossorigin="anonymous"></script>
-</head>
+    </head>
 <body>
     <div class="container game-page">
         <header>
@@ -37,11 +15,19 @@
 
         <main class="game-area">
             <canvas id="gameCanvas" width="550" height="400"></canvas>
+
+            <div id="levelCompleteScreen">
+                <h2 id="levelCompleteMessage">Nível X Completo!</h2>
+                <p>Você completou o nível <span id="completedLevelDisplay">1</span>.</p>
+                <button id="nextLevelButton">Próximo Nível</button>
+            </div>
+
             <div class="game-info">
                 <p>Pontuação: <span id="score">0</span></p>
                 <p>Vidas: <span id="lives">3</span></p>
+                <p>Nível: <span id="levelDisplay">1</span></p>
             </div>
-            <p>Use o <strong>Mouse</strong> ou as <strong>Setas Direcionais</strong> para mover a barra.</p>
+            <p>Use as <strong>Setas Direcionais</strong> para mover a barra.</p>
             <p>Quebre todos os tijolos para avançar de nível!</p>
         </main>
 
