@@ -610,3 +610,169 @@ footer {
         font-size: 0.85em;
     }
 }
+/* --- Estilos para Seção de Autenticação (Login/Registro) --- */
+.auth-section {
+    background-color: var(--secondary-dark); /* Fundo um pouco diferente para a seção */
+    padding: 25px 30px;
+    margin: 30px auto 40px auto; /* Margem acima e abaixo */
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    max-width: 700px; /* Limitar a largura da seção de auth */
+    box-shadow: 0 4px 10px var(--shadow-color-soft);
+}
+
+.auth-forms-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os formulários quebrem linha em telas menores */
+    justify-content: space-around; /* Espaçar os formulários se couberem lado a lado */
+    gap: 30px; /* Espaço entre os formulários */
+}
+
+.auth-form {
+    background-color: var(--primary-dark); /* Fundo para cada caixa de formulário */
+    padding: 20px 25px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    flex: 1; /* Faz os formulários tentarem ocupar espaço igual */
+    min-width: 280px; /* Largura mínima para cada formulário */
+    margin-bottom: 20px; /* Margem caso fiquem um abaixo do outro */
+}
+
+.auth-form h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--accent-color);
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.4em;
+    font-weight: 500;
+}
+
+.auth-form div { /* Espaço entre cada campo (label + input) */
+    margin-bottom: 18px;
+    text-align: left; /* Alinhar labels e inputs à esquerda */
+}
+
+.auth-form label {
+    display: block; /* Faz o label ocupar a linha toda */
+    margin-bottom: 6px;
+    color: var(--text-medium);
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    background-color: var(--secondary-dark); /* Fundo do input */
+    color: var(--text-light); /* Cor do texto digitado */
+    border-radius: 4px;
+    font-size: 1em;
+    font-family: 'Roboto', sans-serif;
+}
+
+.auth-form input[type="email"]:focus,
+.auth-form input[type="password"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.3);
+}
+
+.auth-form button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--accent-color);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-size: 1.05em;
+    font-weight: 500;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    margin-top: 10px; /* Espaço acima do botão */
+}
+
+.auth-form button[type="submit"]:hover,
+.auth-form button[type="submit"]:focus {
+    background-color: var(--accent-hover);
+    outline: none;
+}
+
+/* Estilos para informações do usuário e mensagem de auth */
+#userInfoContainer {
+    background-color: var(--primary-dark); /* Pode ser igual ao .auth-form ou um pouco diferente */
+    padding: 15px 20px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    margin-top: 20px; /* Espaço se os formulários estiverem visíveis */
+    text-align: center;
+    color: var(--text-light);
+}
+
+#userInfoContainer p {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+}
+#userInfoContainer p span { /* Para o e-mail do usuário */
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+#logoutButton {
+    background-color: var(--secondary-dark);
+    color: var(--text-medium);
+    border: 1px solid var(--border-color);
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+#logoutButton:hover,
+#logoutButton:focus {
+    background-color: #c82333; /* Um vermelho para logout */
+    border-color: #bd2130;
+    color: var(--white);
+    outline: none;
+}
+
+.auth-message {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.95em;
+    /* Estilos de erro/sucesso serão aplicados via JS, mas podemos ter um base */
+    /* Garantir que esteja vazio e sem borda/fundo por padrão se não houver mensagem */
+    min-height: 1.5em; /* Para evitar que o layout salte quando a mensagem aparece */
+}
+
+.auth-message.success { /* Classe para mensagens de sucesso */
+    background-color: rgba(var(--accent-color-rgb), 0.15); /* Fundo de destaque sutil */
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+}
+
+.auth-message.error { /* Classe para mensagens de erro */
+    background-color: rgba(220, 53, 69, 0.1); /* Vermelho sutil (cor do Bootstrap para danger) */
+    color: #dc3545; /* Cor do texto vermelha */
+    border: 1px solid #dc3545;
+}
+
+/* Ajuste para os formulários em telas menores dentro do .auth-forms-container */
+@media (max-width: 650px) { /* Ponto de quebra para quando os formulários devem ficar um abaixo do outro */
+    .auth-forms-container {
+        flex-direction: column;
+        align-items: center; /* Centraliza os formulários quando empilhados */
+    }
+    .auth-form {
+        width: 100%; /* Faz o formulário ocupar mais largura */
+        max-width: 400px; /* Limite para não ficar excessivamente largo */
+        min-width: unset; /* Reseta o min-width */
+    }
+}
