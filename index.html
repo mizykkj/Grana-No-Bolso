@@ -10,67 +10,18 @@
 </head>
 <body>
     <div class="container">
-        <button id="aboutButton" class="about-button">Sobre</button>
+        <div class="top-page-actions">
+            <div id="loggedInUserInfo" style="display: none;"> <span id="loggedInUserEmail" class="user-email-display"></span>
+                <a href="#" id="logoutModalButton" class="top-nav-link logout-link">Sair</a>
+            </div>
+            <a href="#" id="loginTriggerLink" class="top-nav-link">Login</a> <button id="aboutButton" class="about-button">Sobre</button>
+        </div>
+
         <header>
             <h1>Bem-vindo à Central de Jogos!</h1>
             <p>Escolha um dos nossos jogos clássicos para se divertir.</p>
         </header>
 
-        <section class="auth-section">
-
-            <div id="authActionsContainer">
-                <h3>Acesse ou Crie sua Conta</h3>
-                <div class="auth-action-buttons">
-                    <button id="showLoginViewButton" class="auth-action-btn">Fazer Login</button>
-                    <button id="showRegisterViewButton" class="auth-action-btn">Criar Conta</button>
-                </div>
-            </div>
-
-            <div class="auth-forms-container" id="authFormsWrapper" style="display: none;">
-
-                <div class="auth-form" id="loginContainer" style="display: none;"> <h3>Acesse sua Conta</h3>
-                    <form id="formLogin">
-                        <div>
-                            <label for="loginEmail">Email:</label>
-                            <input type="email" id="loginEmail" name="loginEmail" required>
-                        </div>
-                        <div>
-                            <label for="loginSenha">Senha:</label>
-                            <input type="password" id="loginSenha" name="loginSenha" required>
-                        </div>
-                        <button type="submit">Entrar</button>
-                    </form>
-                    <p class="toggle-form-link">Não possui uma conta? <a href="#" id="switchToRegisterLink">Crie uma</a></p>
-                </div>
-
-                <div class="auth-form" id="registroContainer" style="display: none;"> <h3>Crie sua Conta</h3>
-                    <form id="formRegistro">
-                        <div>
-                            <label for="registroEmail">Email:</label>
-                            <input type="email" id="registroEmail" name="registroEmail" required>
-                        </div>
-                        <div>
-                            <label for="registroSenha">Senha (mínimo 6 caracteres):</label>
-                            <input type="password" id="registroSenha" name="registroSenha" required minlength="6">
-                        </div>
-                        <div>
-                            <label for="registroConfirmaSenha">Confirmar Senha:</label>
-                            <input type="password" id="registroConfirmaSenha" name="registroConfirmaSenha" required minlength="6">
-                        </div>
-                        <button type="submit">Registrar</button>
-                    </form>
-                    <p class="toggle-form-link">Já possui uma conta? <a href="#" id="switchToLoginLink">Faça login</a></p>
-                </div>
-            </div>
-
-            <div id="userInfoContainer" style="display: none;">
-                <p>Bem-vindo(a), <span id="userEmailDisplay"></span>!</p>
-                <button id="logoutButton">Sair (Logout)</button>
-            </div>
-
-            <p id="authMessage" class="auth-message"></p>
-
-        </section>
         <nav class="game-selection">
             <h2>Escolha seu Jogo:</h2>
             <ul>
@@ -90,8 +41,7 @@
         </footer>
     </div> <div id="aboutModal" class="modal">
         <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2>Sobre a Central de Jogos</h2>
+            <span class="close-button about-modal-close">&times;</span> <h2>Sobre a Central de Jogos</h2>
             <p>Bem-vindo à Central de Jogos! Este espaço foi cuidadosamente desenvolvido por <strong><a href="https://www.instagram.com/mizykj/" target="_blank" rel="noopener noreferrer" class="inline-link">Mizy Dev</a></strong>.</p>
             <p>A principal motivação por trás da criação deste site é simples: trazer diversão e um toque de nostalgia através de jogos clássicos que marcaram gerações. Queremos oferecer um local onde você possa relaxar, desafiar a si mesmo e, quem sabe, relembrar bons momentos.</p>
             <p>Cada jogo foi implementado com o intuito de ser leve, acessível e fácil de jogar. Esperamos que você desfrute da experiência tanto quanto nós gostamos de criá-la.</p>
@@ -100,53 +50,94 @@
         </div>
     </div>
 
+    <div id="authModal" class="modal"> <div class="modal-content auth-modal-content"> <span class="close-button auth-modal-close">&times;</span> <div class="auth-form" id="loginContainerModal">
+                <h3>Acesse sua Conta</h3>
+                <form id="formLoginModal">
+                    <div>
+                        <label for="loginEmailModal">Email:</label>
+                        <input type="email" id="loginEmailModal" name="loginEmailModal" required>
+                    </div>
+                    <div>
+                        <label for="loginSenhaModal">Senha:</label>
+                        <input type="password" id="loginSenhaModal" name="loginSenhaModal" required>
+                    </div>
+                    <button type="submit">Entrar</button>
+                </form>
+                <p class="toggle-form-link">Não possui uma conta? <a href="#" id="switchToRegisterInModalLink">Crie uma</a></p>
+            </div>
+
+            <div class="auth-form" id="registroContainerModal" style="display: none;">
+                <h3>Crie sua Conta</h3>
+                <form id="formRegistroModal">
+                    <div>
+                        <label for="registroEmailModal">Email:</label>
+                        <input type="email" id="registroEmailModal" name="registroEmailModal" required>
+                    </div>
+                    <div>
+                        <label for="registroSenhaModal">Senha (mínimo 6 caracteres):</label>
+                        <input type="password" id="registroSenhaModal" name="registroSenhaModal" required minlength="6">
+                    </div>
+                    <div>
+                        <label for="registroConfirmaSenhaModal">Confirmar Senha:</label>
+                        <input type="password" id="registroConfirmaSenhaModal" name="registroConfirmaSenhaModal" required minlength="6">
+                    </div>
+                    <button type="submit">Registrar</button>
+                </form>
+                <p class="toggle-form-link">Já possui uma conta? <a href="#" id="switchToLoginInModalLink">Faça login</a></p>
+            </div>
+
+            <p id="authMessageModal" class="auth-message"></p>
+        </div>
+    </div>
+
+
     <script>
-        const modal = document.getElementById('aboutModal');
+        const aboutModal = document.getElementById('aboutModal');
         const aboutBtn = document.getElementById('aboutButton');
-        const closeBtn = modal.querySelector('.close-button');
+        const aboutModalCloseBtn = aboutModal.querySelector('.about-modal-close'); // Usar a classe específica
 
-        aboutBtn.onclick = function() {
-            modal.style.display = 'flex';
-            setTimeout(function() {
-                modal.classList.add('modal-visible');
-            }, 10);
-            document.body.classList.add('modal-open');
-        }
-
-        function closeModalFunction() {
-            modal.classList.remove('modal-visible');
-            document.body.classList.remove('modal-open');
-            setTimeout(function() {
-                if (!modal.classList.contains('modal-visible')) {
-                    modal.style.display = 'none';
-                }
-            }, 300);
-        }
-
-        closeBtn.onclick = closeModalFunction;
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModalFunction();
+        if (aboutBtn) {
+            aboutBtn.onclick = function() {
+                aboutModal.style.display = 'flex'; // Usar 'flex' para centralizar (conforme CSS do modal)
+                setTimeout(function() {
+                    aboutModal.classList.add('modal-visible');
+                }, 10);
+                document.body.classList.add('modal-open');
             }
         }
+
+        function closeAboutModal() {
+            aboutModal.classList.remove('modal-visible');
+            document.body.classList.remove('modal-open');
+            setTimeout(function() {
+                if (!aboutModal.classList.contains('modal-visible')) {
+                    aboutModal.style.display = 'none';
+                }
+            }, 300); // Duração da transição
+        }
+
+        if (aboutModalCloseBtn) aboutModalCloseBtn.onclick = closeAboutModal;
+        
+        window.addEventListener('click', function(event) { // Mudado para addEventListener
+            if (event.target == aboutModal) {
+                closeAboutModal();
+            }
+        });
     </script>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script>
-      // Sua configuração do Firebase (use os valores REAIS do seu projeto)
       const firebaseConfig = {
         apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA PELO SEU VALOR REAL
         authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA PELO SEU VALOR REAL
         projectId: "central-de-jogos-4bdf1", // SUBSTITUA PELO SEU VALOR REAL
-        storageBucket: "central-de-jogos-4bdf1.appspot.com", // VERIFIQUE ESTE VALOR NO SEU CONSOLE FIREBASE
+        storageBucket: "central-de-jogos-4bdf1.appspot.com", // VERIFIQUE ESTE VALOR
         messagingSenderId: "552827412845", // SUBSTITUA PELO SEU VALOR REAL
         appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SUBSTITUA PELO SEU VALOR REAL
         measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA PELO SEU VALOR REAL (opcional)
       };
-
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
       const db = firebase.firestore();
@@ -156,158 +147,180 @@
     </script>
 
     <script>
-        // const auth = window.firebaseAuth; // Já acessível globalmente
+        // Elementos da Nova UI de Login/Logout no Topo
+        const loginTriggerLink = document.getElementById('loginTriggerLink');
+        const loggedInUserInfo = document.getElementById('loggedInUserInfo');
+        const loggedInUserEmailDisplay = document.getElementById('loggedInUserEmail');
+        const logoutModalButton = document.getElementById('logoutModalButton'); // Renomeado para evitar conflito
 
-        const authActionsContainer = document.getElementById('authActionsContainer');
-        const showLoginViewButton = document.getElementById('showLoginViewButton');
-        const showRegisterViewButton = document.getElementById('showRegisterViewButton');
-        const authFormsWrapper = document.getElementById('authFormsWrapper');
+        // Elementos do Modal de Autenticação
+        const authModal = document.getElementById('authModal');
+        const authModalCloseBtn = authModal.querySelector('.auth-modal-close'); // Usar a classe específica
 
-        const loginContainer = document.getElementById('loginContainer');
-        const registroContainer = document.getElementById('registroContainer');
-        const formRegistro = document.getElementById('formRegistro');
-        const registroEmailInput = document.getElementById('registroEmail');
-        const registroSenhaInput = document.getElementById('registroSenha');
-        const registroConfirmaSenhaInput = document.getElementById('registroConfirmaSenha');
-        const formLogin = document.getElementById('formLogin');
-        const loginEmailInput = document.getElementById('loginEmail');
-        const loginSenhaInput = document.getElementById('loginSenha');
+        // Containers dos formulários dentro do Modal
+        const loginContainerModal = document.getElementById('loginContainerModal');
+        const registroContainerModal = document.getElementById('registroContainerModal');
 
-        const switchToRegisterLink = document.getElementById('switchToRegisterLink');
-        const switchToLoginLink = document.getElementById('switchToLoginLink');
+        // Formulários e Inputs (adicionar 'Modal' aos IDs para evitar conflitos se os antigos ainda existirem)
+        const formLoginModal = document.getElementById('formLoginModal');
+        const loginEmailModalInput = document.getElementById('loginEmailModal');
+        const loginSenhaModalInput = document.getElementById('loginSenhaModal');
 
-        const authMessage = document.getElementById('authMessage');
-        const userInfoContainer = document.getElementById('userInfoContainer');
-        const userEmailDisplay = document.getElementById('userEmailDisplay');
-        const logoutButton = document.getElementById('logoutButton');
+        const formRegistroModal = document.getElementById('formRegistroModal');
+        const registroEmailModalInput = document.getElementById('registroEmailModal');
+        const registroSenhaModalInput = document.getElementById('registroSenhaModal');
+        const registroConfirmaSenhaModalInput = document.getElementById('registroConfirmaSenhaModal');
 
-        function mostrarMensagemAuth(mensagem, tipo = 'error') {
-            authMessage.textContent = mensagem;
-            authMessage.className = 'auth-message ';
+        // Links de alternância dentro do Modal
+        const switchToRegisterInModalLink = document.getElementById('switchToRegisterInModalLink');
+        const switchToLoginInModalLink = document.getElementById('switchToLoginInModalLink');
+
+        // Mensagem de feedback dentro do Modal
+        const authMessageModal = document.getElementById('authMessageModal');
+
+        function mostrarMensagemAuthModal(mensagem, tipo = 'error') {
+            authMessageModal.textContent = mensagem;
+            authMessageModal.className = 'auth-message '; // Reseta classes
             if (tipo === 'success') {
-                authMessage.classList.add('success');
+                authMessageModal.classList.add('success');
             } else {
-                authMessage.classList.add('error');
+                authMessageModal.classList.add('error');
             }
+            // Não limpar automaticamente, o usuário fecha o modal ou troca de form
+        }
+
+        // --- Funções para controlar o Modal de Autenticação ---
+        function openAuthModal(view = 'login') { // 'login' ou 'register'
+            if (view === 'login') {
+                loginContainerModal.style.display = 'block';
+                registroContainerModal.style.display = 'none';
+            } else {
+                loginContainerModal.style.display = 'none';
+                registroContainerModal.style.display = 'block';
+            }
+            authMessageModal.textContent = ''; // Limpa mensagens antigas
+            authMessageModal.className = 'auth-message';
+
+            authModal.style.display = 'flex';
             setTimeout(() => {
-                authMessage.textContent = '';
-                authMessage.className = 'auth-message';
-            }, 5000);
+                authModal.classList.add('modal-visible');
+            }, 10);
+            document.body.classList.add('modal-open');
         }
 
-        function showAuthView(view) {
-            if (authActionsContainer) authActionsContainer.style.display = 'none';
-            if (authFormsWrapper) authFormsWrapper.style.display = 'none';
-            if (loginContainer) loginContainer.style.display = 'none';
-            if (registroContainer) registroContainer.style.display = 'none';
-            if (userInfoContainer) userInfoContainer.style.display = 'none';
-            authMessage.textContent = '';
-            authMessage.className = 'auth-message';
+        function closeAuthModal() {
+            authModal.classList.remove('modal-visible');
+            document.body.classList.remove('modal-open');
+            setTimeout(() => {
+                if (!authModal.classList.contains('modal-visible')) {
+                    authModal.style.display = 'none';
+                }
+            }, 300);
+        }
 
-            if (view === 'actions' && authActionsContainer) {
-                authActionsContainer.style.display = 'block';
-            } else if (view === 'login' && authFormsWrapper && loginContainer) {
-                authFormsWrapper.style.display = 'block'; // Ou 'flex' se .auth-forms-container for flex
-                loginContainer.style.display = 'block'; // Ou 'flex' se .auth-form for flex
-            } else if (view === 'register' && authFormsWrapper && registroContainer) {
-                authFormsWrapper.style.display = 'block';
-                registroContainer.style.display = 'block';
-            } else if (view === 'loggedIn' && userInfoContainer) {
-                userInfoContainer.style.display = 'block';
+        if (loginTriggerLink) {
+            loginTriggerLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                openAuthModal('login');
+            });
+        }
+        if (authModalCloseBtn) authModalCloseBtn.onclick = closeAuthModal;
+
+        window.addEventListener('click', function(event) { // Fechar se clicar fora do conteúdo do modal de auth
+            if (event.target == authModal) {
+                closeAuthModal();
             }
-        }
+        });
 
-        if (showLoginViewButton) {
-            showLoginViewButton.addEventListener('click', () => {
-                showAuthView('login');
-            });
-        }
-        if (showRegisterViewButton) {
-            showRegisterViewButton.addEventListener('click', () => {
-                showAuthView('register');
-            });
-        }
 
-        if (switchToRegisterLink) {
-            switchToRegisterLink.addEventListener('click', (e) => {
+        // --- Links de alternância DENTRO do modal de autenticação ---
+        if (switchToRegisterInModalLink) {
+            switchToRegisterInModalLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                showAuthView('register');
+                openAuthModal('register'); // Reabre/reconfigura o modal para a view de registro
             });
         }
-        if (switchToLoginLink) {
-            switchToLoginLink.addEventListener('click', (e) => {
+        if (switchToLoginInModalLink) {
+            switchToLoginInModalLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                showAuthView('login');
+                openAuthModal('login'); // Reabre/reconfigura o modal para a view de login
             });
         }
 
-        if (formRegistro) {
-            formRegistro.addEventListener('submit', async (e) => {
+        // --- LÓGICA DE REGISTRO (adaptada para o modal) ---
+        if (formRegistroModal) {
+            formRegistroModal.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = registroEmailInput.value;
-                const senha = registroSenhaInput.value;
-                const confirmaSenha = registroConfirmaSenhaInput.value;
+                const email = registroEmailModalInput.value;
+                const senha = registroSenhaModalInput.value;
+                const confirmaSenha = registroConfirmaSenhaModalInput.value;
 
-                if (senha.length < 6) {
-                    mostrarMensagemAuth('A senha precisa ter no mínimo 6 caracteres.');
-                    return;
-                }
-                if (senha !== confirmaSenha) {
-                    mostrarMensagemAuth('As senhas não coincidem!');
-                    return;
-                }
+                if (senha.length < 6) { mostrarMensagemAuthModal('A senha precisa ter no mínimo 6 caracteres.'); return; }
+                if (senha !== confirmaSenha) { mostrarMensagemAuthModal('As senhas não coincidem!'); return; }
+
                 try {
                     await window.firebaseAuth.createUserWithEmailAndPassword(email, senha);
-                    formRegistro.reset();
+                    formRegistroModal.reset();
+                    // O onAuthStateChanged cuidará de fechar o modal e atualizar a UI do topo
+                    // Poderia adicionar uma mensagem de sucesso aqui antes de fechar, se desejado
+                    // mostrarMensagemAuthModal('Conta criada com sucesso! Você está logado.', 'success');
+                    // setTimeout(closeAuthModal, 1500); // Fecha o modal após sucesso
                 } catch (error) {
                     console.error("Erro no registro:", error);
-                    if (error.code === 'auth/email-already-in-use') {
-                        mostrarMensagemAuth('Este email já está em uso.');
-                    } else if (error.code === 'auth/weak-password') {
-                        mostrarMensagemAuth('Senha muito fraca. Tente uma mais forte.');
-                    } else {
-                        mostrarMensagemAuth('Erro ao registrar: Verifique os dados ou tente mais tarde.');
-                    }
+                    if (error.code === 'auth/email-already-in-use') mostrarMensagemAuthModal('Este email já está em uso.');
+                    else if (error.code === 'auth/weak-password') mostrarMensagemAuthModal('Senha muito fraca.');
+                    else mostrarMensagemAuthModal('Erro ao registrar: ' + error.message.replace('Firebase: ',''));
                 }
             });
         }
 
-        if (formLogin) {
-            formLogin.addEventListener('submit', async (e) => {
+        // --- LÓGICA DE LOGIN (adaptada para o modal) ---
+        if (formLoginModal) {
+            formLoginModal.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                const email = loginEmailInput.value;
-                const senha = loginSenhaInput.value;
+                const email = loginEmailModalInput.value;
+                const senha = loginSenhaModalInput.value;
                 try {
                     await window.firebaseAuth.signInWithEmailAndPassword(email, senha);
-                    formLogin.reset();
+                    formLoginModal.reset();
+                    // O onAuthStateChanged cuidará de fechar o modal e atualizar a UI do topo
                 } catch (error) {
                     console.error("Erro no login:", error);
                     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
-                        mostrarMensagemAuth('Email ou senha inválidos.');
+                        mostrarMensagemAuthModal('Email ou senha inválidos.');
                     } else {
-                        mostrarMensagemAuth('Erro ao fazer login: Verifique os dados ou tente mais tarde.');
+                        mostrarMensagemAuthModal('Erro ao fazer login: ' + error.message.replace('Firebase: ',''));
                     }
                 }
             });
         }
 
-        if (logoutButton) {
-            logoutButton.addEventListener('click', async () => {
+        // --- LÓGICA DE LOGOUT (adaptada para o novo botão) ---
+        if (logoutModalButton) { // Nome do botão de logout foi atualizado
+            logoutModalButton.addEventListener('click', async (e) => {
+                e.preventDefault();
                 try {
                     await window.firebaseAuth.signOut();
+                    // O onAuthStateChanged cuidará de atualizar a UI do topo
                 } catch (error) {
                     console.error("Erro no logout:", error);
-                    mostrarMensagemAuth('Erro ao sair: ' + error.message);
+                    // Poderia mostrar uma mensagem global se necessário, mas geralmente o logout não falha assim
                 }
             });
         }
 
+        // --- OBSERVADOR DO ESTADO DE AUTENTICAÇÃO (ATUALIZADO para nova UI) ---
         window.firebaseAuth.onAuthStateChanged(user => {
-            if (user) {
-                showAuthView('loggedIn');
-                if (userEmailDisplay) userEmailDisplay.textContent = user.email;
-            } else {
-                showAuthView('actions');
+            if (user) { // Usuário está logado
+                console.log("Usuário logado:", user.email);
+                if (loggedInUserInfo) loggedInUserInfo.style.display = 'flex'; // Mostrar info do usuário
+                if (loggedInUserEmailDisplay) loggedInUserEmailDisplay.textContent = user.email;
+                if (loginTriggerLink) loginTriggerLink.style.display = 'none'; // Esconder link "Login"
+                closeAuthModal(); // Fecha o modal de autenticação se estiver aberto
+            } else { // Usuário está deslogado
+                console.log("Nenhum usuário logado.");
+                if (loggedInUserInfo) loggedInUserInfo.style.display = 'none'; // Esconder info do usuário
+                if (loginTriggerLink) loginTriggerLink.style.display = 'inline-block'; // Mostrar link "Login"
             }
         });
     </script>
