@@ -61,37 +61,7 @@
             <p id="authMessage" class="auth-message"></p>
 
         </section>
-        <nav class="game-selection"> ```
-
-**O que este código HTML faz:**
-
-1.  **`<section class="auth-section">`**: Um container principal para toda a área de autenticação.
-2.  **`<div class="auth-forms-container">`**: Um container para agrupar os formulários, caso queiramos estilizá-los lado a lado depois.
-3.  **Formulário de Registro (`id="formRegistro"`)**:
-    * Campo para o email do usuário (`registroEmail`).
-    * Campo para a senha (`registroSenha`) com um `minlength="6"` (o Firebase exige senhas com pelo menos 6 caracteres).
-    * Campo para confirmar a senha (`registroConfirmaSenha`) para ajudar a evitar erros de digitação.
-    * Botão "Registrar".
-4.  **Formulário de Login (`id="formLogin"`)**:
-    * Campo para o email (`loginEmail`).
-    * Campo para a senha (`loginSenha`).
-    * Botão "Entrar".
-5.  **`<div id="userInfoContainer" style="display: none;">`**:
-    * Uma área que ficará escondida por padrão. Quando o usuário fizer login, vamos usar JavaScript para mostrar esta área.
-    * Ela contém um `<span>` (`userEmailDisplay`) para mostrar o e-mail do usuário logado e um botão `logoutButton` para sair.
-6.  **`<p id="authMessage" class="auth-message"></p>`**: Um parágrafo vazio onde podemos exibir mensagens de erro (ex: "Senha incorreta", "Email já em uso") ou de sucesso usando JavaScript.
-
-**Próximos Passos (após você adicionar este HTML):**
-
-1.  **Salvar `index.html`**: Salve o arquivo com essas adições. Se você abrir no navegador agora, os formulários aparecerão, mas ainda não terão nenhuma funcionalidade e podem parecer um pouco "crus" sem estilo.
-2.  **Estilizar com CSS (Em breve)**: Em seguida, adicionaremos alguns estilos básicos ao seu `style.css` para que esses formulários e a seção de autenticação se encaixem melhor no visual do seu site.
-3.  **Adicionar JavaScript (O principal!)**: Depois do CSS, escreveremos o código JavaScript que vai:
-    * Pegar os dados dos formulários.
-    * Usar o `window.firebaseAuth` (que configuramos no passo anterior) para realmente registrar novos usuários e fazer o login de usuários existentes no Firebase.
-    * Mostrar/esconder a seção `userInfoContainer`.
-    * Exibir mensagens em `authMessage`.
-
-Por enquanto, apenas adicione este HTML ao seu `index.html` e salve o arquivo. Me confirme quando tiver feito isso, e então partiremos para o CSS básico para esses formulários!
+        <nav class="game-selection">
         <nav class="game-selection">
             <h2>Escolha seu Jogo:</h2>
             <ul>
