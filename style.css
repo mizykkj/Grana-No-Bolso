@@ -2,19 +2,19 @@
 
 :root {
     --bg-dark: #121212;
-    --primary-dark: #1a1a1a; /* Um pouco mais claro que o bg para sutil diferenciação */
-    --secondary-dark: #2c2c2c; /* Um pouco mais claro */
+    --primary-dark: #1a1a1a;
+    --secondary-dark: #2c2c2c;
     --accent-color: #00bcd4; /* Ciano */
     --accent-hover: #0097a7;
     --text-light: #e0e0e0;
-    --text-medium: #a0a0a0; /* Ligeiramente mais claro para melhor contraste em alguns casos */
+    --text-medium: #a0a0a0;
     --text-dark: #333;
     --white: #ffffff;
-    --border-color: #383838; /* Borda um pouco mais sutil */
+    --border-color: #383838;
     --shadow-color-soft: rgba(0, 0, 0, 0.2);
     --shadow-color-medium: rgba(0, 0, 0, 0.3);
     --shadow-color-strong: rgba(0, 0, 0, 0.4);
-    --accent-color-rgb: 0, 188, 212; /* Para usar em box-shadow com transparência */
+    --accent-color-rgb: 0, 188, 212;
     --modal-overlay-color: rgba(0, 0, 0, 0.75);
 }
 
@@ -31,10 +31,10 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-light);
     display: flex;
-    flex-direction: column; /* Para alinhar o footer corretamente se o conteúdo for pouco */
-    align-items: center; /* Centraliza o container */
+    flex-direction: column;
+    align-items: center;
     min-height: 100vh;
-    padding: 25px; /* Aumentar um pouco o padding geral */
+    padding: 25px;
 }
 
 body.modal-open {
@@ -44,11 +44,11 @@ body.modal-open {
 .container {
     background-color: var(--primary-dark);
     width: 100%;
-    max-width: 980px; /* Levemente menor para mais "ar" nas laterais em telas grandes */
-    margin: 25px auto; /* Margem consistente */
-    padding: 35px 45px; /* Aumentar padding interno */
-    box-shadow: 0 8px 20px var(--shadow-color-medium); /* Sombra mais suave */
-    border-radius: 10px; /* Borda um pouco menos arredondada, mais "sharp" */
+    max-width: 980px;
+    margin: 25px auto;
+    padding: 35px 45px;
+    box-shadow: 0 8px 20px var(--shadow-color-medium);
+    border-radius: 10px;
     text-align: center;
     border: 1px solid var(--border-color);
     position: relative;
@@ -56,24 +56,24 @@ body.modal-open {
 
 /* --- Header --- */
 header {
-    margin-bottom: 45px; /* Mais espaço após o header */
+    margin-bottom: 45px;
     padding-bottom: 25px;
     border-bottom: 1px solid var(--border-color);
 }
 
 header h1 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 2.6em; /* Levemente menor para não dominar tanto */
+    font-size: 2.6em;
     font-weight: 700;
     color: var(--white);
     margin-bottom: 12px;
-    letter-spacing: -0.5px; /* Espaçamento entre letras mais sutil */
+    letter-spacing: -0.5px;
 }
 
 header p {
-    font-size: 1.05em; /* Um pouco menor e mais sutil */
+    font-size: 1.05em;
     color: var(--text-medium);
-    max-width: 700px; /* Limitar largura do parágrafo */
+    max-width: 700px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -81,8 +81,8 @@ header p {
 /* --- Game Selection --- */
 .game-selection h2 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.7em; /* Um pouco menor */
-    font-weight: 500; /* Menos pesado */
+    font-size: 1.7em;
+    font-weight: 500;
     color: var(--accent-color);
     margin-bottom: 35px;
 }
@@ -92,47 +92,47 @@ header p {
     padding: 0;
     display: flex;
     justify-content: center;
-    gap: 25px; /* Espaçamento entre cards um pouco menor */
+    gap: 25px;
     flex-wrap: wrap;
 }
 
 .game-selection li {
-    flex-basis: 260px; /* Largura base um pouco maior */
+    flex-basis: 260px;
 }
 
 .game-link {
     display: block;
     background-color: var(--secondary-dark);
     color: var(--text-light);
-    padding: 30px 25px; /* Padding ajustado */
+    padding: 30px 25px;
     text-decoration: none;
     border-radius: 8px;
-    font-family: 'Montserrat', sans-serif; /* Fonte do título nos cards */
-    font-size: 1.3em; /* Tamanho da fonte do link */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.3em;
     font-weight: 500;
     text-align: center;
     transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
     border: 1px solid var(--border-color);
-    box-shadow: 0 3px 6px var(--shadow-color-soft); /* Sombra mais sutil */
+    box-shadow: 0 3px 6px var(--shadow-color-soft);
 }
 
 .game-link:hover,
-.game-link:focus { /* Adicionado :focus para acessibilidade */
+.game-link:focus {
     background-color: var(--accent-color);
     color: var(--white);
-    transform: translateY(-4px) scale(1.02); /* Efeito de elevação e leve zoom */
-    box-shadow: 0 6px 12px rgba(var(--accent-color-rgb), 0.25); /* Sombra mais pronunciada no hover */
-    outline: none; /* Remover outline padrão no foco se for customizar */
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 6px 12px rgba(var(--accent-color-rgb), 0.25);
+    outline: none;
 }
 
 /* --- AdSense Area --- */
 .adsense-area {
-    margin: 50px 0; /* Espaçamento vertical ajustado */
+    margin: 50px 0;
     padding: 25px;
     background-color: var(--secondary-dark);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    min-height: 100px; /* Altura mínima pode ser menor */
+    min-height: 100px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -143,7 +143,7 @@ header p {
     margin-top: 0;
     margin-bottom: 10px;
     color: var(--text-medium);
-    font-size: 1.1em; /* Menor */
+    font-size: 1.1em;
     font-weight: 400;
 }
 
@@ -155,19 +155,19 @@ header p {
 
 /* --- Footer --- */
 footer {
-    width: 100%; /* Para ocupar a largura quando body é flex-column */
-    max-width: 980px; /* Mesma largura do container */
-    margin-top: auto; /* Empurra o footer para baixo */
-    padding: 25px 0; /* Padding vertical */
-    font-size: 0.85em; /* Menor */
+    width: 100%;
+    max-width: 980px;
+    margin-top: auto;
+    padding: 25px 0;
+    font-size: 0.85em;
     color: var(--text-medium);
     border-top: 1px solid var(--border-color);
-    text-align: center; /* Garantir centralização */
+    text-align: center;
 }
 
-/* --- Game Page Styles (para snake.html e pong.html) --- */
-.game-page .container { /* Ser mais específico para páginas de jogo */
-    padding-top: 25px; /* Menos padding no topo para dar espaço ao back-link */
+/* --- Game Page Styles --- */
+.game-page .container {
+    padding-top: 25px;
 }
 
 .game-page header {
@@ -177,22 +177,22 @@ footer {
 }
 
 .game-page header h1 {
-    font-size: 2em; /* Menor título nas páginas de jogo */
-    margin-bottom: 0; /* Remover margem inferior se o back-link estiver abaixo */
+    font-size: 2em;
+    margin-bottom: 0;
 }
 
 .back-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px; /* Espaço entre ícone (se houver) e texto */
+    gap: 8px;
     position: absolute;
-    top: -5px; /* Ajustar para ficar acima do padding do container */
-    left: 0px; /* Alinhado à borda do padding do container */
+    top: -5px;
+    left: 0px;
     color: var(--accent-color);
     text-decoration: none;
-    padding: 9px 16px; /* Padding um pouco maior */
+    padding: 9px 16px;
     background-color: var(--secondary-dark);
-    border-radius: 6px; /* Menos arredondado */
+    border-radius: 6px;
     font-size: 0.9em;
     font-weight: 500;
     transition: background-color 0.25s ease, color 0.25s ease;
@@ -207,44 +207,77 @@ footer {
 }
 
 .game-area {
-    margin: 30px 0; /* Espaçamento ajustado */
-    background-color: var(--secondary-dark);
-    padding: 25px;
+    margin: 30px 0;
+    background-color: var(--secondary-dark); /* Pode ser redundante se o canvas cobrir tudo */
+    padding: 15px; /* Padding ao redor do canvas se necessário */
     border-radius: 8px;
     border: 1px solid var(--border-color);
+    /* Para centralizar o canvas se ele for menor que o game-area */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-canvas {
-    border: 2px solid var(--accent-color); /* Borda mais fina */
-    background-color: #0a0a0a; /* Fundo do canvas um pouco diferente do bg-dark */
+.game-area canvas {
+    border: 2px solid var(--accent-color);
+    background-color: #0a0a0a; /* Fundo definido aqui e no JS */
     display: block;
-    margin: 0 auto 20px auto;
+    /* margin: 0 auto 20px auto;  Removido pois o flex do .game-area centraliza */
+    margin-bottom: 20px; /* Espaço para .game-info */
     max-width: 100%;
     height: auto;
     border-radius: 6px;
-    box-shadow: 0 0 12px rgba(var(--accent-color-rgb), 0.2); /* Sombra do canvas mais suave */
+    box-shadow: 0 0 12px rgba(var(--accent-color-rgb), 0.2);
 }
 
-.game-area p {
-    font-size: 1em; /* Tamanho padrão */
-    margin-top: 12px;
+.game-area > p { /* Estilo para as instruções abaixo do canvas/game-info */
+    font-size: 0.95em;
+    margin-top: 10px;
+    color: var(--text-medium);
+    text-align: center;
+}
+.game-area > p strong {
+    color: var(--text-light); /* Destaque para as teclas */
+}
+
+
+/* --- Estilos para Informações do Jogo (Quebra Blocos, etc.) --- */
+.game-info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 90%;
+    max-width: 450px;
+    margin: 0 auto 15px auto; /* Margem abaixo do canvas e antes das instruções */
+    padding: 10px;
+    background-color: var(--primary-dark); /* Um pouco diferente do .game-area para destacar */
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    font-size: 1em;
     color: var(--text-light);
 }
 
-.game-area p strong {
-    color: var(--accent-color);
-    font-weight: 500; /* Peso do strong pode ser 500 se 700 for muito */
+.game-info p {
+    margin: 0 10px;
+    color: var(--text-medium);
 }
+
+.game-info span {
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-left: 5px;
+}
+
 
 /* --- "Sobre" Button (index.html) --- */
 .about-button {
     position: absolute;
-    top: 30px; /* Alinhar melhor com o padding */
-    right: 40px; /* Alinhar melhor com o padding */
-    background-color: transparent; /* Botão mais sutil */
+    top: 30px;
+    right: 40px;
+    background-color: transparent;
     color: var(--text-medium);
     border: 1px solid var(--border-color);
-    padding: 8px 16px; /* Padding ajustado */
+    padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
     font-family: 'Roboto', sans-serif;
@@ -271,13 +304,13 @@ canvas {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow-y: auto; /* Scroll vertical apenas */
+    overflow-y: auto;
     background-color: var(--modal-overlay-color);
     justify-content: center;
     align-items: center;
     padding: 20px;
     opacity: 0;
-    transform: translateY(-20px) scale(0.98); /* Animação mais sutil */
+    transform: translateY(-20px) scale(0.98);
     transition: opacity 0.25s ease-out, transform 0.25s ease-out;
 }
 
@@ -290,12 +323,12 @@ canvas {
     background-color: var(--primary-dark);
     color: var(--text-light);
     margin: auto;
-    padding: 30px 35px; /* Padding interno do modal */
+    padding: 30px 35px;
     border: 1px solid var(--border-color);
     width: 90%;
-    max-width: 600px; /* Modal um pouco mais estreito */
+    max-width: 600px;
     border-radius: 8px;
-    box-shadow: 0 10px 30px var(--shadow-color-strong); /* Sombra mais forte para destacar o modal */
+    box-shadow: 0 10px 30px var(--shadow-color-strong);
     position: relative;
     text-align: left;
 }
@@ -305,16 +338,16 @@ canvas {
     font-weight: 700;
     color: var(--accent-color);
     text-align: center;
-    font-size: 1.7em; /* Título do modal */
+    font-size: 1.7em;
     margin-top: 0;
     margin-bottom: 25px;
 }
 
 .modal-content p {
-    line-height: 1.75; /* Espaçamento entre linhas do parágrafo */
+    line-height: 1.75;
     color: var(--text-medium);
-    margin-bottom: 16px; /* Espaçamento entre parágrafos */
-    font-size: 0.95em; /* Tamanho da fonte do parágrafo */
+    margin-bottom: 16px;
+    font-size: 0.95em;
 }
 
 .modal-content p:last-of-type {
@@ -322,11 +355,11 @@ canvas {
 }
 
 .modal-content strong {
-    color: var(--text-light); /* Strong com mais destaque */
-    font-weight: 500;
+    color: var(--text-light);
+    font-weight: 500; /* No tema escuro, 500 pode ser suficiente para strong */
 }
 
-.modal-content em { /* Assinatura */
+.modal-content em {
     display: block;
     text-align: right;
     color: var(--text-medium);
@@ -336,7 +369,7 @@ canvas {
     font-size: 0.9em;
 }
 
-.inline-link { /* Link do Instagram */
+.inline-link {
     color: var(--accent-color);
     text-decoration: none;
     font-weight: inherit;
@@ -354,20 +387,19 @@ canvas {
     color: inherit;
     font-weight: inherit;
 }
-
 .modal-content em .inline-link {
-    font-weight: 500; /* Peso da fonte para a assinatura */
+    font-weight: 500;
 }
 
 .close-button {
     color: var(--text-medium);
     position: absolute;
-    top: 12px; /* Ajuste posição */
-    right: 15px; /* Ajuste posição */
-    font-size: 28px; /* Tamanho do X */
-    font-weight: 400; /* Menos bold */
+    top: 12px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: 400;
     line-height: 1;
-    padding: 5px; /* Área de clique maior */
+    padding: 5px;
     transition: color 0.2s ease, transform 0.2s ease;
     cursor: pointer;
 }
@@ -375,9 +407,63 @@ canvas {
 .close-button:hover,
 .close-button:focus {
     color: var(--accent-color);
-    transform: scale(1.1); /* Leve aumento no hover */
+    transform: scale(1.1);
     outline: none;
 }
+
+/* --- Estilos para Tela de Nível Completo (Quebra Blocos) --- */
+#levelCompleteScreen {
+    display: none; /* Controlado por JavaScript */
+    position: absolute;
+    /* Posicionado sobre o canvas dentro do .game-area que é relative */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%; /* Largura relativa à area do jogo */
+    max-width: 400px; /* Limite máximo */
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+    padding: 25px 30px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    z-index: 100;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+}
+
+#levelCompleteScreen h2 {
+    color: var(--accent-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5em; /* Ajustado */
+}
+
+#levelCompleteScreen p {
+    margin-bottom: 20px; /* Ajustado */
+    color: var(--text-medium);
+    font-size: 1em; /* Ajustado */
+}
+
+#levelCompleteScreen button {
+    background-color: var(--accent-color);
+    color: var(--white);
+    border: none;
+    padding: 10px 20px; /* Ajustado */
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95em; /* Ajustado */
+    font-weight: 500;
+    transition: background-color 0.25s ease;
+    font-family: 'Roboto', sans-serif;
+}
+
+#levelCompleteScreen button:hover,
+#levelCompleteScreen button:focus {
+    background-color: var(--accent-hover);
+    outline: none;
+}
+
 
 /* --- Responsividade --- */
 @media (max-width: 768px) {
@@ -409,12 +495,12 @@ canvas {
     }
 
     .back-link {
-        position: static; /* Volta ao fluxo normal */
+        position: static;
         display: block;
-        margin: 0 auto 20px auto; /* Centraliza e adiciona margem inferior */
+        margin: 0 auto 20px auto;
         width: fit-content;
     }
-    .game-page header h1 { /* Para não ter tanto espaço quando o back-link vai pra baixo */
+    .game-page header h1 {
         margin-bottom: 15px;
     }
 
@@ -434,6 +520,22 @@ canvas {
     .modal-content h2 {
         font-size: 1.5em;
     }
+
+    #levelCompleteScreen {
+        padding: 20px;
+        width: 90%;
+    }
+    #levelCompleteScreen h2 {
+        font-size: 1.3em;
+    }
+    #levelCompleteScreen p {
+        font-size: 0.9em;
+    }
+    #levelCompleteScreen button {
+        padding: 10px 18px;
+        font-size: 0.9em;
+    }
+
 }
 
 @media (max-width: 480px) {
@@ -482,5 +584,29 @@ canvas {
         top: 8px;
         right: 10px;
         font-size: 26px;
+    }
+
+    .game-info {
+        font-size: 0.9em;
+        padding: 8px;
+        flex-direction: column; /* Empilha para economizar espaço */
+        gap: 5px;
+    }
+    .game-info p { margin: 0;}
+
+    #levelCompleteScreen {
+        padding: 15px;
+        width: 90%;
+    }
+     #levelCompleteScreen h2 {
+        font-size: 1.2em;
+    }
+    #levelCompleteScreen p {
+        font-size: 0.85em;
+        margin-bottom: 15px;
+    }
+    #levelCompleteScreen button {
+        padding: 8px 15px;
+        font-size: 0.85em;
     }
 }
