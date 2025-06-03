@@ -8,6 +8,14 @@
 </head>
 <body>
     <div class="container game-page">
+        <div class="top-page-actions game-page-top-actions">
+            <div id="loggedInUserInfoSnake" style="display: none;">
+                <span id="loggedInUserEmailSnake" class="user-email-display"></span>
+                <a href="#" id="logoutButtonSnake" class="top-nav-link logout-link">Sair</a>
+            </div>
+            <a href="#" id="loginTriggerLinkSnake" class="top-nav-link">Login</a>
+            </div>
+
         <header>
             <a href="index.html" class="back-link">&larr; Voltar para a Página Inicial</a>
             <h1>Jogo da Cobrinha</h1>
@@ -15,7 +23,9 @@
 
         <main class="game-area">
             <button id="startButtonSnake" class="game-start-button">Iniciar Jogo</button>
-            <canvas id="gameCanvas" width="400" height="400" style="display: none;"></canvas> <div id="snakeGameInstructions" style="display: none;"> <p>Use as <strong>Setas Direcionais</strong> para mover a cobrinha!</p>
+            <canvas id="gameCanvas" width="400" height="400" style="display: none;"></canvas>
+            <div id="snakeGameInstructions" style="display: none;">
+                <p>Use as <strong>Setas Direcionais</strong> para mover a cobrinha!</p>
                 <p>Pontuação: <span id="score">0</span></p>
             </div>
         </main>
@@ -28,29 +38,211 @@
         <footer>
             <p>&copy; 2025 Central de Jogos.</p>
         </footer>
+    </div> <div id="authModalSnake" class="modal">
+        <div class="modal-content auth-modal-content">
+            <span class="close-button auth-modal-close-snake">&times;</span>
+
+            <div class="auth-form" id="loginContainerModalSnake">
+                <h3>Acesse sua Conta</h3>
+                <form id="formLoginModalSnake">
+                    <div>
+                        <label for="loginEmailModalSnake">Email:</label>
+                        <input type="email" id="loginEmailModalSnake" name="loginEmailModalSnake" required>
+                    </div>
+                    <div>
+                        <label for="loginSenhaModalSnake">Senha:</label>
+                        <input type="password" id="loginSenhaModalSnake" name="loginSenhaModalSnake" required>
+                    </div>
+                    <button type="submit">Entrar</button>
+                </form>
+                <p class="toggle-form-link">Não possui uma conta? <a href="#" id="switchToRegisterInModalLinkSnake">Crie uma</a></p>
+            </div>
+
+            <div class="auth-form" id="registroContainerModalSnake" style="display: none;">
+                <h3>Crie sua Conta</h3>
+                <form id="formRegistroModalSnake">
+                    <div>
+                        <label for="registroEmailModalSnake">Email:</label>
+                        <input type="email" id="registroEmailModalSnake" name="registroEmailModalSnake" required>
+                    </div>
+                    <div>
+                        <label for="registroSenhaModalSnake">Senha (mínimo 6 caracteres):</label>
+                        <input type="password" id="registroSenhaModalSnake" name="registroSenhaModalSnake" required minlength="6">
+                    </div>
+                    <div>
+                        <label for="registroConfirmaSenhaModalSnake">Confirmar Senha:</label>
+                        <input type="password" id="registroConfirmaSenhaModalSnake" name="registroConfirmaSenhaModalSnake" required minlength="6">
+                    </div>
+                    <button type="submit">Registrar</button>
+                </form>
+                <p class="toggle-form-link">Já possui uma conta? <a href="#" id="switchToLoginInModalLinkSnake">Faça login</a></p>
+            </div>
+            <p id="authMessageModalSnake" class="auth-message"></p>
+        </div>
     </div>
+
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script>
-      // Sua configuração do Firebase (SUBSTITUA PELOS SEUS VALORES REAIS)
       const firebaseConfig = {
-        apiKey: "SUA_API_KEY_REAL",
+        apiKey: "SUA_API_KEY_REAL", // SUBSTITUA PELOS SEUS VALORES REAIS
         authDomain: "SEU_PROJECT_ID.firebaseapp.com",
         projectId: "SEU_PROJECT_ID",
-        storageBucket: "SEU_PROJECT_ID.appspot.com", // Verifique este valor no seu console Firebase
+        storageBucket: "SEU_PROJECT_ID.appspot.com",
         messagingSenderId: "SEU_SENDER_ID",
         appId: "SEU_APP_ID",
-        measurementId: "SEU_MEASUREMENT_ID" // Opcional, se configurado
+        measurementId: "SEU_MEASUREMENT_ID" // Opcional
       };
-
       firebase.initializeApp(firebaseConfig);
-      const auth = firebase.auth();
-      const db = firebase.firestore();
-      window.firebaseAuth = auth;
-      window.firebaseDb = db;
+      const authInstancePage = firebase.auth(); // Instância específica para esta página
+      const dbInstancePage = firebase.firestore(); // Instância específica para esta página
+      window.firebaseAuth = authInstancePage; // Sobrescreve/define globalmente para esta página
+      window.firebaseDb = dbInstancePage;
       console.log("Firebase Compat SDKs carregados e Firebase inicializado em snake.html!");
+    </script>
+
+    <script>
+        // Elementos da UI de Login/Logout no topo DESTA PÁGINA
+        const loginTriggerLinkSnake = document.getElementById('loginTriggerLinkSnake');
+        const loggedInUserInfoSnake = document.getElementById('loggedInUserInfoSnake');
+        const loggedInUserEmailSnakeDisplay = document.getElementById('loggedInUserEmailSnake');
+        const logoutButtonSnake = document.getElementById('logoutButtonSnake');
+
+        // Elementos do Modal de Autenticação DESTA PÁGINA
+        const authModalSnake = document.getElementById('authModalSnake');
+        const authModalCloseBtnSnake = authModalSnake.querySelector('.auth-modal-close-snake');
+
+        const loginContainerModalSnake = document.getElementById('loginContainerModalSnake');
+        const registroContainerModalSnake = document.getElementById('registroContainerModalSnake');
+
+        const formLoginModalSnake = document.getElementById('formLoginModalSnake');
+        const loginEmailModalSnakeInput = document.getElementById('loginEmailModalSnake');
+        const loginSenhaModalSnakeInput = document.getElementById('loginSenhaModalSnake');
+
+        const formRegistroModalSnake = document.getElementById('formRegistroModalSnake');
+        const registroEmailModalSnakeInput = document.getElementById('registroEmailModalSnake');
+        const registroSenhaModalSnakeInput = document.getElementById('registroSenhaModalSnake');
+        const registroConfirmaSenhaModalSnakeInput = document.getElementById('registroConfirmaSenhaModalSnake');
+
+        const switchToRegisterInModalLinkSnake = document.getElementById('switchToRegisterInModalLinkSnake');
+        const switchToLoginInModalLinkSnake = document.getElementById('switchToLoginInModalLinkSnake');
+        const authMessageModalSnake = document.getElementById('authMessageModalSnake');
+
+        function mostrarMensagemAuthModalSnake(mensagem, tipo = 'error') {
+            authMessageModalSnake.textContent = mensagem;
+            authMessageModalSnake.className = 'auth-message ';
+            if (tipo === 'success') authMessageModalSnake.classList.add('success');
+            else authMessageModalSnake.classList.add('error');
+        }
+
+        function openAuthModalSnake(view = 'login') {
+            if (view === 'login') {
+                loginContainerModalSnake.style.display = 'block';
+                registroContainerModalSnake.style.display = 'none';
+            } else {
+                loginContainerModalSnake.style.display = 'none';
+                registroContainerModalSnake.style.display = 'block';
+            }
+            authMessageModalSnake.textContent = '';
+            authMessageModalSnake.className = 'auth-message';
+            authModalSnake.style.display = 'flex';
+            setTimeout(() => { authModalSnake.classList.add('modal-visible'); }, 10);
+            document.body.classList.add('modal-open');
+        }
+
+        function closeAuthModalSnake() {
+            authModalSnake.classList.remove('modal-visible');
+            document.body.classList.remove('modal-open');
+            setTimeout(() => {
+                if (!authModalSnake.classList.contains('modal-visible')) {
+                    authModalSnake.style.display = 'none';
+                }
+            }, 300);
+        }
+
+        if (loginTriggerLinkSnake) {
+            loginTriggerLinkSnake.addEventListener('click', (e) => {
+                e.preventDefault();
+                openAuthModalSnake('login');
+            });
+        }
+        if (authModalCloseBtnSnake) authModalCloseBtnSnake.onclick = closeAuthModalSnake;
+        
+        window.addEventListener('click', function(event) {
+            if (event.target == authModalSnake) {
+                closeAuthModalSnake();
+            }
+        });
+
+        if (switchToRegisterInModalLinkSnake) {
+            switchToRegisterInModalLinkSnake.addEventListener('click', (e) => { e.preventDefault(); openAuthModalSnake('register'); });
+        }
+        if (switchToLoginInModalLinkSnake) {
+            switchToLoginInModalLinkSnake.addEventListener('click', (e) => { e.preventDefault(); openAuthModalSnake('login'); });
+        }
+
+        if (formRegistroModalSnake) {
+            formRegistroModalSnake.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = registroEmailModalSnakeInput.value;
+                const senha = registroSenhaModalSnakeInput.value;
+                const confirmaSenha = registroConfirmaSenhaModalSnakeInput.value;
+                if (senha.length < 6) { mostrarMensagemAuthModalSnake('A senha precisa ter no mínimo 6 caracteres.'); return; }
+                if (senha !== confirmaSenha) { mostrarMensagemAuthModalSnake('As senhas não coincidem!'); return; }
+                try {
+                    await window.firebaseAuth.createUserWithEmailAndPassword(email, senha);
+                    formRegistroModalSnake.reset();
+                    // onAuthStateChanged vai fechar o modal e atualizar a UI
+                } catch (error) {
+                    if (error.code === 'auth/email-already-in-use') mostrarMensagemAuthModalSnake('Este email já está em uso.');
+                    else if (error.code === 'auth/weak-password') mostrarMensagemAuthModalSnake('Senha muito fraca.');
+                    else mostrarMensagemAuthModalSnake('Erro ao registrar: ' + error.message.replace('Firebase: ',''));
+                }
+            });
+        }
+
+        if (formLoginModalSnake) {
+            formLoginModalSnake.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = loginEmailModalSnakeInput.value;
+                const senha = loginSenhaModalSnakeInput.value;
+                try {
+                    await window.firebaseAuth.signInWithEmailAndPassword(email, senha);
+                    formLoginModalSnake.reset();
+                    // onAuthStateChanged vai fechar o modal e atualizar a UI
+                } catch (error) {
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') {
+                        mostrarMensagemAuthModalSnake('Email ou senha inválidos.');
+                    } else {
+                        mostrarMensagemAuthModalSnake('Erro ao fazer login: ' + error.message.replace('Firebase: ',''));
+                    }
+                }
+            });
+        }
+
+        if (logoutButtonSnake) {
+            logoutButtonSnake.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    await window.firebaseAuth.signOut();
+                } catch (error) { console.error("Erro no logout:", error); }
+            });
+        }
+
+        // Observador do estado de autenticação PARA ESTA PÁGINA (snake.html)
+        window.firebaseAuth.onAuthStateChanged(user => {
+            if (user) {
+                if (loggedInUserInfoSnake) loggedInUserInfoSnake.style.display = 'flex';
+                if (loggedInUserEmailSnakeDisplay) loggedInUserEmailSnakeDisplay.textContent = user.email;
+                if (loginTriggerLinkSnake) loginTriggerLinkSnake.style.display = 'none';
+                closeAuthModalSnake(); // Fecha o modal de autenticação se estiver aberto
+            } else {
+                if (loggedInUserInfoSnake) loggedInUserInfoSnake.style.display = 'none';
+                if (loginTriggerLinkSnake) loginTriggerLinkSnake.style.display = 'inline-block';
+            }
+        });
     </script>
 
     <script src="snake.js"></script>
