@@ -15,7 +15,8 @@
             <h1>Bem-vindo à Central de Jogos!</h1>
             <p>Escolha um dos nossos jogos clássicos para se divertir.</p>
         </header>
-    </header> <section class="auth-section">
+
+        <section class="auth-section">
             <div class="auth-forms-container">
 
                 <div class="auth-form" id="registroContainer">
@@ -23,15 +24,15 @@
                     <form id="formRegistro">
                         <div>
                             <label for="registroEmail">Email:</label>
-                            <input type="email" id="registroEmail" required>
+                            <input type="email" id="registroEmail" name="registroEmail" required>
                         </div>
                         <div>
                             <label for="registroSenha">Senha (mínimo 6 caracteres):</label>
-                            <input type="password" id="registroSenha" required minlength="6">
+                            <input type="password" id="registroSenha" name="registroSenha" required minlength="6">
                         </div>
                         <div>
                             <label for="registroConfirmaSenha">Confirmar Senha:</label>
-                            <input type="password" id="registroConfirmaSenha" required minlength="6">
+                            <input type="password" id="registroConfirmaSenha" name="registroConfirmaSenha" required minlength="6">
                         </div>
                         <button type="submit">Registrar</button>
                     </form>
@@ -42,11 +43,11 @@
                     <form id="formLogin">
                         <div>
                             <label for="loginEmail">Email:</label>
-                            <input type="email" id="loginEmail" required>
+                            <input type="email" id="loginEmail" name="loginEmail" required>
                         </div>
                         <div>
                             <label for="loginSenha">Senha:</label>
-                            <input type="password" id="loginSenha" required>
+                            <input type="password" id="loginSenha" name="loginSenha" required>
                         </div>
                         <button type="submit">Entrar</button>
                     </form>
@@ -62,13 +63,13 @@
 
         </section>
         <nav class="game-selection">
-        <nav class="game-selection">
             <h2>Escolha seu Jogo:</h2>
             <ul>
                 <li><a href="snake.html" class="game-link">Jogo da Cobrinha</a></li>
                 <li><a href="pong.html" class="game-link">Pong Clássico</a></li>
                 <li><a href="quebra_blocos.html" class="game-link">Quebra Blocos</a></li>
-            </ul> </nav>
+            </ul>
+        </nav>
 
         <section class="adsense-area">
             <h2>Anúncios</h2>
@@ -78,9 +79,7 @@
         <footer>
             <p>&copy; 2025 Central de Jogos - Todos os direitos reservados.</p>
         </footer>
-    </div>
-
-    <div id="aboutModal" class="modal">
+    </div> <div id="aboutModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Sobre a Central de Jogos</h2>
@@ -127,36 +126,34 @@
     <script type="module">
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-      // import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js"; // Mantenha se for usar o Analytics
+      // import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js"; // Descomente se for usar o Analytics
 
-      // ===== ADIÇÕES IMPORTANTES PARA LOGIN E RANKING =====
+      // Imports para Autenticação e Banco de Dados (Firestore)
       import { getAuth } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
       import { getFirestore } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-      // =====================================================
 
-      // Your web app's Firebase configuration
-      // (Use exatamente a configuração que o Firebase te deu)
+      // Sua configuração do Firebase (use os valores REAIS do seu projeto)
       const firebaseConfig = {
-        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SEU VALOR REAL
-        authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SEU VALOR REAL
-        projectId: "central-de-jogos-4bdf1", // SEU VALOR REAL
+        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA PELO SEU VALOR REAL
+        authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA PELO SEU VALOR REAL
+        projectId: "central-de-jogos-4bdf1", // SUBSTITUA PELO SEU VALOR REAL
         storageBucket: "central-de-jogos-4bdf1.appspot.com", // VERIFIQUE ESTE VALOR NO SEU CONSOLE FIREBASE (geralmente termina com .appspot.com)
-        messagingSenderId: "552827412845", // SEU VALOR REAL
-        appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SEU VALOR REAL
-        measurementId: "G-RDL4Y8ELKQ" // SEU VALOR REAL (opcional)
+        messagingSenderId: "552827412845", // SUBSTITUA PELO SEU VALOR REAL
+        appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SUBSTITUA PELO SEU VALOR REAL
+        measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA PELO SEU VALOR REAL (opcional se não usar Analytics)
       };
 
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
-      // const analytics = getAnalytics(app); // Descomente se for usar o Analytics
+      // const analytics = getAnalytics(app); // Descomente se for usar o Analytics e importou o getAnalytics
 
-      // ===== INICIALIZAR AUTH E FIRESTORE E TORNAR GLOBAIS (para simplificar) =====
+      // Inicializar os serviços de Autenticação e Firestore
       const auth = getAuth(app);
       const db = getFirestore(app);
 
-      window.firebaseAuth = auth; // Para usar em outros scripts
-      window.firebaseDb = db;   // Para usar em outros scripts
-      // =======================================================================
+      // Tornar 'auth' e 'db' acessíveis globalmente para simplificar os próximos scripts
+      window.firebaseAuth = auth;
+      window.firebaseDb = db;
 
       console.log("Firebase Modular SDK inicializado com Auth e Firestore!");
     </script>
