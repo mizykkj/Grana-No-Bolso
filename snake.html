@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo da Cobrinha - Central de Jogos</title>
     <link rel="stylesheet" href="style.css"> </head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9402908836616610"
-     crossorigin="anonymous"></script>
 <body>
-    <div class="container game-page"> <header>
+    <div class="container game-page">
+        <header>
             <a href="index.html" class="back-link">&larr; Voltar para a Página Inicial</a>
             <h1>Jogo da Cobrinha</h1>
         </header>
@@ -27,5 +26,35 @@
         <footer>
             <p>&copy; 2025 Central de Jogos.</p> </footer>
     </div>
-    <script src="snake.js"></script> </body>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script>
+      // Sua configuração do Firebase (SUBSTITUA PELOS SEUS VALORES REAIS)
+      const firebaseConfig = {
+        apiKey: "SUA_API_KEY_REAL",
+        authDomain: "SEU_PROJECT_ID.firebaseapp.com",
+        projectId: "SEU_PROJECT_ID",
+        storageBucket: "SEU_PROJECT_ID.appspot.com", // Verifique este valor no seu console Firebase
+        messagingSenderId: "SEU_SENDER_ID",
+        appId: "SEU_APP_ID",
+        measurementId: "SEU_MEASUREMENT_ID" // Opcional, se configurado
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      // Disponibilizar instâncias para uso no snake.js
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      window.firebaseAuth = auth;
+      window.firebaseDb = db;
+
+      console.log("Firebase Compat SDKs carregados e Firebase inicializado em snake.html!");
+    </script>
+
+    <script src="snake.js"></script>
+</body>
 </html>
