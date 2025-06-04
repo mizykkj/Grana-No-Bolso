@@ -1,4 +1,4 @@
-// snake.js - ATUALIZADO para Firebase compat e salvar Username na pontuação
+// snake.js - ATUALIZADO para salvar username em 'highscores'
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
@@ -9,28 +9,26 @@ const gridSize = 20;
 let snake, food, direction, currentScore, changingDirection, gameLoopTimeout;
 let gameSpeed = 100;
 
-let snakeGameCurrentUser = null; // Armazena o objeto user do Auth
-let snakeGameUsername = null;    // Armazena o username do Firestore
+let snakeGameCurrentUser = null;
+let snakeGameUsername = null;
 
-// Este onAuthStateChanged é crucial para esta página
 if (window.firebaseAuth && window.firebaseDb) {
-    window.firebaseAuth.onAuthStateChanged(async user => { // Tornar async para buscar username
+    window.firebaseAuth.onAuthStateChanged(async user => {
         if (user) {
             console.log("Snake.js - onAuthStateChanged: Usuário LOGADO:", user.email);
             snakeGameCurrentUser = user;
-            // Buscar o username do Firestore
             try {
                 const userDoc = await window.firebaseDb.collection("usuarios").doc(user.uid).get();
                 if (userDoc.exists) {
                     snakeGameUsername = userDoc.data().username;
                     console.log("Snake.js - Username obtido para o jogo:", snakeGameUsername);
                 } else {
-                    console.log("Snake.js - Documento de usuário não encontrado no Firestore. Usando email como fallback para username no jogo.");
-                    snakeGameUsername = user.email; // Fallback se o documento de usuário não existir
+                    console.log("Snake.js - Documento de usuário não encontrado no Firestore. Usando email como fallback.");
+                    snakeGameUsername = user.email; 
                 }
             } catch (error) {
                 console.error("Snake.js - Erro ao buscar username do Firestore:", error);
-                snakeGameUsername = user.email; // Fallback em caso de erro
+                snakeGameUsername = user.email; 
             }
         } else {
             console.log("Snake.js - onAuthStateChanged: Usuário DESLOGADO.");
@@ -57,26 +55,36 @@ function startGame() {
 
 if (startButtonSnake) startButtonSnake.addEventListener('click', startGame);
 
-async function saveScoreToFirestore(gameScore) {
-    console.log("SaveScore: snakeGameCurrentUser:", snakeGameCurrentUser);
-    console.log("SaveScore: snakeGameUsername:", snakeGameUsername);
+async function saveScoreToFirestore(newScore) {
+    console.log("SaveScore (snake.js): Tentando salvar highscore. User:", snakeGameCurrentUser, "Username:", snakeGameUsername, "New Score:", newScore);
 
     if (snakeGameCurrentUser && window.firebaseDb) {
+        const userId = snakeGameCurrentUser.uid;
+        const gameId = "snake";
+        const usernameToSave = snakeGameUsername || snakeGameCurrentUser.email; 
+
+        const highScoreDocId = `${userId}_${gameId}`;
+        const highScoreRef = window.firebaseDb.collection("highscores").doc(highScoreDocId);
+
         try {
-            await window.firebaseDb.collection("pontuacoes").add({
-                userId: snakeGameCurrentUser.uid,
-                userEmail: snakeGameCurrentUser.email, // Email do Auth
-                username: snakeGameUsername || snakeGameCurrentUser.email, // Username do Firestore, ou email como fallback
-                gameId: "snake",
-                score: gameScore,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            console.log("Pontuação salva com sucesso no Firestore! Score: " + gameScore + " por " + (snakeGameUsername || snakeGameCurrentUser.email));
+            const docSnap = await highScoreRef.get();
+            if (!docSnap.exists || newScore > docSnap.data().score) {
+                await highScoreRef.set({
+                    userId: userId,
+                    username: usernameToSave,
+                    gameId: gameId,
+                    score: newScore,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log(`Highscore salvo/atualizado para ${gameId}: ${newScore} por ${usernameToSave}`);
+            } else {
+                console.log(`Nova pontuação (${newScore}) não é maior que o highscore existente (${docSnap.data().score}) para ${gameId}. Nada salvo.`);
+            }
         } catch (error) {
-            console.error("Erro ao salvar pontuação no Firestore (snake.js): ", error);
+            console.error("Erro ao salvar/atualizar highscore no Firestore (snake.js): ", error);
         }
     } else {
-        if (!snakeGameCurrentUser) console.log("Nenhum usuário logado (snakeGameCurrentUser é null). Pontuação não salva.");
+        if (!snakeGameCurrentUser) console.log("Nenhum usuário logado (snakeGameCurrentUser é null). Highscore não será salvo.");
         else console.log("Instância do Firestore (window.firebaseDb) não disponível em snake.js.");
     }
 }
@@ -96,7 +104,6 @@ function main() {
     }, gameSpeed);
 }
 
-// ... (resto das funções do jogo da cobrinha: clearCanvas, drawSnakePart, etc. IGUAIS às da última versão) ...
 function clearCanvas() { ctx.fillStyle = '#0a0a0a'; ctx.strokeStyle = '#383838'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.strokeRect(0, 0, canvas.width, canvas.height); }
 function drawSnakePart(snakePart) { ctx.fillStyle = 'lightgreen'; ctx.strokeStyle = 'darkgreen'; ctx.fillRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize); ctx.strokeRect(snakePart.x * gridSize, snakePart.y * gridSize, gridSize, gridSize); }
 function drawSnake() { snake.forEach(drawSnakePart); }
