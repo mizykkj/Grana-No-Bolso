@@ -5,21 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pong Clássico - Central de Jogos</title>
     <link rel="stylesheet" href="style.css">
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9402908836616610"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9402908836616610"
+         crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container game-page">
+        <div class="game-page-header-actions">
+            <a href="index.html" class="back-link">&larr; Voltar para a Página Inicial</a>
+            <div class="top-right-actions">
+                <div id="loggedInUserInfoPong" style="display: none;">
+                    <span id="loggedInUserDisplayPong" class="user-email-display"></span>
+                    <a href="#" id="logoutButtonPong" class="top-nav-link logout-link">Sair</a>
+                </div>
+                <a href="#" id="loginTriggerLinkPong" class="top-nav-link">Login</a>
+            </div>
+        </div>
+
         <header>
             <h1>Pong Clássico</h1>
-            <a href="index.html" class="back-link">&larr; Voltar para a Página Inicial</a>
         </header>
 
         <main class="game-area">
-            <canvas id="gameCanvas" width="600" height="400"></canvas>
-            <p>Jogador 1 (Esquerda): <strong>W</strong> (Cima) e <strong>S</strong> (Baixo)</p>
-            <p>Jogador 2 (Direita): <strong>Seta Cima</strong> e <strong>Seta Baixo</strong></p>
-            <p>Pontuação: <span id="player1Score">0</span> - <span id="player2Score">0</span></p>
+            <button id="startButtonPong" class="game-start-button">Iniciar Jogo</button>
+            <div id="pongPreGameMessages" style="display: block;"> <p class="game-start-message">Use W/S (Jogador 1) e Setas Cima/Baixo (Jogador 2).</p>
+                 <p class="game-start-message">Primeiro a fazer 5 pontos vence!</p>
+            </div>
+            <canvas id="gameCanvas" width="600" height="400" style="display: none;"></canvas> <div id="pongGameInfo" class="game-info-bar" style="display: none;"> <p>Jogador 1: <span id="player1Score">0</span></p>
+                <p>Jogador 2: <span id="player2Score">0</span></p>
+            </div>
         </main>
 
         <section class="adsense-area">
@@ -30,7 +43,116 @@
         <footer>
             <p>&copy; 2025 Central de Jogos.</p>
         </footer>
+    </div> <div id="authModalPong" class="modal">
+        <div class="modal-content auth-modal-content">
+            <span class="close-button auth-modal-close-pong">&times;</span>
+            <div class="auth-form" id="loginContainerModalPong">
+                <h3>Acesse sua Conta</h3>
+                <form id="formLoginModalPong">
+                    <div><label for="loginEmailModalPong">Email:</label><input type="email" id="loginEmailModalPong" required></div>
+                    <div><label for="loginSenhaModalPong">Senha:</label><input type="password" id="loginSenhaModalPong" required></div>
+                    <button type="submit">Entrar</button>
+                </form>
+                <p class="toggle-form-link">Não possui uma conta? <a href="#" id="switchToRegisterInModalLinkPong">Crie uma</a></p>
+            </div>
+            <div class="auth-form" id="registroContainerModalPong" style="display: none;">
+                <h3>Crie sua Conta</h3>
+                <form id="formRegistroModalPong">
+                    <div><label for="registroUsernameModalPong">Nome de Usuário (3-20 caracteres):</label><input type="text" id="registroUsernameModalPong" required minlength="3" maxlength="20" pattern="^[a-zA-Z0-9_]+$"></div>
+                    <div><label for="registroEmailModalPong">Email:</label><input type="email" id="registroEmailModalPong" required></div>
+                    <div><label for="registroSenhaModalPong">Senha (mín. 6 caracteres):</label><input type="password" id="registroSenhaModalPong" required minlength="6"></div>
+                    <div><label for="registroConfirmaSenhaModalPong">Confirmar Senha:</label><input type="password" id="registroConfirmaSenhaModalPong" required minlength="6"></div>
+                    <button type="submit">Registrar</button>
+                </form>
+                <p class="toggle-form-link">Já possui uma conta? <a href="#" id="switchToLoginInModalLinkPong">Faça login</a></p>
+            </div>
+            <p id="authMessageModalPong" class="auth-message"></p>
+        </div>
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script>
+      // SUA CONFIGURAÇÃO DO FIREBASE - VERIFIQUE E USE OS SEUS VALORES REAIS!
+      const firebaseConfig = {
+   apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA
+        authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA
+        projectId: "central-de-jogos-4bdf1", // SUBSTITUA
+        storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR
+        messagingSenderId: "552827412845", // SUBSTITUA
+        appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SUBSTITUA
+        measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA (opcional)
+      };
+      firebase.initializeApp(firebaseConfig);
+      window.firebaseAuth = firebase.auth();
+      window.firebaseDb = firebase.firestore();
+      console.log("Firebase Compat SDKs carregados e Firebase inicializado em pong.html!");
+    </script>
+
+    <script>
+        (function() { // IIFE
+            if (!window.firebaseAuth || !window.firebaseDb) { console.error("Firebase não pronto em pong.html UI script."); return; }
+            const auth = window.firebaseAuth; const db = window.firebaseDb;
+
+            const loginTriggerLinkPong = document.getElementById('loginTriggerLinkPong');
+            const loggedInUserInfoPong = document.getElementById('loggedInUserInfoPong');
+            const loggedInUserDisplayPong = document.getElementById('loggedInUserDisplayPong');
+            const logoutButtonPong = document.getElementById('logoutButtonPong');
+            const authModalPong = document.getElementById('authModalPong');
+            const authModalCloseBtnPong = authModalPong ? authModalPong.querySelector('.auth-modal-close-pong') : null;
+            // ... (todos os outros seletores para os forms e links do modal #authModalPong, com sufixo Pong nos IDs)
+
+            // Copie e adapte as funções mostrarMensagemAuthModal, openAuthModal, closeAuthModal
+            // E os event listeners dos formulários e links de alternância do index.html ou snake.html,
+            // Ajustando os IDs para os do #authModalPong (ex: formLoginModalPong, loginEmailModalPongInput, etc.)
+            // E a função onAuthStateChanged para atualizar loggedInUserInfoPong e loginTriggerLinkPong.
+            // Por brevidade, não vou repetir todo esse script de UI do modal aqui, mas ele é NECESSÁRIO.
+            // Certifique-se de que a lógica de registro também chama db.collection("usuarios").doc(user.uid).set(...)
+
+            // Exemplo simplificado do onAuthStateChanged para esta página:
+             if (auth) { // Verifica se auth foi inicializado
+                auth.onAuthStateChanged(async user => {
+                    if (user) {
+                        if (loggedInUserInfoPong) loggedInUserInfoPong.style.display = 'flex';
+                        if (loginTriggerLinkPong) loginTriggerLinkPong.style.display = 'none';
+                        try {
+                            const userDoc = await db.collection("usuarios").doc(user.uid).get();
+                            if (userDoc.exists && userDoc.data().username) {
+                                if (loggedInUserDisplayPong) loggedInUserDisplayPong.textContent = `Olá, ${userDoc.data().username}!`;
+                            } else {
+                                if (loggedInUserDisplayPong) loggedInUserDisplayPong.textContent = user.email;
+                            }
+                        } catch (error) {
+                            console.error("Erro ao buscar username para UI em pong.html:", error);
+                            if (loggedInUserDisplayPong) loggedInUserDisplayPong.textContent = user.email;
+                        }
+                         // Fechar modal de auth se estiver aberto
+                        const activeAuthModal = document.getElementById('authModalPong'); // Use o ID correto
+                        if(activeAuthModal && activeAuthModal.classList.contains('modal-visible')) {
+                            // Chame sua função closeAuthModalPong() aqui se ela estiver definida
+                            activeAuthModal.classList.remove('modal-visible');
+                            document.body.classList.remove('modal-open');
+                            setTimeout(() => {
+                                if (!activeAuthModal.classList.contains('modal-visible')) {
+                                    activeAuthModal.style.display = 'none';
+                                }
+                            }, 300);
+                        }
+                    } else {
+                        if (loggedInUserInfoPong) loggedInUserInfoPong.style.display = 'none';
+                        if (loginTriggerLinkPong) loginTriggerLinkPong.style.display = 'inline-block';
+                    }
+                });
+            }
+            // COLE AQUI A LÓGICA COMPLETA DO MODAL DE AUTENTICAÇÃO ADAPTADA PARA OS IDs DO PONG
+            // (Funções openAuthModalPong, closeAuthModalPong, listeners para formLoginModalPong, formRegistroModalPong, etc.)
+            // É essencialmente o mesmo script de UI de auth que está no index.html e snake.html,
+            // mas usando os IDs com sufixo "Pong".
+
+        })();
+    </script>
+
     <script src="pong.js"></script>
 </body>
 </html>
