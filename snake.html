@@ -20,11 +20,7 @@
                 <a href="#" id="loginTriggerLinkSnake" class="top-nav-link">Login</a>
             </div>
         </div>
-
-        <header>
-            <h1>Jogo da Cobrinha</h1>
-        </header>
-
+        <header><h1>Jogo da Cobrinha</h1></header>
         <main class="game-area">
             <button id="startButtonSnake" class="game-start-button">Iniciar Jogo</button>
             <canvas id="gameCanvas" width="400" height="400" style="display: none;"></canvas>
@@ -33,16 +29,11 @@
                 <p>Pontuação: <span id="score">0</span></p>
             </div>
         </main>
+        <section class="adsense-area"><h2>Anúncios</h2><p>Espaço reservado para anúncios.</p></section>
+        <footer><p>&copy; 2025 Central de Jogos.</p></footer>
+    </div>
 
-        <section class="adsense-area">
-            <h2>Anúncios</h2>
-            <p>Espaço reservado para anúncios.</p>
-        </section>
-
-        <footer>
-            <p>&copy; 2025 Central de Jogos.</p>
-        </footer>
-    </div> <div id="authModalSnake" class="modal">
+    <div id="authModalSnake" class="modal">
         <div class="modal-content auth-modal-content">
             <span class="close-button auth-modal-close-snake">&times;</span>
             <div class="auth-form" id="loginContainerModalSnake">
@@ -57,6 +48,9 @@
             <div class="auth-form" id="registroContainerModalSnake" style="display: none;">
                 <h3>Crie sua Conta</h3>
                 <form id="formRegistroModalSnake">
+                    <div> <label for="registroUsernameModalSnake">Nome de Usuário (3-20 caracteres):</label>
+                        <input type="text" id="registroUsernameModalSnake" name="registroUsernameModalSnake" required minlength="3" maxlength="20" pattern="^[a-zA-Z0-9_]+$">
+                    </div>
                     <div><label for="registroEmailModalSnake">Email:</label><input type="email" id="registroEmailModalSnake" required></div>
                     <div><label for="registroSenhaModalSnake">Senha (mín. 6 caracteres):</label><input type="password" id="registroSenhaModalSnake" required minlength="6"></div>
                     <div><label for="registroConfirmaSenhaModalSnake">Confirmar Senha:</label><input type="password" id="registroConfirmaSenhaModalSnake" required minlength="6"></div>
@@ -68,54 +62,44 @@
         </div>
     </div>
 
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-      import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-      import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-
-      const firebaseConfig = {
-    apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU",
-    authDomain: "central-de-jogos-4bdf1.firebaseapp.com",
-    projectId: "central-de-jogos-4bdf1",
-    storageBucket: "central-de-jogos-4bdf1.firebasestorage.app",
-    messagingSenderId: "552827412845",
-    appId: "1:552827412845:web:57af946ce0b1a53a113a64",
-    measurementId: "G-RDL4Y8ELKQ"
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script>
+      const firebaseConfig = { /* SEUS DADOS REAIS AQUI */
+        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU",
+        authDomain: "central-de-jogos-4bdf1.firebaseapp.com",
+        projectId: "central-de-jogos-4bdf1",
+        storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR
+        messagingSenderId: "552827412845",
+        appId: "1:552827412845:web:57af946ce0b1a53a113a64",
+        measurementId: "G-RDL4Y8ELKQ"
       };
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-      console.log("Firebase Modular SDK inicializado (Auth e Firestore prontos) em snake.html!");
-      window.firebaseAppInstance = app;
-      window.firebaseAuthInstance = auth;
-      window.firebaseDbInstance = db;
-      window.fbCreateUser = (email, password) => createUserWithEmailAndPassword(auth, email, password);
-      window.fbSignIn = (email, password) => signInWithEmailAndPassword(auth, email, password);
-      window.fbSignOut = () => signOut(auth);
-      window.fbOnAuthStateChanged = (callback) => onAuthStateChanged(auth, callback);
-      window.fbAddDoc = (collectionName, data) => addDoc(collection(db, collectionName), data);
-      window.fbServerTimestamp = () => serverTimestamp();
-      window.dispatchEvent(new CustomEvent('firebaseReady')); // AVISA QUE O FIREBASE ESTÁ PRONTO
-      console.log("'firebaseReady' event dispatched from snake.html!");
+      firebase.initializeApp(firebaseConfig);
+      window.firebaseAuth = firebase.auth(); // Definindo global para esta página
+      window.firebaseDb = firebase.firestore(); // Definindo global para esta página
+      console.log("Firebase Compat SDKs carregados e Firebase inicializado em snake.html!");
     </script>
 
-    <script>
-        window.addEventListener('firebaseReady', () => {
-            console.log("Evento 'firebaseReady' recebido no script de UI Auth do snake.html!");
-            const authInstanceForSnakeUI = window.firebaseAuthInstance;
+    <script> // Lógica de Autenticação para snake.html
+        (function() { // IIFE
+            if (!window.firebaseAuth) { console.error("Firebase Auth não está pronto no snake.html UI script."); return; }
+            const auth = window.firebaseAuth;
+            const db = window.firebaseDb;
 
             const loginTriggerLinkSnake = document.getElementById('loginTriggerLinkSnake');
             const loggedInUserInfoSnake = document.getElementById('loggedInUserInfoSnake');
             const loggedInUserEmailSnakeDisplay = document.getElementById('loggedInUserEmailSnake');
             const logoutButtonSnake = document.getElementById('logoutButtonSnake');
             const authModalSnake = document.getElementById('authModalSnake');
-            const authModalCloseBtnSnake = authModalSnake.querySelector('.auth-modal-close-snake');
+            const authModalCloseBtnSnake = authModalSnake ? authModalSnake.querySelector('.auth-modal-close-snake') : null;
             const loginContainerModalSnake = document.getElementById('loginContainerModalSnake');
             const registroContainerModalSnake = document.getElementById('registroContainerModalSnake');
             const formLoginModalSnake = document.getElementById('formLoginModalSnake');
             const loginEmailModalSnakeInput = document.getElementById('loginEmailModalSnake');
             const loginSenhaModalSnakeInput = document.getElementById('loginSenhaModalSnake');
             const formRegistroModalSnake = document.getElementById('formRegistroModalSnake');
+            const registroUsernameModalSnakeInput = document.getElementById('registroUsernameModalSnake'); // NOVO
             const registroEmailModalSnakeInput = document.getElementById('registroEmailModalSnake');
             const registroSenhaModalSnakeInput = document.getElementById('registroSenhaModalSnake');
             const registroConfirmaSenhaModalSnakeInput = document.getElementById('registroConfirmaSenhaModalSnake');
@@ -123,72 +107,76 @@
             const switchToLoginInModalLinkSnake = document.getElementById('switchToLoginInModalLinkSnake');
             const authMessageModalSnake = document.getElementById('authMessageModalSnake');
 
-            function mostrarMensagemAuthModalSnake(mensagem, tipo = 'error') { /* ... (código da função) ... */
-                authMessageModalSnake.textContent = mensagem;
-                authMessageModalSnake.className = 'auth-message ';
-                if (tipo === 'success') authMessageModalSnake.classList.add('success'); else authMessageModalSnake.classList.add('error');
-            }
-            function openAuthModalSnake(view = 'login') { /* ... (código da função) ... */
-                if (view === 'login') { loginContainerModalSnake.style.display = 'block'; registroContainerModalSnake.style.display = 'none';}
-                else { loginContainerModalSnake.style.display = 'none'; registroContainerModalSnake.style.display = 'block'; }
-                authMessageModalSnake.textContent = ''; authMessageModalSnake.className = 'auth-message';
-                authModalSnake.style.display = 'flex';
-                setTimeout(() => { authModalSnake.classList.add('modal-visible'); }, 10);
-                document.body.classList.add('modal-open');
-            }
-            function closeAuthModalSnake() { /* ... (código da função) ... */
-                authModalSnake.classList.remove('modal-visible');
-                document.body.classList.remove('modal-open');
-                setTimeout(() => { if (!authModalSnake.classList.contains('modal-visible')) { authModalSnake.style.display = 'none';}}, 300);
-            }
+            function mostrarMensagemAuthModalSnake(mensagem, tipo = 'error') { if (!authMessageModalSnake) return; authMessageModalSnake.textContent = mensagem; authMessageModalSnake.className = 'auth-message '; if (tipo === 'success') authMessageModalSnake.classList.add('success'); else authMessageModalSnake.classList.add('error');}
+            function openAuthModalSnake(view = 'login') { if (!authModalSnake || !loginContainerModalSnake || !registroContainerModalSnake) return; if (view === 'login') { loginContainerModalSnake.style.display = 'block'; registroContainerModalSnake.style.display = 'none'; } else { loginContainerModalSnake.style.display = 'none'; registroContainerModalSnake.style.display = 'block'; } if (authMessageModalSnake) { authMessageModalSnake.textContent = ''; authMessageModalSnake.className = 'auth-message'; } authModalSnake.style.display = 'flex'; setTimeout(() => { authModalSnake.classList.add('modal-visible'); }, 10); document.body.classList.add('modal-open');}
+            function closeAuthModalSnake() { if (!authModalSnake) return; authModalSnake.classList.remove('modal-visible'); document.body.classList.remove('modal-open'); setTimeout(() => { if (!authModalSnake.classList.contains('modal-visible')) { authModalSnake.style.display = 'none'; }}, 300);}
 
             if (loginTriggerLinkSnake) loginTriggerLinkSnake.addEventListener('click', (e) => { e.preventDefault(); openAuthModalSnake('login'); });
             if (authModalCloseBtnSnake) authModalCloseBtnSnake.onclick = closeAuthModalSnake;
             window.addEventListener('click', function(event) { if (event.target == authModalSnake) closeAuthModalSnake(); });
             if (switchToRegisterInModalLinkSnake) switchToRegisterInModalLinkSnake.addEventListener('click', (e) => { e.preventDefault(); openAuthModalSnake('register'); });
             if (switchToLoginInModalLinkSnake) switchToLoginInModalLinkSnake.addEventListener('click', (e) => { e.preventDefault(); openAuthModalSnake('login'); });
-
+            
+            // REGISTRO ATUALIZADO PARA SNAKE.HTML
             if (formRegistroModalSnake) {
                 formRegistroModalSnake.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    const email = registroEmailModalSnakeInput.value; const senha = registroSenhaModalSnakeInput.value; const cSenha = registroConfirmaSenhaModalSnakeInput.value;
-                    if (senha.length < 6) { mostrarMensagemAuthModalSnake('Senha: mín. 6 caracteres.'); return; } if (senha !== cSenha) { mostrarMensagemAuthModalSnake('As senhas não coincidem!'); return; }
-                    try { await window.fbCreateUser(email, senha); formRegistroModalSnake.reset(); }
-                    catch (error) { console.error("Erro registro (snake.html):", error); if (error.code === 'auth/email-already-in-use') mostrarMensagemAuthModalSnake('Email já em uso.'); else if (error.code === 'auth/weak-password') mostrarMensagemAuthModalSnake('Senha fraca.'); else mostrarMensagemAuthModalSnake('Erro: ' + error.message.replace('Firebase: ',''));}
-                });
-            }
-            if (formLoginModalSnake) {
-                formLoginModalSnake.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const email = loginEmailModalSnakeInput.value; const senha = loginSenhaModalSnakeInput.value;
-                    try { await window.fbSignIn(email, senha); formLoginModalSnake.reset(); }
-                    catch (error) { console.error("Erro login (snake.html):", error); if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') mostrarMensagemAuthModalSnake('Email ou senha inválidos.'); else mostrarMensagemAuthModalSnake('Erro: ' + error.message.replace('Firebase: ',''));}
-                });
-            }
-            if (logoutButtonSnake) {
-                logoutButtonSnake.addEventListener('click', async (e) => {
-                    e.preventDefault(); try { await window.fbSignOut(); } catch (error) { console.error("Erro logout (snake.html):", error); }
-                });
-            }
+                    const username = registroUsernameModalSnakeInput.value.trim();
+                    const email = registroEmailModalSnakeInput.value;
+                    const senha = registroSenhaModalSnakeInput.value;
+                    const confirmaSenha = registroConfirmaSenhaModalSnakeInput.value;
 
-            if (window.fbOnAuthStateChanged && authInstanceForSnakeUI) {
-                window.fbOnAuthStateChanged(user => {
-                    if (user) {
-                        if (loggedInUserInfoSnake) loggedInUserInfoSnake.style.display = 'flex';
-                        if (loggedInUserEmailSnakeDisplay) loggedInUserEmailSnakeDisplay.textContent = user.email;
-                        if (loginTriggerLinkSnake) loginTriggerLinkSnake.style.display = 'none';
-                        closeAuthModalSnake();
-                    } else {
-                        if (loggedInUserInfoSnake) loggedInUserInfoSnake.style.display = 'none';
-                        if (loginTriggerLinkSnake) loginTriggerLinkSnake.style.display = 'inline-block';
+                    if (username.length < 3 || username.length > 20) { mostrarMensagemAuthModalSnake('Nome de usuário: 3-20 caracteres.'); return; }
+                    if (!/^[a-zA-Z0-9_]+$/.test(username)) { mostrarMensagemAuthModalSnake('Nome de usuário: apenas letras, números e _'); return; }
+                    if (senha.length < 6) { mostrarMensagemAuthModalSnake('Senha: mín. 6 caracteres.'); return; }
+                    if (senha !== confirmaSenha) { mostrarMensagemAuthModalSnake('As senhas não coincidem!'); return; }
+
+                    try {
+                        const usuariosRef = db.collection("usuarios");
+                        const usernameLower = username.toLowerCase();
+                        const querySnapshot = await usuariosRef.where("usernameLower", "==", usernameLower).limit(1).get();
+                        if (!querySnapshot.empty) { mostrarMensagemAuthModalSnake('Este nome de usuário já está em uso.'); return; }
+
+                        const userCredential = await auth.createUserWithEmailAndPassword(email, senha);
+                        const user = userCredential.user;
+                        await db.collection("usuarios").doc(user.uid).set({
+                            username: username, usernameLower: usernameLower, email: user.email, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        formRegistroModalSnake.reset();
+                    } catch (error) {
+                        console.error("Erro no registro (snake.html):", error);
+                        if (error.code === 'auth/email-already-in-use') mostrarMensagemAuthModalSnake('Este email já está em uso.');
+                        else if (error.code === 'auth/weak-password') mostrarMensagemAuthModalSnake('Senha fraca.');
+                        else mostrarMensagemAuthModalSnake('Erro ao registrar: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));
                     }
                 });
-            } else {
-                console.error("Firebase auth instance or onAuthStateChanged not ready for snake.html UI script after firebaseReady.");
             }
-        });
+
+            if (formLoginModalSnake) { // LOGIN PARA SNAKE.HTML
+                formLoginModalSnake.addEventListener('submit', async (e) => {
+                    e.preventDefault(); const email = loginEmailModalSnakeInput.value; const senha = loginSenhaModalSnakeInput.value;
+                    try { await auth.signInWithEmailAndPassword(email, senha); formLoginModalSnake.reset(); }
+                    catch (error) { console.error("Erro no login (snake.html):", error); if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') mostrarMensagemAuthModalSnake('Email ou senha inválidos.'); else mostrarMensagemAuthModalSnake('Erro ao fazer login: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));}
+                });
+            }
+            if (logoutButtonSnake) { // LOGOUT PARA SNAKE.HTML
+                logoutButtonSnake.addEventListener('click', async (e) => {
+                    e.preventDefault(); try { await auth.signOut(); } catch (error) { console.error("Erro no logout (snake.html):", error); }
+                });
+            }
+            auth.onAuthStateChanged(user => { // OBSERVADOR PARA UI DO TOPO NO SNAKE.HTML
+                if (user) {
+                    if (loggedInUserInfoSnake) loggedInUserInfoSnake.style.display = 'flex';
+                    if (loggedInUserEmailSnakeDisplay) loggedInUserEmailSnakeDisplay.textContent = user.email; // Mostra email por enquanto
+                    if (loginTriggerLinkSnake) loginTriggerLinkSnake.style.display = 'none';
+                    if (authModalSnake && authModalSnake.classList.contains('modal-visible')) closeAuthModalSnake();
+                } else {
+                    if (loggedInUserInfoSnake) loggedInUserInfoSnake.style.display = 'none';
+                    if (loginTriggerLinkSnake) loginTriggerLinkSnake.style.display = 'inline-block';
+                }
+            });
+        })();
     </script>
 
-    <script src="snake.js"></script>
-</body>
+    <script src="snake.js"></script> </body>
 </html>
