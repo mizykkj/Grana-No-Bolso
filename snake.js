@@ -1,4 +1,4 @@
-// snake.js - ATUALIZADO para usar funções globais do Firebase e botão de início
+// snake.js - ATUALIZADO com listener 'firebaseReady'
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
@@ -16,21 +16,22 @@ let gameLoopTimeout;
 
 let snakeGameCurrentUser = null; // Para armazenar o usuário logado nesta página
 
-// Configurar o listener onAuthStateChanged ASSIM que window.firebaseAuthInstance estiver disponível
-// Isso será chamado pelo script de inicialização do Firebase em snake.html
-if (window.fbOnAuthStateChanged) { // Verifica se a função global está disponível
-    window.fbOnAuthStateChanged(user => { // Usa a função global exposta
-        if (user) {
-            console.log("Snake.js - onAuthStateChanged: Usuário está LOGADO:", user.email);
-            snakeGameCurrentUser = user;
-        } else {
-            console.log("Snake.js - onAuthStateChanged: Usuário está DESLOGADO.");
-            snakeGameCurrentUser = null;
-        }
-    });
-} else {
-    console.error("Snake.js: window.fbOnAuthStateChanged não está disponível! Verifique a inicialização do Firebase em snake.html.");
-}
+window.addEventListener('firebaseReady', () => {
+    console.log("Snake.js: Evento 'firebaseReady' recebido!");
+    if (window.fbOnAuthStateChanged && window.firebaseAuthInstance) { // Verifica as funções/instâncias globais
+        window.fbOnAuthStateChanged(user => { // Usa a função global exposta
+            if (user) {
+                console.log("Snake.js - onAuthStateChanged via firebaseReady: Usuário está LOGADO:", user.email);
+                snakeGameCurrentUser = user;
+            } else {
+                console.log("Snake.js - onAuthStateChanged via firebaseReady: Usuário está DESLOGADO.");
+                snakeGameCurrentUser = null;
+            }
+        });
+    } else {
+        console.error("Snake.js: Funções globais do Firebase (fbOnAuthStateChanged ou firebaseAuthInstance) não estão disponíveis após 'firebaseReady'!");
+    }
+});
 
 function initializeGameVariables() {
     snake = [{ x: 10, y: 10 }];
@@ -61,7 +62,7 @@ async function saveScoreToFirestore(gameScore) {
     console.log("Função saveScoreToFirestore FOI CHAMADA com score:", gameScore);
     console.log("Objeto snakeGameCurrentUser no momento de salvar:", snakeGameCurrentUser);
 
-    if (snakeGameCurrentUser && window.fbAddDoc && window.fbServerTimestamp) { // Verifica se as funções globais existem
+    if (snakeGameCurrentUser && window.fbAddDoc && window.fbServerTimestamp) {
         try {
             await window.fbAddDoc("pontuacoes", { // Usa a função global exposta
                 userId: snakeGameCurrentUser.uid,
@@ -79,7 +80,7 @@ async function saveScoreToFirestore(gameScore) {
             console.log("Nenhum usuário logado (verificado através de snakeGameCurrentUser). Pontuação não será salva.");
         }
         if (!window.fbAddDoc || !window.fbServerTimestamp) {
-            console.error("Funções do Firestore (fbAddDoc ou fbServerTimestamp) não encontradas globalmente.");
+            console.error("Funções do Firestore (fbAddDoc ou fbServerTimestamp) não encontradas globalmente em snake.js.");
         }
     }
 }
