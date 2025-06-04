@@ -172,6 +172,7 @@
             if (switchToLoginInModalLink) switchToLoginInModalLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
 
             // LÓGICA DE REGISTRO ATUALIZADA
+// LÓGICA DE REGISTRO ATUALIZADA COM MAIS LOGS
             if (formRegistroModal) {
                 formRegistroModal.addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -180,41 +181,70 @@
                     const senha = registroSenhaModalInput.value;
                     const confirmaSenha = registroConfirmaSenhaModalInput.value;
 
+                    mostrarMensagemAuthModal("Processando registro...", "info"); // Mensagem temporária
+
                     if (username.length < 3 || username.length > 20) { mostrarMensagemAuthModal('Nome de usuário: 3-20 caracteres.'); return; }
                     if (!/^[a-zA-Z0-9_]+$/.test(username)) { mostrarMensagemAuthModal('Nome de usuário: apenas letras, números e _'); return; }
                     if (senha.length < 6) { mostrarMensagemAuthModal('Senha: mín. 6 caracteres.'); return; }
                     if (senha !== confirmaSenha) { mostrarMensagemAuthModal('As senhas não coincidem!'); return; }
 
                     try {
-                        // 1. Verificar unicidade do username (convertendo para minúsculas para a verificação)
-                        const usuariosRef = db.collection("usuarios");
+                        // 1. Verificar unicidade do username
+                        console.log("Verificando unicidade do username:", username);
+                        const usuariosRef = window.firebaseDb.collection("usuarios");
                         const usernameLower = username.toLowerCase();
                         const querySnapshot = await usuariosRef.where("usernameLower", "==", usernameLower).limit(1).get();
 
                         if (!querySnapshot.empty) {
                             mostrarMensagemAuthModal('Este nome de usuário já está em uso. Escolha outro.');
+                            console.log("Username já existe:", username);
                             return;
                         }
+                        console.log("Username está disponível:", username);
 
                         // 2. Criar usuário no Firebase Auth
-                        const userCredential = await auth.createUserWithEmailAndPassword(email, senha);
+                        console.log("Tentando criar usuário no Firebase Auth com email:", email);
+                        const userCredential = await window.firebaseAuth.createUserWithEmailAndPassword(email, senha);
                         const user = userCredential.user;
 
-                        // 3. Salvar dados do usuário no Firestore
-                        await db.collection("usuarios").doc(user.uid).set({
+                        // ===== LOGS IMPORTANTES ADICIONADOS/REVISADOS =====
+                        console.log("Usuário autenticado CRIADO com sucesso (objeto user):", JSON.stringify(user, null, 2));
+                        console.log("UID do novo usuário:", user.uid);
+                        console.log("Email do novo usuário:", user.email);
+                        console.log("Tentando criar documento no Firestore em: /usuarios/" + user.uid);
+
+                        const dadosParaSalvar = {
                             username: username,
-                            usernameLower: usernameLower, // Para busca e unicidade case-insensitive
-                            email: user.email,
+                            usernameLower: usernameLower,
+                            email: user.email, // Usando user.email do objeto user retornado pelo Auth
                             createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                        
+                        };
+                        console.log("Dados que serão enviados para o Firestore:", JSON.stringify(dadosParaSalvar, null, 2));
+                        // ===================================================
+
+                        // 3. Salvar dados do usuário no Firestore
+                        // Esta é a linha que estava dando o erro de permissão
+                        await window.firebaseDb.collection("usuarios").doc(user.uid).set(dadosParaSalvar);
+
+                        console.log("Documento do usuário salvo no Firestore com sucesso!");
+                        mostrarMensagemAuthModal('Conta criada com sucesso! Você já pode fazer login.', 'success');
                         formRegistroModal.reset();
-                        // onAuthStateChanged vai fechar o modal e atualizar UI
+                        // O onAuthStateChanged deve cuidar de fechar o modal e atualizar a UI do topo
+                        // setTimeout(closeAuthModal, 2000); // Fecha o modal após sucesso
                     } catch (error) {
-                        console.error("Erro no registro (index.html):", error);
-                        if (error.code === 'auth/email-already-in-use') mostrarMensagemAuthModal('Este email já está em uso.');
-                        else if (error.code === 'auth/weak-password') mostrarMensagemAuthModal('Senha fraca.');
-                        else mostrarMensagemAuthModal('Erro ao registrar: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));
+                        console.error("ERRO DETALHADO NO PROCESSO DE REGISTRO:", error);
+                        console.error("Código do Erro:", error.code);
+                        console.error("Mensagem do Erro:", error.message);
+
+                        if (error.code === 'auth/email-already-in-use') {
+                            mostrarMensagemAuthModal('Este email já está cadastrado.');
+                        } else if (error.code === 'auth/weak-password') {
+                            mostrarMensagemAuthModal('Senha muito fraca. Tente uma mais forte.');
+                        } else if (error.code === 'permission-denied' || error.message.includes('permission-denied') || error.message.includes('Missing or insufficient permissions')) {
+                            mostrarMensagemAuthModal('Erro de permissão ao salvar dados. Verifique as regras do Firestore.');
+                        } else {
+                            mostrarMensagemAuthModal('Erro ao registrar: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));
+                        }
                     }
                 });
             }
