@@ -14,20 +14,21 @@
             <a href="index.html" class="back-link">&larr; Voltar para a Página Inicial</a>
             <div class="top-right-actions">
                 <div id="loggedInUserInfoSnake" style="display: none;">
-                    <span id="loggedInUserDisplaySnake" class="user-email-display"></span> <a href="#" id="logoutButtonSnake" class="top-nav-link logout-link">Sair</a>
+                    <span id="loggedInUserDisplaySnake" class="user-email-display"></span>
+                    <a href="#" id="logoutButtonSnake" class="top-nav-link logout-link">Sair</a>
                 </div>
                 <a href="#" id="loginTriggerLinkSnake" class="top-nav-link">Login</a>
-            </div>
+                </div>
         </div>
 
-        <header>
-            <h1>Jogo da Cobrinha</h1>
+        <header> <h1>Jogo da Cobrinha</h1>
         </header>
 
         <main class="game-area">
             <button id="startButtonSnake" class="game-start-button">Iniciar Jogo (ou pressione as setas)</button>
             <p id="snakeStartMessage" class="game-start-message">Use as <strong>Setas Direcionais</strong> para começar e mover a cobrinha!</p>
-            <canvas id="gameCanvas" width="400" height="400"></canvas> <div id="snakeGameInfo" class="game-info-bar"> <p>Pontuação: <span id="score">0</span></p>
+            <canvas id="gameCanvas" width="400" height="400"></canvas> <div id="snakeGameInfo" class="game-info-bar">
+                <p>Pontuação: <span id="score">0</span></p>
             </div>
         </main>
 
@@ -75,7 +76,7 @@
     <script>
       // SUA CONFIGURAÇÃO DO FIREBASE - VERIFIQUE E USE OS SEUS VALORES REAIS!
       const firebaseConfig = {
-apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU",
+        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU",
         authDomain: "central-de-jogos-4bdf1.firebaseapp.com",
         projectId: "central-de-jogos-4bdf1",
         storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR
@@ -100,7 +101,7 @@ apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU",
 
             const loginTriggerLinkSnake = document.getElementById('loginTriggerLinkSnake');
             const loggedInUserInfoSnake = document.getElementById('loggedInUserInfoSnake');
-            const loggedInUserDisplaySnake = document.getElementById('loggedInUserDisplaySnake'); // ID atualizado
+            const loggedInUserDisplaySnake = document.getElementById('loggedInUserDisplaySnake');
             const logoutButtonSnake = document.getElementById('logoutButtonSnake');
             const authModalSnake = document.getElementById('authModalSnake');
             
@@ -143,7 +144,7 @@ apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU",
 
             if (loginTriggerLinkSnake) loginTriggerLinkSnake.addEventListener('click', (e) => { e.preventDefault(); openAuthModalSnake('login'); });
             if (authModalCloseBtnSnake) authModalCloseBtnSnake.onclick = closeAuthModalSnake;
-            if (authModalSnake) { authModalSnake.addEventListener('click', function(event) { if (event.target == authModalSnake) closeAuthModalSnake(); }); }
+            if (authModalSnake) { authModalSnake.addEventListener('click', function(event) { if (event.target == authModalSnake) closeAuthModalSnake(); }); } // Ajuste para authModalSnake
             if (switchToRegisterInModalLinkSnake) switchToRegisterInModalLinkSnake.addEventListener('click', (e) => { e.preventDefault(); openAuthModalSnake('register'); });
             if (switchToLoginInModalLinkSnake) switchToLoginInModalLinkSnake.addEventListener('click', (e) => { e.preventDefault(); openAuthModalSnake('login'); });
             
@@ -175,16 +176,16 @@ apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU",
                 if (user) {
                     if (loggedInUserInfoSnake) loggedInUserInfoSnake.style.display = 'flex';
                     if (loginTriggerLinkSnake) loginTriggerLinkSnake.style.display = 'none';
-                    try { // BUSCAR USERNAME PARA EXIBIR
+                    try {
                         const userDoc = await db.collection("usuarios").doc(user.uid).get();
                         if (userDoc.exists && userDoc.data().username) {
                             if (loggedInUserDisplaySnake) loggedInUserDisplaySnake.textContent = `Olá, ${userDoc.data().username}!`;
                         } else {
-                            if (loggedInUserDisplaySnake) loggedInUserDisplaySnake.textContent = user.email; // Fallback
+                            if (loggedInUserDisplaySnake) loggedInUserDisplaySnake.textContent = user.email;
                         }
                     } catch (error) {
                         console.error("Erro ao buscar username para UI em snake.html:", error);
-                        if (loggedInUserDisplaySnake) loggedInUserDisplaySnake.textContent = user.email; // Fallback
+                        if (loggedInUserDisplaySnake) loggedInUserDisplaySnake.textContent = user.email;
                     }
                     if (authModalSnake && authModalSnake.classList.contains('modal-visible')) closeAuthModalSnake();
                 } else {
