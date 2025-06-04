@@ -113,7 +113,81 @@
             }, 300);
         }
         if (aboutModalCloseBtn) aboutModalCloseBtn.onclick = closeAboutModal;
-        window.addEventListener('click', function(event) {
+        window.addEventListener('click', function(event) { <script>
+        window.addEventListener('firebaseReady', () => {
+            console.log("Evento 'firebaseReady' recebido no script principal do index.html!");
+            // const authInstanceForIndexUI = window.firebaseAuthInstance; // Já definido antes
+            // ... (todo o seu código de UI de autenticação e lógica de login/logout continua aqui) ...
+
+            // ========================================================
+            // ===== NOVA LÓGICA PARA O RANKING =====
+            // ========================================================
+
+            const rankingGameButtons = document.querySelectorAll('.ranking-game-btn');
+            const rankingDisplayArea = document.getElementById('rankingDisplayArea');
+            const rankingPlaceholder = document.querySelector('.ranking-placeholder');
+
+            if (rankingGameButtons.length > 0 && rankingDisplayArea && window.firebaseDb) {
+                rankingGameButtons.forEach(button => {
+                    button.addEventListener('click', async () => {
+                        const gameId = button.dataset.gameid;
+                        
+                        // Opcional: Remover classe 'active' de outros botões e adicionar ao clicado
+                        rankingGameButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+
+                        if (rankingPlaceholder) rankingPlaceholder.style.display = 'none'; // Esconde placeholder
+                        rankingDisplayArea.innerHTML = '<p class="ranking-placeholder">Carregando ranking...</p>'; // Mensagem de carregamento
+
+                        try {
+                            const scoresRef = window.firebaseDb.collection("pontuacoes");
+                            const querySnapshot = await scoresRef
+                                .where("gameId", "==", gameId)
+                                .orderBy("score", "desc") // Ordena pela pontuação, da maior para a menor
+                                .limit(10) // Pega apenas os Top 10
+                                .get();
+
+                            if (querySnapshot.empty) {
+                                rankingDisplayArea.innerHTML = '<p class="ranking-placeholder">Nenhuma pontuação encontrada para este jogo ainda!</p>';
+                                return;
+                            }
+
+                            let rankingHtml = '<table><thead><tr><th>#</th><th>Jogador</th><th>Pontuação</th></tr></thead><tbody>';
+                            let rank = 1;
+                            querySnapshot.forEach(doc => {
+                                const data = doc.data();
+                                // Escapar HTML para segurança se os emails puderem conter caracteres especiais
+                                const userEmailEscaped = data.userEmail.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                                rankingHtml += `
+                                    <tr>
+                                        <td>${rank}</td>
+                                        <td>${userEmailEscaped}</td>
+                                        <td>${data.score}</td>
+                                    </tr>
+                                `;
+                                rank++;
+                            });
+                            rankingHtml += '</tbody></table>';
+                            rankingDisplayArea.innerHTML = rankingHtml;
+
+                        } catch (error) {
+                            console.error("Erro ao buscar ranking: ", error);
+                            rankingDisplayArea.innerHTML = '<p class="ranking-placeholder" style="color: red;">Erro ao carregar o ranking. Tente novamente mais tarde.</p>';
+                        }
+                    });
+                });
+            } else {
+                if (rankingGameButtons.length === 0) console.warn("Botões de seleção de jogo para ranking não encontrados.");
+                if (!rankingDisplayArea) console.warn("Área de exibição do ranking (rankingDisplayArea) não encontrada.");
+                if (!window.firebaseDb) console.error("Instância do Firestore (window.firebaseDb) não está disponível para o ranking.");
+            }
+
+            // ===== FIM DA LÓGICA PARA O RANKING =====
+
+        }); // Fechamento do window.addEventListener('firebaseReady', ...)
+    </script>
+</body>
+</html>
             if (event.target == aboutModal) { closeAboutModal(); }
         });
     </script>
