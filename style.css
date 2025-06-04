@@ -232,3 +232,137 @@ footer { width: 100%; max-width: 980px; margin-top: auto; padding: 25px 0; font-
     #levelCompleteScreen button { padding: 8px 15px; font-size: 0.85em; }
     .auth-modal-content .auth-form { padding: 15px 0px; }
 }
+/* --- Estilos para Seção de Ranking --- */
+.ranking-section {
+    background-color: var(--secondary-dark); /* Similar à seção de autenticação */
+    padding: 25px 30px;
+    margin: 40px auto; /* Margem acima e abaixo */
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    max-width: 800px; /* Pode ser um pouco mais largo para acomodar tabelas de ranking */
+    box-shadow: 0 4px 10px var(--shadow-color-soft);
+    text-align: center; /* Centraliza o título e o parágrafo inicial */
+}
+
+.ranking-section h2 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--accent-color);
+    font-size: 1.8em;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.ranking-section > p { /* Parágrafo de descrição logo abaixo do h2 */
+    color: var(--text-medium);
+    margin-bottom: 30px;
+    font-size: 1em;
+}
+
+.ranking-game-selection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Para quebrar linha em telas menores */
+    gap: 15px; /* Espaço entre os botões de seleção de jogo */
+    margin-bottom: 30px;
+}
+
+.ranking-game-btn {
+    background-color: var(--primary-dark);
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 0.95em;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.1s ease;
+}
+
+.ranking-game-btn:hover,
+.ranking-game-btn:focus {
+    background-color: var(--accent-color);
+    color: var(--white);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    outline: none;
+}
+
+.ranking-game-btn.active { /* Estilo para o botão do ranking ativo (opcional, a ser adicionado via JS) */
+    background-color: var(--accent-hover);
+    color: var(--white);
+    border-color: var(--accent-hover);
+    box-shadow: 0 0 8px rgba(var(--accent-color-rgb), 0.3);
+}
+
+#rankingDisplayArea {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--primary-dark); /* Fundo para a área onde a tabela/lista aparecerá */
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    min-height: 100px; /* Altura mínima para dar uma ideia de espaço */
+    text-align: left; /* O conteúdo do ranking (tabela) geralmente é alinhado à esquerda */
+}
+
+.ranking-placeholder { /* Estilo para a mensagem "Selecione um jogo..." */
+    color: var(--text-medium);
+    font-style: italic;
+    text-align: center; /* Centraliza o placeholder */
+    padding: 20px 0;
+    font-size: 1em;
+}
+
+/* Estilos para a tabela de ranking (que será gerada pelo JavaScript) - Exemplo */
+#rankingDisplayArea table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#rankingDisplayArea th,
+#rankingDisplayArea td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-medium);
+    text-align: left;
+}
+
+#rankingDisplayArea th {
+    color: var(--text-light);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 1.05em;
+    background-color: var(--secondary-dark); /* Fundo para o cabeçalho da tabela */
+}
+
+#rankingDisplayArea td:nth-child(1) { /* Coluna da Posição (ex: #1) */
+    width: 15%;
+    text-align: center;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+#rankingDisplayArea td:nth-child(2) { /* Coluna do Usuário */
+    width: 55%;
+    color: var(--text-light);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 250px; /* Evitar que emails muito longos quebrem layout */
+}
+#rankingDisplayArea td:nth-child(3) { /* Coluna da Pontuação */
+    width: 30%;
+    text-align: right;
+    font-weight: bold;
+    color: var(--white);
+}
+
+#rankingDisplayArea tr:last-child td { /* Remove a borda inferior da última linha */
+    border-bottom: none;
+}
+
+#rankingDisplayArea tr:hover td { /* Efeito sutil ao passar o mouse sobre uma linha */
+    background-color: rgba(var(--accent-color-rgb), 0.05);
+}
