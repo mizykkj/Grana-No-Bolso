@@ -214,40 +214,36 @@ footer { width: 100%; max-width: 980px; margin-top: auto; padding: 25px 0; font-
         flex-direction: column; align-items: stretch; /* Ocupa largura e centraliza texto dos botões */
         gap: 10px; margin-bottom: 15px;
     }
-    .game-page-header-actions .back-link,
-    .game-page-header-actions .top-right-actions {
-        width: 100%; /* Faz os botões/links ocuparem a largura */
-        justify-content: center; /* Centraliza o texto/conteúdo dos botões */
-    }
-     .game-page-header-actions .top-right-actions {
-        flex-direction: column; /* Empilha Login e UserInfo se ambos visíveis (raro) */
-        gap: 8px;
-    }
-    .top-page-actions { /* Botões Sobre/Login no index.html */
-         top: 15px; right: 15px; flex-direction: column; align-items: flex-end; gap: 8px;
-    }
-    .top-nav-link, .about-button { padding: 6px 10px; font-size: 0.8em; width: auto; }
-    #loggedInUserInfo, #loggedInUserInfoSnake, #loggedInUserInfoPong, #loggedInUserInfoQuebraBlocos { width: auto; justify-content: flex-end; }
-    .user-email-display { max-width: 80px; }
+    /* Estilos para o link "Voltar" nas páginas de jogo */
+.game-page .back-link,
+.game-page .back-link:link,
+.game-page .back-link:visited {
+    background-color: transparent;
+    color: var(--text-medium); /* Define a cor padrão e para links visitados */
+    border: 1px solid var(--border-color);
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 0.9em;
+    text-decoration: none; /* Remove o sublinhado */
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
 
-    .container > header { margin-top: 15px; } /* Reduz margem do header principal se as ações do topo estão em coluna */
-    .container > header h1 { font-size: 1.7em; }
-    .container > header p { font-size: 0.95em; }
+.game-page .back-link:hover,
+.game-page .back-link:focus {
+    background-color: var(--secondary-dark);
+    color: var(--accent-color); /* Cor ao passar o mouse/focar */
+    border-color: var(--accent-color);
+    outline: none;
+}
 
-    .game-page header { margin-top: 15px; } /* Header do título do jogo (H1) */
-    .game-page header h1 { font-size: 1.6em; }
-
-    .game-selection h2 { font-size: 1.5em; }
-    .game-link { font-size: 1.1em; padding: 25px 20px; }
-    .modal-content { padding: 20px; width: 95%; }
-    .modal-content h2, .auth-modal-content h3 { font-size: 1.3em; }
-    .modal-content p { font-size: 0.9em; }
-    .close-button { top: 8px; right: 10px; font-size: 26px; }
-    .game-info { font-size: 0.9em; padding: 8px; flex-direction: column; gap: 5px; }
-    .game-info p { margin: 0;}
-    #levelCompleteScreen { padding: 15px; width: 90%; }
-    #levelCompleteScreen h2 { font-size: 1.2em; }
-    #levelCompleteScreen p { font-size: 0.85em; margin-bottom: 15px; }
-    #levelCompleteScreen button { padding: 8px 15px; font-size: 0.85em; }
-    .auth-modal-content .auth-form { padding: 15px 0px; }
+/* Se você tiver um estado :active que queira definir (quando o link está sendo clicado) */
+.game-page .back-link:active {
+    color: var(--accent-hover); /* Exemplo de cor para estado ativo */
+    background-color: var(--primary-dark);
 }
