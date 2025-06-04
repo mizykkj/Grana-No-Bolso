@@ -18,10 +18,12 @@
             <a href="#" id="loginTriggerLink" class="top-nav-link">Login</a>
             <button id="aboutButton" class="about-button">Sobre</button>
         </div>
+
         <header>
             <h1>Bem-vindo à Central de Jogos!</h1>
             <p>Escolha um dos nossos jogos clássicos para se divertir.</p>
         </header>
+
         <nav class="game-selection">
             <h2>Escolha seu Jogo:</h2>
             <ul>
@@ -30,6 +32,7 @@
                 <li><a href="quebra_blocos.html" class="game-link">Quebra Blocos</a></li>
             </ul>
         </nav>
+
         <section class="ranking-section">
             <h2>🏆 Ranking dos Melhores Jogadores 🏆</h2>
             <p>Veja quem são os mestres em nossos jogos!</p>
@@ -42,20 +45,24 @@
                 <p class="ranking-placeholder">Selecione um jogo acima para ver o ranking.</p>
             </div>
         </section>
+
         <section class="adsense-area">
             <h2>Anúncios</h2>
             <p>Espaço reservado para anúncios do Google AdSense. <br> Configure sua conta AdSense e cole o código aqui para monetizar seu site.</p>
         </section>
+
         <footer>
             <p>&copy; 2025 Central de Jogos - Todos os direitos reservados.</p>
         </footer>
-    </div>
-
-    <div id="aboutModal" class="modal">
+    </div> <div id="aboutModal" class="modal">
         <div class="modal-content">
             <span class="close-button about-modal-close">&times;</span>
             <h2>Sobre a Central de Jogos</h2>
-            <p>Bem-vindo à Central de Jogos! ... (conteúdo do modal sobre) ... <em>- <a href="https://www.instagram.com/mizykj/" target="_blank" rel="noopener noreferrer" class="inline-link">Mizy Dev</a></em></p>
+            <p>Bem-vindo à Central de Jogos! Este espaço foi cuidadosamente desenvolvido por <strong><a href="https://www.instagram.com/mizykj/" target="_blank" rel="noopener noreferrer" class="inline-link">Mizy Dev</a></strong>.</p>
+            <p>A principal motivação por trás da criação deste site é simples: trazer diversão e um toque de nostalgia através de jogos clássicos que marcaram gerações. Queremos oferecer um local onde você possa relaxar, desafiar a si mesmo e, quem sabe, relembrar bons momentos.</p>
+            <p>Cada jogo foi implementado com o intuito de ser leve, acessível e fácil de jogar. Esperamos que você desfrute da experiência tanto quanto nós gostamos de criá-la.</p>
+            <p>Divirta-se!</p>
+            <p><em>- <a href="https://www.instagram.com/mizykj/" target="_blank" rel="noopener noreferrer" class="inline-link">Mizy Dev</a></em></p>
         </div>
     </div>
 
@@ -75,7 +82,8 @@
                 <h3>Crie sua Conta</h3>
                 <form id="formRegistroModal">
                     <div>
-                        <label for="registroUsernameModal">Nome de Usuário (3-20 caracteres):</label> <input type="text" id="registroUsernameModal" name="registroUsernameModal" required minlength="3" maxlength="20" pattern="^[a-zA-Z0-9_]+$">
+                        <label for="registroUsernameModal">Nome de Usuário (3-20 caracteres):</label>
+                        <input type="text" id="registroUsernameModal" name="registroUsernameModal" required minlength="3" maxlength="20" pattern="^[a-zA-Z0-9_]+$">
                     </div>
                     <div><label for="registroEmailModal">Email:</label><input type="email" id="registroEmailModal" name="registroEmailModal" required></div>
                     <div><label for="registroSenhaModal">Senha (mín. 6 caracteres):</label><input type="password" id="registroSenhaModal" name="registroSenhaModal" required minlength="6"></div>
@@ -88,22 +96,48 @@
         </div>
     </div>
 
-    <script> /* Script do Modal Sobre */
-        const aboutModalElement = document.getElementById('aboutModal'); const aboutBtnElement = document.getElementById('aboutButton'); if (aboutModalElement) { const aboutModalCloseBtnElement = aboutModalElement.querySelector('.about-modal-close'); if (aboutBtnElement) { aboutBtnElement.onclick = function() { aboutModalElement.style.display = 'flex'; setTimeout(function() { aboutModalElement.classList.add('modal-visible'); }, 10); document.body.classList.add('modal-open'); } } function closeAboutModal() { aboutModalElement.classList.remove('modal-visible'); document.body.classList.remove('modal-open'); setTimeout(function() { if (!aboutModalElement.classList.contains('modal-visible')) { aboutModalElement.style.display = 'none'; } }, 300); } if (aboutModalCloseBtnElement) aboutModalCloseBtnElement.onclick = closeAboutModal; window.addEventListener('click', function(event) { if (event.target == aboutModalElement) closeAboutModal(); });}
+    <script>
+        const aboutModalElement = document.getElementById('aboutModal');
+        const aboutBtnElement = document.getElementById('aboutButton');
+        if (aboutModalElement) {
+            const aboutModalCloseBtnElement = aboutModalElement.querySelector('.about-modal-close');
+            if (aboutBtnElement) {
+                aboutBtnElement.onclick = function() {
+                    aboutModalElement.style.display = 'flex';
+                    setTimeout(function() { aboutModalElement.classList.add('modal-visible'); }, 10);
+                    document.body.classList.add('modal-open');
+                }
+            }
+            function closeAboutModal() {
+                aboutModalElement.classList.remove('modal-visible');
+                document.body.classList.remove('modal-open');
+                setTimeout(function() {
+                    if (!aboutModalElement.classList.contains('modal-visible')) { aboutModalElement.style.display = 'none'; }
+                }, 300);
+            }
+            if (aboutModalCloseBtnElement) aboutModalCloseBtnElement.onclick = closeAboutModal;
+            
+            window.addEventListener('click', function(event) {
+                if (event.target == aboutModalElement) {
+                    closeAboutModal();
+                }
+            });
+        }
     </script>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script>
-      const firebaseConfig = { /* SEUS DADOS REAIS AQUI */
-        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU",
-        authDomain: "central-de-jogos-4bdf1.firebaseapp.com",
-        projectId: "central-de-jogos-4bdf1",
-        storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR
-        messagingSenderId: "552827412845",
-        appId: "1:552827412845:web:57af946ce0b1a53a113a64",
-        measurementId: "G-RDL4Y8ELKQ"
+      // SUA CONFIGURAÇÃO DO FIREBASE - VERIFIQUE E USE OS SEUS VALORES REAIS!
+      const firebaseConfig = {
+        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA PELO SEU VALOR REAL
+        authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA PELO SEU VALOR REAL
+        projectId: "central-de-jogos-4bdf1", // SUBSTITUA PELO SEU VALOR REAL
+        storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR NO SEU CONSOLE!
+        messagingSenderId: "552827412845", // SUBSTITUA PELO SEU VALOR REAL
+        appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SUBSTITUA PELO SEU VALOR REAL
+        measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA (opcional)
       };
       firebase.initializeApp(firebaseConfig);
       window.firebaseAuth = firebase.auth();
@@ -111,16 +145,20 @@
       console.log("Firebase Compat SDKs carregados e Firebase inicializado em index.html!");
     </script>
 
-    <script> // Script Principal para Lógica de Autenticação e Ranking
-        (function() { // IIFE para escopo local
+    <script>
+        // Este script agora é executado após a inicialização do Firebase acima.
+        // Não precisamos mais do listener 'firebaseReady' aqui.
+        (function() { // IIFE para escopo local, para organizar
+            console.log("Script principal (Auth/Ranking) do index.html iniciado.");
+
             if (!window.firebaseAuth || !window.firebaseDb) {
                 console.error("Firebase Auth ou Firestore não estão prontos no index.html UI script.");
                 return;
             }
-            const auth = window.firebaseAuth; // Usar a instância global
-            const db = window.firebaseDb;   // Usar a instância global
+            const auth = window.firebaseAuth;
+            const db = window.firebaseDb;
 
-            // --- SELETORES PARA UI DE AUTENTICAÇÃO ---
+            // ------ SELETORES PARA UI DE AUTENTICAÇÃO ------
             const loginTriggerLink = document.getElementById('loginTriggerLink');
             const loggedInUserInfo = document.getElementById('loggedInUserInfo');
             const loggedInUserEmailDisplay = document.getElementById('loggedInUserEmail');
@@ -134,7 +172,7 @@
             const loginEmailModalInput = document.getElementById('loginEmailModal');
             const loginSenhaModalInput = document.getElementById('loginSenhaModal');
             const formRegistroModal = document.getElementById('formRegistroModal');
-            const registroUsernameModalInput = document.getElementById('registroUsernameModal'); // NOVO
+            const registroUsernameModalInput = document.getElementById('registroUsernameModal');
             const registroEmailModalInput = document.getElementById('registroEmailModal');
             const registroSenhaModalInput = document.getElementById('registroSenhaModal');
             const registroConfirmaSenhaModalInput = document.getElementById('registroConfirmaSenhaModal');
@@ -167,12 +205,16 @@
 
             if (loginTriggerLink) loginTriggerLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
             if (authModalCloseBtnElement) authModalCloseBtnElement.onclick = closeAuthModal;
-            window.addEventListener('click', function(event) { if (event.target == authModalElement) closeAuthModal(); });
+            // Ajuste no listener de clique fora do modal de autenticação para não conflitar com o modal "Sobre"
+            if (authModalElement) {
+                authModalElement.addEventListener('click', function(event) { 
+                    if (event.target == authModalElement) closeAuthModal(); 
+                });
+            }
             if (switchToRegisterInModalLink) switchToRegisterInModalLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('register'); });
             if (switchToLoginInModalLink) switchToLoginInModalLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
 
-            // LÓGICA DE REGISTRO ATUALIZADA
-// LÓGICA DE REGISTRO ATUALIZADA COM MAIS LOGS
+            // LÓGICA DE REGISTRO ATUALIZADA COM LOGS DETALHADOS
             if (formRegistroModal) {
                 formRegistroModal.addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -181,7 +223,7 @@
                     const senha = registroSenhaModalInput.value;
                     const confirmaSenha = registroConfirmaSenhaModalInput.value;
 
-                    mostrarMensagemAuthModal("Processando registro...", "info"); // Mensagem temporária
+                    mostrarMensagemAuthModal("Processando registro...", "info");
 
                     if (username.length < 3 || username.length > 20) { mostrarMensagemAuthModal('Nome de usuário: 3-20 caracteres.'); return; }
                     if (!/^[a-zA-Z0-9_]+$/.test(username)) { mostrarMensagemAuthModal('Nome de usuário: apenas letras, números e _'); return; }
@@ -189,9 +231,8 @@
                     if (senha !== confirmaSenha) { mostrarMensagemAuthModal('As senhas não coincidem!'); return; }
 
                     try {
-                        // 1. Verificar unicidade do username
                         console.log("Verificando unicidade do username:", username);
-                        const usuariosRef = window.firebaseDb.collection("usuarios");
+                        const usuariosRef = db.collection("usuarios");
                         const usernameLower = username.toLowerCase();
                         const querySnapshot = await usuariosRef.where("usernameLower", "==", usernameLower).limit(1).get();
 
@@ -202,54 +243,42 @@
                         }
                         console.log("Username está disponível:", username);
 
-                        // 2. Criar usuário no Firebase Auth
                         console.log("Tentando criar usuário no Firebase Auth com email:", email);
-                        const userCredential = await window.firebaseAuth.createUserWithEmailAndPassword(email, senha);
+                        const userCredential = await auth.createUserWithEmailAndPassword(email, senha);
                         const user = userCredential.user;
-
-                        // ===== LOGS IMPORTANTES ADICIONADOS/REVISADOS =====
+                        
                         console.log("Usuário autenticado CRIADO com sucesso (objeto user):", JSON.stringify(user, null, 2));
                         console.log("UID do novo usuário:", user.uid);
                         console.log("Email do novo usuário:", user.email);
                         console.log("Tentando criar documento no Firestore em: /usuarios/" + user.uid);
-
+                        
                         const dadosParaSalvar = {
                             username: username,
                             usernameLower: usernameLower,
-                            email: user.email, // Usando user.email do objeto user retornado pelo Auth
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            email: user.email,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp() // Correto para compat
                         };
                         console.log("Dados que serão enviados para o Firestore:", JSON.stringify(dadosParaSalvar, null, 2));
-                        // ===================================================
 
-                        // 3. Salvar dados do usuário no Firestore
-                        // Esta é a linha que estava dando o erro de permissão
-                        await window.firebaseDb.collection("usuarios").doc(user.uid).set(dadosParaSalvar);
-
+                        await db.collection("usuarios").doc(user.uid).set(dadosParaSalvar);
+                        
                         console.log("Documento do usuário salvo no Firestore com sucesso!");
-                        mostrarMensagemAuthModal('Conta criada com sucesso! Você já pode fazer login.', 'success');
+                        // mostrarMensagemAuthModal('Conta criada com sucesso! Você já pode fazer login.', 'success'); // O onAuthStateChanged vai cuidar da UI
                         formRegistroModal.reset();
-                        // O onAuthStateChanged deve cuidar de fechar o modal e atualizar a UI do topo
-                        // setTimeout(closeAuthModal, 2000); // Fecha o modal após sucesso
+                        // closeAuthModal(); // O onAuthStateChanged também pode fechar o modal
                     } catch (error) {
                         console.error("ERRO DETALHADO NO PROCESSO DE REGISTRO:", error);
                         console.error("Código do Erro:", error.code);
                         console.error("Mensagem do Erro:", error.message);
-
-                        if (error.code === 'auth/email-already-in-use') {
-                            mostrarMensagemAuthModal('Este email já está cadastrado.');
-                        } else if (error.code === 'auth/weak-password') {
-                            mostrarMensagemAuthModal('Senha muito fraca. Tente uma mais forte.');
-                        } else if (error.code === 'permission-denied' || error.message.includes('permission-denied') || error.message.includes('Missing or insufficient permissions')) {
-                            mostrarMensagemAuthModal('Erro de permissão ao salvar dados. Verifique as regras do Firestore.');
-                        } else {
-                            mostrarMensagemAuthModal('Erro ao registrar: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));
-                        }
+                        if (error.code === 'auth/email-already-in-use') mostrarMensagemAuthModal('Este email já está cadastrado.');
+                        else if (error.code === 'auth/weak-password') mostrarMensagemAuthModal('Senha muito fraca.');
+                        else if (error.code === 'permission-denied' || error.message.includes('permission-denied') || error.message.includes('Missing or insufficient permissions')) mostrarMensagemAuthModal('Erro de permissão ao salvar dados.');
+                        else mostrarMensagemAuthModal('Erro ao registrar: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));
                     }
                 });
             }
 
-            // LÓGICA DE LOGIN (sem alterações na funcionalidade, apenas usa 'auth')
+            // LÓGICA DE LOGIN
             if (formLoginModal) {
                 formLoginModal.addEventListener('submit', async (e) => {
                     e.preventDefault(); const email = loginEmailModalInput.value; const senha = loginSenhaModalInput.value;
@@ -258,18 +287,18 @@
                 });
             }
 
-            // LÓGICA DE LOGOUT (sem alterações na funcionalidade, apenas usa 'auth')
+            // LÓGICA DE LOGOUT
             if (logoutModalButton) {
                 logoutModalButton.addEventListener('click', async (e) => {
                     e.preventDefault(); try { await auth.signOut(); } catch (error) { console.error("Erro no logout (index.html):", error); }
                 });
             }
 
-            // OBSERVADOR DO ESTADO DE AUTENTICAÇÃO (sem alterações na funcionalidade, apenas usa 'auth')
+            // OBSERVADOR DO ESTADO DE AUTENTICAÇÃO
             auth.onAuthStateChanged(user => {
                 if (user) {
                     if (loggedInUserInfo) loggedInUserInfo.style.display = 'flex';
-                    if (loggedInUserEmailDisplay) loggedInUserEmailDisplay.textContent = user.email; // Poderíamos buscar o username aqui depois
+                    if (loggedInUserEmailDisplay) loggedInUserEmailDisplay.textContent = user.email;
                     if (loginTriggerLink) loginTriggerLink.style.display = 'none';
                     if (authModalElement && authModalElement.classList.contains('modal-visible')) closeAuthModal();
                 } else {
@@ -292,7 +321,7 @@
                         if (rankingPlaceholder) rankingPlaceholder.style.display = 'none';
                         rankingDisplayArea.innerHTML = '<p class="ranking-placeholder">Carregando ranking...</p>';
                         try {
-                            const scoresRef = db.collection("pontuacoes"); // Usando a instância 'db'
+                            const scoresRef = db.collection("pontuacoes");
                             const querySnapshot = await scoresRef
                                 .where("gameId", "==", gameId)
                                 .orderBy("score", "desc")
@@ -304,7 +333,6 @@
                             querySnapshot.forEach(doc => {
                                 const data = doc.data();
                                 const userEmailEscaped = data.userEmail ? data.userEmail.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "Anônimo";
-                                // Futuramente, buscaremos o username aqui com base no data.userId
                                 rankingHtml += `<tr><td>${rank}</td><td>${userEmailEscaped}</td><td>${data.score}</td></tr>`;
                                 rank++;
                             });
@@ -314,7 +342,7 @@
                     });
                 });
             }
-        })(); // Fim da IIFE
+        })(); // Fim da IIFE do script principal
     </script>
 </body>
 </html>
