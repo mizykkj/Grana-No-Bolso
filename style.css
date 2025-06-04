@@ -18,125 +18,62 @@
     --modal-overlay-color: rgba(0, 0, 0, 0.75);
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    line-height: 1.7;
-    background-color: var(--bg-dark);
-    color: var(--text-light);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 25px;
+    font-family: 'Roboto', sans-serif; font-weight: 400; line-height: 1.7;
+    background-color: var(--bg-dark); color: var(--text-light);
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh; padding: 25px;
 }
-
-body.modal-open {
-    overflow: hidden;
-}
+body.modal-open { overflow: hidden; }
 
 .container {
-    background-color: var(--primary-dark);
-    width: 100%;
-    max-width: 980px;
-    margin: 25px auto;
-    padding: 30px 40px;
-    padding-top: 70px; /* Espaço no topo para os botões/links flutuantes */
-    box-shadow: 0 8px 20px var(--shadow-color-medium);
-    border-radius: 10px;
-    text-align: center;
-    border: 1px solid var(--border-color);
-    position: relative; /* Para posicionamento absoluto dos filhos */
+    background-color: var(--primary-dark); width: 100%; max-width: 980px;
+    margin: 25px auto; padding: 30px 40px; 
+    padding-top: 30px; /* Ajustado, pois as ações do topo são absolutas agora */
+    box-shadow: 0 8px 20px var(--shadow-color-medium); border-radius: 10px;
+    text-align: center; border: 1px solid var(--border-color); position: relative;
 }
 
-/* --- Ações no Topo da Página (Login, Sobre, Info Usuário) --- */
+/* Ações no Topo da Página (Login, Sobre no index.html) */
 .top-page-actions {
-    position: absolute;
-    top: 20px;
-    right: 35px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    z-index: 1002;
+    position: absolute; top: 25px; right: 35px; display: flex; /* Ajuste top/right se necessário */
+    align-items: center; gap: 15px; z-index: 1002;
 }
-
-.top-nav-link,
-.about-button {
-    background-color: transparent;
-    color: var(--text-medium);
-    border: 1px solid var(--border-color);
-    padding: 8px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 500;
-    font-size: 0.9em;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
+.top-nav-link, .about-button {
+    background-color: transparent; color: var(--text-medium); border: 1px solid var(--border-color);
+    padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Roboto', sans-serif;
+    font-weight: 500; font-size: 0.9em; text-decoration: none; display: inline-flex;
+    align-items: center; white-space: nowrap;
     transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
+.top-nav-link:hover, .about-button:hover, .top-nav-link:focus, .about-button:focus {
+    background-color: var(--secondary-dark); color: var(--accent-color); border-color: var(--accent-color); outline: none;
+}
+#loggedInUserInfo, #loggedInUserInfoSnake, #loggedInUserInfoPong, #loggedInUserInfoQuebraBlocos {
+    display: flex; align-items: center; gap: 10px; color: var(--text-light);
+}
+.user-email-display { font-size: 0.9em; color: var(--text-medium); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+.logout-link { color: #ff6b6b; border-color: #ff6b6b; }
+.logout-link:hover { background-color: #ff6b6b; color: var(--white); border-color: #ff6b6b; }
 
-.top-nav-link:hover,
-.about-button:hover,
-.top-nav-link:focus,
-.about-button:focus {
-    background-color: var(--secondary-dark);
-    color: var(--accent-color);
-    border-color: var(--accent-color);
-    outline: none;
-}
-
-#loggedInUserInfo, /* Usado no index.html */
-#loggedInUserInfoSnake, /* Usado no snake.html */
-#loggedInUserInfoPong, /* Para pong.html futuramente */
-#loggedInUserInfoQuebraBlocos /* Para quebra_blocos.html futuramente */ {
-    display: flex; 
-    align-items: center;
-    gap: 10px;
-    color: var(--text-light);
-}
-.user-email-display { /* Classe comum para o span do username/email */
-    font-size: 0.9em;
-    color: var(--text-medium);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 150px; 
-}
-.logout-link { /* Classe comum para o link/botão de logout */
-    color: #ff6b6b; 
-    border-color: #ff6b6b;
-}
-.logout-link:hover {
-    background-color: #ff6b6b;
-    color: var(--white);
-    border-color: #ff6b6b;
-}
-
-/* --- Header Principal (index.html) --- */
-.container > header { /* Header direto do container (index.html) */
+/* Header Principal (index.html) */
+.container > header {
     margin-bottom: 45px; padding-bottom: 25px; border-bottom: 1px solid var(--border-color);
-    margin-top: 60px; /* Espaço para os botões/links do topo no index */
+    margin-top: 60px; /* Espaço para os .top-page-actions no index.html */
 }
 .container > header h1 { font-family: 'Montserrat', sans-serif; font-size: 2.6em; font-weight: 700; color: var(--white); margin-bottom: 12px; letter-spacing: -0.5px; }
 .container > header p { font-size: 1.05em; color: var(--text-medium); max-width: 700px; margin-left: auto; margin-right: auto; }
 
-/* --- Game Selection --- */
+/* Game Selection */
 .game-selection h2 { font-family: 'Montserrat', sans-serif; font-size: 1.7em; font-weight: 500; color: var(--accent-color); margin-bottom: 35px; }
 .game-selection ul { list-style: none; padding: 0; display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
 .game-selection li { flex-basis: 260px; }
 .game-link { display: block; background-color: var(--secondary-dark); color: var(--text-light); padding: 30px 25px; text-decoration: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 1.3em; font-weight: 500; text-align: center; transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease; border: 1px solid var(--border-color); box-shadow: 0 3px 6px var(--shadow-color-soft); }
 .game-link:hover, .game-link:focus { background-color: var(--accent-color); color: var(--white); transform: translateY(-4px) scale(1.02); box-shadow: 0 6px 12px rgba(var(--accent-color-rgb), 0.25); outline: none; }
 
-/* --- Ranking Section --- */
+/* Ranking Section */
 .ranking-section { background-color: var(--secondary-dark); padding: 25px 30px; margin: 40px auto; border-radius: 8px; border: 1px solid var(--border-color); max-width: 800px; box-shadow: 0 4px 10px var(--shadow-color-soft); text-align: center; }
 .ranking-section h2 { font-family: 'Montserrat', sans-serif; color: var(--accent-color); font-size: 1.8em; font-weight: 500; margin-top: 0; margin-bottom: 10px; }
 .ranking-section > p { color: var(--text-medium); margin-bottom: 30px; font-size: 1em; }
@@ -163,34 +100,51 @@ footer { width: 100%; max-width: 980px; margin-top: auto; padding: 25px 0; font-
 
 /* --- Estilos Comuns para Páginas de Jogo --- */
 .game-page.container { padding-top: 20px; }
-.game-page-header-actions { position: absolute; top: 20px; left: 20px; right: 20px; display: flex; justify-content: space-between; align-items: center; width: calc(100% - 40px - 40px); /* Ajuste para paddings do container */ z-index: 1002; pointer-events: none; }
+.game-page-header-actions { position: absolute; top: 25px; /* Ajuste para corresponder ao .top-page-actions do index */ left: 40px; right: 40px; display: flex; justify-content: space-between; align-items: center; width: calc(100% - 80px); /* Considera padding 40px do container */ z-index: 1002; pointer-events: none; }
 .game-page-header-actions > * { pointer-events: auto; }
 .game-page-header-actions .top-right-actions { display: flex; align-items: center; gap: 15px; }
-.game-page header { border-bottom: none; margin-bottom: 25px; margin-top: 60px; padding-bottom: 10px; text-align: center; }
+/* .back-link usará os estilos de .top-nav-link por ter ambas as classes ou estilos próprios abaixo */
+.game-page .back-link { /* Assegura que tenha o mesmo estilo base dos outros botões do topo */
+    background-color: transparent; color: var(--text-medium); border: 1px solid var(--border-color);
+    padding: 8px 15px; border-radius: 6px; cursor: pointer; font-family: 'Roboto', sans-serif;
+    font-weight: 500; font-size: 0.9em; text-decoration: none; display: inline-flex;
+    align-items: center; white-space: nowrap;
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.game-page .back-link:hover, .game-page .back-link:focus {
+    background-color: var(--secondary-dark); color: var(--accent-color); border-color: var(--accent-color); outline: none;
+}
+
+.game-page header { /* Header que contém o H1 do título do jogo */
+    border-bottom: none; margin-bottom: 25px; margin-top: 70px; /* Espaço ABAIXO do .game-page-header-actions */
+    padding-bottom: 10px; text-align: center;
+}
 .game-page header h1 { font-size: 2em; margin-bottom: 0; }
-.back-link { /* Estilos visuais já definidos por .top-nav-link, apenas ajustes se necessário */ }
 
 .game-area { margin: 20px 0; background-color: var(--secondary-dark); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; text-align: center; }
 .game-area canvas { border: 2px solid var(--accent-color); background-color: #0a0a0a; display: block; margin-left: auto; margin-right: auto; margin-bottom: 15px; max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 0 12px rgba(var(--accent-color-rgb), 0.2); }
-.game-area > p { font-size: 0.95em; margin-top: 10px; color: var(--text-medium); } /* Instruções gerais */
-.game-area > p strong { color: var(--text-light); }
+/* Removido .game-area > p genérico para ser mais específico abaixo */
 
 /* Botão Iniciar Jogo (Snake, etc.) */
 .game-start-button { background-color: var(--accent-color); color: var(--white); border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-size: 1.2em; font-weight: 500; font-family: 'Montserrat', sans-serif; transition: background-color 0.25s ease, transform 0.1s ease; margin: 20px 0; display: inline-block; }
 .game-start-button:hover, .game-start-button:focus { background-color: var(--accent-hover); transform: scale(1.03); outline: none; }
 
 /* Mensagem de Início e Info para Jogo da Cobrinha */
-.game-start-message { color: var(--text-light); font-size: 1.1em; margin-bottom: 15px; display: block; }
-#snakeGameInfo { margin-top: 10px; font-size: 1.1em; color: var(--text-light); } /* Div da pontuação do Snake */
-#snakeGameInfo p { margin: 0; }
+.game-start-message { /* Para "Use as Setas..." */
+    color: var(--text-light); font-size: 1.1em; margin-bottom: 20px; display: block;
+}
+#snakeGameInfo { /* Div para pontuação do Snake durante o jogo */
+    margin-top: 10px; font-size: 1.1em; color: var(--text-light); display: block; /* JS controla display:none inicial */
+}
+#snakeGameInfo p { margin: 0; color: var(--text-medium); }
 #snakeGameInfo span { font-weight: bold; color: var(--accent-color); }
 
-/* Informações de Jogo (Quebra Blocos) */
-.game-info { display: flex; justify-content: space-around; align-items: center; width: 90%; max-width: 450px; margin: 0 auto 15px auto; padding: 10px; background-color: var(--primary-dark); border-radius: 6px; border: 1px solid var(--border-color); font-size: 1em; color: var(--text-light); }
+/* Info para Quebra Blocos (se usar .game-info) */
+.game-info { display: flex; justify-content: space-around; align-items: center; width: 90%; max-width: 450px; margin: 10px auto 15px auto; padding: 10px; background-color: var(--primary-dark); border-radius: 6px; border: 1px solid var(--border-color); font-size: 1em; color: var(--text-light); }
 .game-info p { margin: 0 10px; color: var(--text-medium); }
 .game-info span { font-weight: bold; color: var(--accent-color); margin-left: 5px; }
 
-/* --- Modal (Pop-up) Styles Base (para Sobre e Autenticação) --- */
+/* --- Modals (Sobre e Autenticação) --- */
 .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow-y: auto; background-color: var(--modal-overlay-color); justify-content: center; align-items: center; padding: 20px; opacity: 0; transform: translateY(-20px) scale(0.98); transition: opacity 0.25s ease-out, transform 0.25s ease-out;}
 .modal.modal-visible { opacity: 1; transform: translateY(0) scale(1); }
 .modal-content { background-color: var(--primary-dark); color: var(--text-light); margin: auto; padding: 30px 35px; border: 1px solid var(--border-color); width: 90%; max-width: 500px; border-radius: 8px; box-shadow: 0 10px 30px var(--shadow-color-strong); position: relative; text-align: left; }
@@ -206,8 +160,6 @@ footer { width: 100%; max-width: 980px; margin-top: auto; padding: 25px 0; font-
 .modal-content em .inline-link { font-weight: 500; }
 .close-button { color: var(--text-medium); position: absolute; top: 12px; right: 15px; font-size: 28px; font-weight: 400; line-height: 1; padding: 5px; transition: color 0.2s ease, transform 0.2s ease; cursor: pointer; z-index: 10; }
 .close-button:hover, .close-button:focus { color: var(--accent-color); transform: scale(1.1); outline: none; }
-
-/* Formulários de Autenticação DENTRO DO MODAL */
 .auth-modal-content .auth-form { background-color: transparent; padding: 0; border: none; width: 100%; max-width: none; margin-bottom: 0; }
 .auth-modal-content .auth-form div { margin-bottom: 18px; text-align: left; }
 .auth-modal-content .auth-form label { display: block; margin-bottom: 6px; color: var(--text-medium); font-size: 0.9em; font-weight: 500; }
@@ -235,7 +187,7 @@ footer { width: 100%; max-width: 980px; margin-top: auto; padding: 25px 0; font-
     .container { padding: 25px 30px; padding-top: 70px; max-width: 95%; }
     .top-page-actions { top: 20px; right: 20px; gap: 10px; }
     .game-page-header-actions { top: 15px; left: 15px; right: 15px; width: calc(100% - 30px); }
-    .top-nav-link, .about-button, .back-link { padding: 7px 12px; font-size: 0.85em; }
+    .top-nav-link, .about-button, .game-page .back-link { padding: 7px 12px; font-size: 0.85em; }
     #loggedInUserInfo, #loggedInUserInfoSnake, #loggedInUserInfoPong, #loggedInUserInfoQuebraBlocos { gap: 8px; }
     .user-email-display { font-size: 0.85em; max-width: 120px; }
     .container > header h1 { font-size: 2.1em; }
@@ -255,21 +207,38 @@ footer { width: 100%; max-width: 980px; margin-top: auto; padding: 25px 0; font-
 
 @media (max-width: 480px) {
     body { padding: 15px; }
-    .container { padding: 20px; padding-top: 60px; border-radius: 8px; }
-    .top-page-actions { top: 15px; right: 15px; flex-direction: column; align-items: flex-end; gap: 8px; }
-    .game-page-header-actions { top: 10px; left: 10px; right: 10px; width: calc(100% - 20px); flex-wrap: wrap; justify-content: center; } /* Ajuste para caber */
-    .game-page-header-actions .back-link { order: 1; /* Para ficar primeiro na ordem visual */ margin-bottom: 5px; }
-    .game-page-header-actions .top-right-actions { order: 2; width: 100%; justify-content: flex-end;}
-
-    .top-nav-link, .about-button { padding: 6px 10px; font-size: 0.8em; /* width: 100%; text-align: center; Removido para não esticar demais */ }
+    .container { padding: 20px; padding-top: 20px; border-radius: 8px; } /* Reduzido padding-top */
+    .game-page-header-actions { /* Botões Voltar e Login/User Info em páginas de jogo */
+        position: relative; /* Volta ao fluxo para empilhar */
+        top: auto; left: auto; right: auto; width: 100%;
+        flex-direction: column; align-items: stretch; /* Ocupa largura e centraliza texto dos botões */
+        gap: 10px; margin-bottom: 15px;
+    }
+    .game-page-header-actions .back-link,
+    .game-page-header-actions .top-right-actions {
+        width: 100%; /* Faz os botões/links ocuparem a largura */
+        justify-content: center; /* Centraliza o texto/conteúdo dos botões */
+    }
+     .game-page-header-actions .top-right-actions {
+        flex-direction: column; /* Empilha Login e UserInfo se ambos visíveis (raro) */
+        gap: 8px;
+    }
+    .top-page-actions { /* Botões Sobre/Login no index.html */
+         top: 15px; right: 15px; flex-direction: column; align-items: flex-end; gap: 8px;
+    }
+    .top-nav-link, .about-button { padding: 6px 10px; font-size: 0.8em; width: auto; }
     #loggedInUserInfo, #loggedInUserInfoSnake, #loggedInUserInfoPong, #loggedInUserInfoQuebraBlocos { width: auto; justify-content: flex-end; }
     .user-email-display { max-width: 80px; }
+
+    .container > header { margin-top: 15px; } /* Reduz margem do header principal se as ações do topo estão em coluna */
     .container > header h1 { font-size: 1.7em; }
     .container > header p { font-size: 0.95em; }
+
+    .game-page header { margin-top: 15px; } /* Header do título do jogo (H1) */
+    .game-page header h1 { font-size: 1.6em; }
+
     .game-selection h2 { font-size: 1.5em; }
     .game-link { font-size: 1.1em; padding: 25px 20px; }
-    .game-page header { margin-top: 70px; /* Mais espaço por causa do header actions em coluna */ }
-    .game-page header h1 { font-size: 1.6em; }
     .modal-content { padding: 20px; width: 95%; }
     .modal-content h2, .auth-modal-content h3 { font-size: 1.3em; }
     .modal-content p { font-size: 0.9em; }
