@@ -5,30 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quebra Blocos - Central de Jogos</title>
     <link rel="stylesheet" href="style.css">
-    </head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9402908836616610"
+         crossorigin="anonymous"></script>
+</head>
 <body>
     <div class="container game-page">
-        <header>
+        <div class="game-page-header-actions">
             <a href="index.html" class="back-link">&larr; Voltar para a Página Inicial</a>
+            <div class="top-right-actions">
+                <div id="loggedInUserInfoQuebraBlocos" style="display: none;">
+                    <span id="loggedInUserDisplayQuebraBlocos" class="user-email-display"></span>
+                    <a href="#" id="logoutButtonQuebraBlocos" class="top-nav-link logout-link">Sair</a>
+                </div>
+                <a href="#" id="loginTriggerLinkQuebraBlocos" class="top-nav-link">Login</a>
+            </div>
+        </div>
+
+        <header>
             <h1>Quebra Blocos</h1>
         </header>
 
         <main class="game-area">
-            <canvas id="gameCanvas" width="550" height="400"></canvas>
-
-            <div id="levelCompleteScreen">
-                <h2 id="levelCompleteMessage">Nível X Completo!</h2>
-                <p>Você completou o nível <span id="completedLevelDisplay">1</span>.</p>
-                <button id="nextLevelButton">Próximo Nível</button>
+            <button id="startButtonQuebraBlocos" class="game-start-button">Iniciar Jogo</button>
+            <div id="quebraBlocosPreGameMessages" class="game-start-message-container">
+                 <p class="game-start-message">Use o <strong>Mouse</strong> ou as <strong>Setas Direcionais</strong> para mover a barra.</p>
+                 <p class="game-start-message">Quebre todos os tijolos! Você tem 3 vidas.</p>
             </div>
 
-            <div class="game-info">
-                <p>Pontuação: <span id="score">0</span></p>
-                <p>Vidas: <span id="lives">3</span></p>
-                <p>Nível: <span id="levelDisplay">1</span></p>
+            <canvas id="gameCanvas" width="550" height="450"></canvas> <div id="levelCompleteScreenQB" class="modal" style="position: absolute; /* Para sobrepor o canvas */"> <div class="modal-content">
+                    <h2 id="levelCompleteMessageQB">Nível X Completo!</h2>
+                    <p>Você completou o nível <span id="completedLevelDisplayQB">1</span>.</p>
+                    <button id="nextLevelButtonQB">Próximo Nível</button>
+                </div>
             </div>
-            <p>Use as <strong>Setas Direcionais</strong> para mover a barra.</p>
-            <p>Quebre todos os tijolos para avançar de nível!</p>
+
+            <div id="quebraBlocosGameInfo" class="game-info-bar" style="display: none;">
+                <p>Pontos: <span id="scoreQB">0</span></p>
+                <p>Vidas: <span id="livesQB">3</span></p>
+                <p>Nível: <span id="levelQB">1</span></p>
+            </div>
         </main>
 
         <section class="adsense-area">
@@ -39,7 +54,93 @@
         <footer>
             <p>&copy; 2025 Central de Jogos.</p>
         </footer>
+    </div> <div id="authModalQuebraBlocos" class="modal">
+        <div class="modal-content auth-modal-content">
+            <span class="close-button auth-modal-close-qb">&times;</span>
+            <div class="auth-form" id="loginContainerModalQuebraBlocos">
+                <h3>Acesse sua Conta</h3>
+                <form id="formLoginModalQuebraBlocos">
+                    <div><label for="loginEmailModalQuebraBlocos">Email:</label><input type="email" id="loginEmailModalQuebraBlocos" required></div>
+                    <div><label for="loginSenhaModalQuebraBlocos">Senha:</label><input type="password" id="loginSenhaModalQuebraBlocos" required></div>
+                    <button type="submit">Entrar</button>
+                </form>
+                <p class="toggle-form-link">Não possui uma conta? <a href="#" id="switchToRegisterInModalLinkQuebraBlocos">Crie uma</a></p>
+            </div>
+            <div class="auth-form" id="registroContainerModalQuebraBlocos" style="display: none;">
+                <h3>Crie sua Conta</h3>
+                <form id="formRegistroModalQuebraBlocos">
+                    <div><label for="registroUsernameModalQuebraBlocos">Nome de Usuário (3-20 caracteres):</label><input type="text" id="registroUsernameModalQuebraBlocos" required minlength="3" maxlength="20" pattern="^[a-zA-Z0-9_]+$"></div>
+                    <div><label for="registroEmailModalQuebraBlocos">Email:</label><input type="email" id="registroEmailModalQuebraBlocos" required></div>
+                    <div><label for="registroSenhaModalQuebraBlocos">Senha (mín. 6 caracteres):</label><input type="password" id="registroSenhaModalQuebraBlocos" required minlength="6"></div>
+                    <div><label for="registroConfirmaSenhaModalQuebraBlocos">Confirmar Senha:</label><input type="password" id="registroConfirmaSenhaModalQuebraBlocos" required minlength="6"></div>
+                    <button type="submit">Registrar</button>
+                </form>
+                <p class="toggle-form-link">Já possui uma conta? <a href="#" id="switchToLoginInModalLinkQuebraBlocos">Faça login</a></p>
+            </div>
+            <p id="authMessageModalQuebraBlocos" class="auth-message"></p>
+        </div>
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script>
+      // SUA CONFIGURAÇÃO DO FIREBASE - VERIFIQUE E USE OS SEUS VALORES REAIS!
+      const firebaseConfig = {
+          apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA
+        authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA
+        projectId: "central-de-jogos-4bdf1", // SUBSTITUA
+        storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR
+        messagingSenderId: "552827412845", // SUBSTITUA
+        appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SUBSTITUA
+        measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA (opcional)
+      };
+      firebase.initializeApp(firebaseConfig);
+      window.firebaseAuth = firebase.auth();
+      window.firebaseDb = firebase.firestore();
+      console.log("Firebase Compat SDKs carregados e Firebase inicializado em quebra_blocos.html!");
+    </script>
+
+    <script>
+        // COPIE E ADAPTE A LÓGICA COMPLETA DO MODAL DE AUTENTICAÇÃO DA PÁGINA SNAKE.HTML OU INDEX.HTML AQUI
+        // Certifique-se de usar os IDs corretos com sufixo "QuebraBlocos" 
+        // (ex: authModalQuebraBlocos, loginTriggerLinkQuebraBlocos, etc.)
+        // Isso inclui:
+        // - Seletores de todos os elementos do modal e do topo da página.
+        // - Funções openAuthModalQuebraBlocos, closeAuthModalQuebraBlocos, mostrarMensagemAuthModalQuebraBlocos.
+        // - Event listeners para os formulários de login/registro e links de alternância.
+        // - O auth.onAuthStateChanged para atualizar a UI do topo (loggedInUserInfoQuebraBlocos, etc.).
+        // Por brevidade, não vou repetir todo esse script de UI do modal aqui, mas ele é NECESSÁRIO.
+         (function() {
+            if (!window.firebaseAuth || !window.firebaseDb) { return; }
+            const auth = window.firebaseAuth; const db = window.firebaseDb;
+            const loginTriggerLink = document.getElementById('loginTriggerLinkQuebraBlocos');
+            const loggedInUserInfo = document.getElementById('loggedInUserInfoQuebraBlocos');
+            const loggedInUserDisplay = document.getElementById('loggedInUserDisplayQuebraBlocos');
+            const logoutButton = document.getElementById('logoutButtonQuebraBlocos');
+            // ... (resto dos seletores e lógica do modal, adaptado para "QuebraBlocos")
+            if (auth) { // Verifica se auth foi inicializado
+                auth.onAuthStateChanged(async user => {
+                    if (user) {
+                        if (loggedInUserInfo) loggedInUserInfo.style.display = 'flex';
+                        if (loginTriggerLink) loginTriggerLink.style.display = 'none';
+                        try {
+                            const userDoc = await db.collection("usuarios").doc(user.uid).get();
+                            if (userDoc.exists && userDoc.data().username) {
+                                if (loggedInUserDisplay) loggedInUserDisplay.textContent = `Olá, ${userDoc.data().username}!`;
+                            } else { if (loggedInUserDisplay) loggedInUserDisplay.textContent = user.email; }
+                        } catch (error) { if (loggedInUserDisplay) loggedInUserDisplay.textContent = user.email; }
+                        const authModalQB = document.getElementById('authModalQuebraBlocos');
+                        if(authModalQB && authModalQB.classList.contains('modal-visible')) { /* Chame sua função closeAuthModalQuebraBlocos */ }
+                    } else {
+                        if (loggedInUserInfo) loggedInUserInfo.style.display = 'none';
+                        if (loginTriggerLink) loginTriggerLink.style.display = 'inline-block';
+                    }
+                });
+            }
+        })();
+    </script>
+
     <script src="quebra_blocos.js"></script>
 </body>
 </html>
