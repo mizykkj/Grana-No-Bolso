@@ -1,4 +1,4 @@
-// snake.js - ATUALIZADO com listener 'firebaseReady'
+// snake.js - ATUALIZADO para Firebase compat e Username
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
@@ -6,100 +6,82 @@ const startButtonSnake = document.getElementById('startButtonSnake');
 const snakeGameInstructions = document.getElementById('snakeGameInstructions');
 
 const gridSize = 20;
-let snake;
-let food;
-let direction;
-let currentScore;
-let changingDirection;
+let snake, food, direction, currentScore, changingDirection, gameLoopTimeout;
 let gameSpeed = 100;
-let gameLoopTimeout;
+let snakeGameCurrentUser = null; // Para armazenar o usuário logado (objeto Auth)
+let snakeGameUsername = null; // Para armazenar o nome de usuário do Firestore
 
-let snakeGameCurrentUser = null; // Para armazenar o usuário logado nesta página
-
-window.addEventListener('firebaseReady', () => {
-    console.log("Snake.js: Evento 'firebaseReady' recebido!");
-    if (window.fbOnAuthStateChanged && window.firebaseAuthInstance) { // Verifica as funções/instâncias globais
-        window.fbOnAuthStateChanged(user => { // Usa a função global exposta
-            if (user) {
-                console.log("Snake.js - onAuthStateChanged via firebaseReady: Usuário está LOGADO:", user.email);
-                snakeGameCurrentUser = user;
-            } else {
-                console.log("Snake.js - onAuthStateChanged via firebaseReady: Usuário está DESLOGADO.");
-                snakeGameCurrentUser = null;
+// Verifica o estado de autenticação QUANDO o Firebase estiver pronto
+// (o window.firebaseAuth é definido pelo script de init no snake.html)
+if (window.firebaseAuth && window.firebaseDb) {
+    window.firebaseAuth.onAuthStateChanged(async user => {
+        if (user) {
+            console.log("Snake.js - onAuthStateChanged: Usuário LOGADO:", user.email);
+            snakeGameCurrentUser = user;
+            // Buscar o username do Firestore
+            try {
+                const userDoc = await window.firebaseDb.collection("usuarios").doc(user.uid).get();
+                if (userDoc.exists) {
+                    snakeGameUsername = userDoc.data().username;
+                    console.log("Snake.js - Username obtido:", snakeGameUsername);
+                } else {
+                    console.log("Snake.js - Documento de usuário não encontrado no Firestore para buscar username.");
+                    snakeGameUsername = user.email; // Fallback para email se não achar username
+                }
+            } catch (error) {
+                console.error("Snake.js - Erro ao buscar username:", error);
+                snakeGameUsername = user.email; // Fallback
             }
-        });
-    } else {
-        console.error("Snake.js: Funções globais do Firebase (fbOnAuthStateChanged ou firebaseAuthInstance) não estão disponíveis após 'firebaseReady'!");
-    }
-});
-
-function initializeGameVariables() {
-    snake = [{ x: 10, y: 10 }];
-    food = {};
-    direction = 'right';
-    currentScore = 0;
-    if (scoreDisplay) scoreDisplay.textContent = currentScore;
-    changingDirection = false;
-    if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
-}
-
-function startGame() {
-    if (startButtonSnake) startButtonSnake.style.display = 'none';
-    if (canvas) canvas.style.display = 'block';
-    if (snakeGameInstructions) snakeGameInstructions.style.display = 'block';
-    initializeGameVariables();
-    createFood();
-    main();
-}
-
-if (startButtonSnake) {
-    startButtonSnake.addEventListener('click', startGame);
+        } else {
+            console.log("Snake.js - onAuthStateChanged: Usuário DESLOGADO.");
+            snakeGameCurrentUser = null;
+            snakeGameUsername = null;
+        }
+    });
 } else {
-    console.warn("Botão de iniciar (startButtonSnake) não encontrado no HTML.");
+    console.error("Snake.js: Instâncias do Firebase (Auth ou Db) não disponíveis globalmente!");
 }
+
+
+function initializeGameVariables() { /* ... (igual à versão anterior) ... */
+    snake = [{ x: 10, y: 10 }]; food = {}; direction = 'right'; currentScore = 0;
+    if (scoreDisplay) scoreDisplay.textContent = currentScore;
+    changingDirection = false; if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
+}
+function startGame() { /* ... (igual à versão anterior) ... */
+    if (startButtonSnake) startButtonSnake.style.display = 'none'; if (canvas) canvas.style.display = 'block'; if (snakeGameInstructions) snakeGameInstructions.style.display = 'block';
+    initializeGameVariables(); createFood(); main();
+}
+if (startButtonSnake) startButtonSnake.addEventListener('click', startGame);
 
 async function saveScoreToFirestore(gameScore) {
     console.log("Função saveScoreToFirestore FOI CHAMADA com score:", gameScore);
     console.log("Objeto snakeGameCurrentUser no momento de salvar:", snakeGameCurrentUser);
+    console.log("Username para salvar:", snakeGameUsername);
 
-    if (snakeGameCurrentUser && window.fbAddDoc && window.fbServerTimestamp) {
+    if (snakeGameCurrentUser && window.firebaseDb) {
         try {
-            await window.fbAddDoc("pontuacoes", { // Usa a função global exposta
+            await window.firebaseDb.collection("pontuacoes").add({ // Usando a coleção 'pontuacoes' original por enquanto
                 userId: snakeGameCurrentUser.uid,
-                userEmail: snakeGameCurrentUser.email,
+                userEmail: snakeGameCurrentUser.email, // Mantemos o email
+                username: snakeGameUsername || snakeGameCurrentUser.email, // Usa o username, ou email como fallback
                 gameId: "snake",
                 score: gameScore,
-                timestamp: window.fbServerTimestamp() // Usa a função global exposta
+                timestamp: firebase.firestore.FieldValue.serverTimestamp() // Sintaxe compat
             });
             console.log("Pontuação salva com sucesso no Firestore! Score: " + gameScore);
         } catch (error) {
             console.error("Erro ao salvar pontuação no Firestore (snake.js): ", error);
         }
     } else {
-        if (!snakeGameCurrentUser) {
-            console.log("Nenhum usuário logado (verificado através de snakeGameCurrentUser). Pontuação não será salva.");
-        }
-        if (!window.fbAddDoc || !window.fbServerTimestamp) {
-            console.error("Funções do Firestore (fbAddDoc ou fbServerTimestamp) não encontradas globalmente em snake.js.");
-        }
+        if (!snakeGameCurrentUser) console.log("Nenhum usuário logado (snakeGameCurrentUser é null). Pontuação não salva.");
+        if (!window.firebaseDb) console.error("Instância do Firestore (window.firebaseDb) não disponível em snake.js.");
     }
 }
 
-function main() {
-    if (didGameEnd()) {
-        if (gameLoopTimeout) clearTimeout(gameLoopTimeout);
-        alert("Fim de Jogo! Pontuação: " + currentScore);
-        saveScoreToFirestore(currentScore).then(() => {
-            setTimeout(() => {
-                document.location.reload();
-            }, 1500);
-        });
-        return;
-    }
-    changingDirection = false;
-    gameLoopTimeout = setTimeout(function onTick() {
-        clearCanvas(); drawFood(); advanceSnake(); drawSnake(); main();
-    }, gameSpeed);
+function main() { /* ... (igual à versão anterior, chama saveScoreToFirestore) ... */
+    if (didGameEnd()) { if (gameLoopTimeout) clearTimeout(gameLoopTimeout); alert("Fim de Jogo! Pontuação: " + currentScore); saveScoreToFirestore(currentScore).then(() => { setTimeout(() => { document.location.reload(); }, 1500); }); return; }
+    changingDirection = false; gameLoopTimeout = setTimeout(function onTick() { clearCanvas(); drawFood(); advanceSnake(); drawSnake(); main(); }, gameSpeed);
 }
 
 function clearCanvas() { ctx.fillStyle = '#0a0a0a'; ctx.strokeStyle = '#383838'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.strokeRect(0, 0, canvas.width, canvas.height); }
