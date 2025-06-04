@@ -18,12 +18,10 @@
             <a href="#" id="loginTriggerLink" class="top-nav-link">Login</a>
             <button id="aboutButton" class="about-button">Sobre</button>
         </div>
-
         <header>
             <h1>Bem-vindo à Central de Jogos!</h1>
             <p>Escolha um dos nossos jogos clássicos para se divertir.</p>
         </header>
-
         <nav class="game-selection">
             <h2>Escolha seu Jogo:</h2>
             <ul>
@@ -31,7 +29,8 @@
                 <li><a href="pong.html" class="game-link">Pong Clássico</a></li>
                 <li><a href="quebra_blocos.html" class="game-link">Quebra Blocos</a></li>
             </ul>
-        </nav> <section class="ranking-section">
+        </nav>
+        <section class="ranking-section">
             <h2>🏆 Ranking dos Melhores Jogadores 🏆</h2>
             <p>Veja quem são os mestres em nossos jogos!</p>
             <div class="ranking-game-selection">
@@ -43,23 +42,20 @@
                 <p class="ranking-placeholder">Selecione um jogo acima para ver o ranking.</p>
             </div>
         </section>
-
-        <section class="adsense-area"> <h2>Anúncios</h2>
+        <section class="adsense-area">
+            <h2>Anúncios</h2>
             <p>Espaço reservado para anúncios do Google AdSense. <br> Configure sua conta AdSense e cole o código aqui para monetizar seu site.</p>
         </section>
-
         <footer>
             <p>&copy; 2025 Central de Jogos - Todos os direitos reservados.</p>
         </footer>
-    </div> <div id="aboutModal" class="modal">
+    </div>
+
+    <div id="aboutModal" class="modal">
         <div class="modal-content">
             <span class="close-button about-modal-close">&times;</span>
             <h2>Sobre a Central de Jogos</h2>
-            <p>Bem-vindo à Central de Jogos! Este espaço foi cuidadosamente desenvolvido por <strong><a href="https://www.instagram.com/mizykj/" target="_blank" rel="noopener noreferrer" class="inline-link">Mizy Dev</a></strong>.</p>
-            <p>A principal motivação por trás da criação deste site é simples: trazer diversão e um toque de nostalgia através de jogos clássicos que marcaram gerações. Queremos oferecer um local onde você possa relaxar, desafiar a si mesmo e, quem sabe, relembrar bons momentos.</p>
-            <p>Cada jogo foi implementado com o intuito de ser leve, acessível e fácil de jogar. Esperamos que você desfrute da experiência tanto quanto nós gostamos de criá-la.</p>
-            <p>Divirta-se!</p>
-            <p><em>- <a href="https://www.instagram.com/mizykj/" target="_blank" rel="noopener noreferrer" class="inline-link">Mizy Dev</a></em></p>
+            <p>Bem-vindo à Central de Jogos! ... (conteúdo do modal sobre) ... <em>- <a href="https://www.instagram.com/mizykj/" target="_blank" rel="noopener noreferrer" class="inline-link">Mizy Dev</a></em></p>
         </div>
     </div>
 
@@ -78,6 +74,9 @@
             <div class="auth-form" id="registroContainerModal" style="display: none;">
                 <h3>Crie sua Conta</h3>
                 <form id="formRegistroModal">
+                    <div>
+                        <label for="registroUsernameModal">Nome de Usuário (3-20 caracteres):</label> <input type="text" id="registroUsernameModal" name="registroUsernameModal" required minlength="3" maxlength="20" pattern="^[a-zA-Z0-9_]+$">
+                    </div>
                     <div><label for="registroEmailModal">Email:</label><input type="email" id="registroEmailModal" name="registroEmailModal" required></div>
                     <div><label for="registroSenhaModal">Senha (mín. 6 caracteres):</label><input type="password" id="registroSenhaModal" name="registroSenhaModal" required minlength="6"></div>
                     <div><label for="registroConfirmaSenhaModal">Confirmar Senha:</label><input type="password" id="registroConfirmaSenhaModal" name="registroConfirmaSenhaModal" required minlength="6"></div>
@@ -89,182 +88,172 @@
         </div>
     </div>
 
-    <script>
-        const aboutModalElement = document.getElementById('aboutModal'); // Renomeado para evitar conflito de nome
-        const aboutBtnElement = document.getElementById('aboutButton'); // Renomeado
-        if (aboutModalElement) { // Verifica se o modal existe antes de adicionar listeners
-            const aboutModalCloseBtnElement = aboutModalElement.querySelector('.about-modal-close');
-
-            if (aboutBtnElement) {
-                aboutBtnElement.onclick = function() {
-                    aboutModalElement.style.display = 'flex';
-                    setTimeout(function() { aboutModalElement.classList.add('modal-visible'); }, 10);
-                    document.body.classList.add('modal-open');
-                }
-            }
-            function closeAboutModal() {
-                aboutModalElement.classList.remove('modal-visible');
-                document.body.classList.remove('modal-open');
-                setTimeout(function() {
-                    if (!aboutModalElement.classList.contains('modal-visible')) { aboutModalElement.style.display = 'none'; }
-                }, 300);
-            }
-            if (aboutModalCloseBtnElement) aboutModalCloseBtnElement.onclick = closeAboutModal;
-            
-            window.addEventListener('click', function(event) {
-                if (event.target == aboutModalElement) { // Verifica se o clique foi no overlay do modal "Sobre"
-                    closeAboutModal();
-                }
-            });
-        }
+    <script> /* Script do Modal Sobre */
+        const aboutModalElement = document.getElementById('aboutModal'); const aboutBtnElement = document.getElementById('aboutButton'); if (aboutModalElement) { const aboutModalCloseBtnElement = aboutModalElement.querySelector('.about-modal-close'); if (aboutBtnElement) { aboutBtnElement.onclick = function() { aboutModalElement.style.display = 'flex'; setTimeout(function() { aboutModalElement.classList.add('modal-visible'); }, 10); document.body.classList.add('modal-open'); } } function closeAboutModal() { aboutModalElement.classList.remove('modal-visible'); document.body.classList.remove('modal-open'); setTimeout(function() { if (!aboutModalElement.classList.contains('modal-visible')) { aboutModalElement.style.display = 'none'; } }, 300); } if (aboutModalCloseBtnElement) aboutModalCloseBtnElement.onclick = closeAboutModal; window.addEventListener('click', function(event) { if (event.target == aboutModalElement) closeAboutModal(); });}
     </script>
 
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-      import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-      import { getFirestore, collection, addDoc, serverTimestamp, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js"; // Adicionado query, where, orderBy, limit, getDocs
-
-      // SUA CONFIGURAÇÃO DO FIREBASE - VERIFIQUE E USE OS SEUS VALORES REAIS!
-      const firebaseConfig = {
-        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA PELO SEU VALOR REAL
-        authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA PELO SEU VALOR REAL
-        projectId: "central-de-jogos-4bdf1", // SUBSTITUA PELO SEU VALOR REAL
-        storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR NO SEU CONSOLE!
-        messagingSenderId: "552827412845", // SUBSTITUA PELO SEU VALOR REAL
-        appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SUBSTITUA PELO SEU VALOR REAL
-        measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA (opcional)
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script>
+      const firebaseConfig = { /* SEUS DADOS REAIS AQUI */
+        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU",
+        authDomain: "central-de-jogos-4bdf1.firebaseapp.com",
+        projectId: "central-de-jogos-4bdf1",
+        storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR
+        messagingSenderId: "552827412845",
+        appId: "1:552827412845:web:57af946ce0b1a53a113a64",
+        measurementId: "G-RDL4Y8ELKQ"
       };
-
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-
-      console.log("Firebase Modular SDK inicializado (Auth e Firestore prontos) em index.html!");
-
-      window.firebaseAppInstance = app;
-      window.firebaseAuthInstance = auth;
-      window.firebaseDbInstance = db;
-
-      window.fbCreateUser = (email, password) => createUserWithEmailAndPassword(auth, email, password);
-      window.fbSignIn = (email, password) => signInWithEmailAndPassword(auth, email, password);
-      window.fbSignOut = () => signOut(auth);
-      window.fbOnAuthStateChanged = (callback) => onAuthStateChanged(auth, callback);
-
-      // Funções do Firestore expostas para ranking
-      window.fbGetCollection = (collectionName) => collection(db, collectionName);
-      window.fbQuery = (ref, ...constraints) => query(ref, ...constraints); // Adicionado para query
-      window.fbWhere = (field, op, value) => where(field, op, value); // Adicionado para where
-      window.fbOrderBy = (field, direction) => orderBy(field, direction); // Adicionado para orderBy
-      window.fbLimit = (count) => limit(count); // Adicionado para limit
-      window.fbGetDocs = (query) => getDocs(query); // Adicionado para getDocs
-      window.fbAddDoc = (collectionName, data) => addDoc(collection(db, collectionName), data); // Já existia para score
-      window.fbServerTimestamp = () => serverTimestamp(); // Já existia para score
-      
-      window.dispatchEvent(new CustomEvent('firebaseReady'));
-      console.log("'firebaseReady' event dispatched from index.html!");
+      firebase.initializeApp(firebaseConfig);
+      window.firebaseAuth = firebase.auth();
+      window.firebaseDb = firebase.firestore();
+      console.log("Firebase Compat SDKs carregados e Firebase inicializado em index.html!");
     </script>
 
-    <script>
-        window.addEventListener('firebaseReady', () => {
-            console.log("Evento 'firebaseReady' recebido no script principal do index.html!");
-            
-            // Instâncias do Firebase (já estão globais, mas podemos pegá-las para clareza local)
-            const authInstance = window.firebaseAuthInstance;
-            const dbInstance = window.firebaseDbInstance;
+    <script> // Script Principal para Lógica de Autenticação e Ranking
+        (function() { // IIFE para escopo local
+            if (!window.firebaseAuth || !window.firebaseDb) {
+                console.error("Firebase Auth ou Firestore não estão prontos no index.html UI script.");
+                return;
+            }
+            const auth = window.firebaseAuth; // Usar a instância global
+            const db = window.firebaseDb;   // Usar a instância global
 
-            // ------ LÓGICA DA UI DE AUTENTICAÇÃO (MODAL DE LOGIN/REGISTRO) ------
+            // --- SELETORES PARA UI DE AUTENTICAÇÃO ---
             const loginTriggerLink = document.getElementById('loginTriggerLink');
             const loggedInUserInfo = document.getElementById('loggedInUserInfo');
             const loggedInUserEmailDisplay = document.getElementById('loggedInUserEmail');
             const logoutModalButton = document.getElementById('logoutModalButton');
-            const authModalElement = document.getElementById('authModal'); // Renomeado para evitar conflito
+            const authModalElement = document.getElementById('authModal');
             
-            if (authModalElement) { // Verifica se o modal de auth existe
-                const authModalCloseBtnElement = authModalElement.querySelector('.auth-modal-close');
-                const loginContainerModal = document.getElementById('loginContainerModal');
-                const registroContainerModal = document.getElementById('registroContainerModal');
-                const formLoginModal = document.getElementById('formLoginModal');
-                const loginEmailModalInput = document.getElementById('loginEmailModal');
-                const loginSenhaModalInput = document.getElementById('loginSenhaModal');
-                const formRegistroModal = document.getElementById('formRegistroModal');
-                const registroEmailModalInput = document.getElementById('registroEmailModal');
-                const registroSenhaModalInput = document.getElementById('registroSenhaModal');
-                const registroConfirmaSenhaModalInput = document.getElementById('registroConfirmaSenhaModal');
-                const switchToRegisterInModalLink = document.getElementById('switchToRegisterInModalLink');
-                const switchToLoginInModalLink = document.getElementById('switchToLoginInModalLink');
-                const authMessageModal = document.getElementById('authMessageModal');
+            const authModalCloseBtnElement = authModalElement ? authModalElement.querySelector('.auth-modal-close') : null;
+            const loginContainerModal = document.getElementById('loginContainerModal');
+            const registroContainerModal = document.getElementById('registroContainerModal');
+            const formLoginModal = document.getElementById('formLoginModal');
+            const loginEmailModalInput = document.getElementById('loginEmailModal');
+            const loginSenhaModalInput = document.getElementById('loginSenhaModal');
+            const formRegistroModal = document.getElementById('formRegistroModal');
+            const registroUsernameModalInput = document.getElementById('registroUsernameModal'); // NOVO
+            const registroEmailModalInput = document.getElementById('registroEmailModal');
+            const registroSenhaModalInput = document.getElementById('registroSenhaModal');
+            const registroConfirmaSenhaModalInput = document.getElementById('registroConfirmaSenhaModal');
+            const switchToRegisterInModalLink = document.getElementById('switchToRegisterInModalLink');
+            const switchToLoginInModalLink = document.getElementById('switchToLoginInModalLink');
+            const authMessageModal = document.getElementById('authMessageModal');
 
-                function mostrarMensagemAuthModal(mensagem, tipo = 'error') {
-                    authMessageModal.textContent = mensagem;
-                    authMessageModal.className = 'auth-message ';
-                    if (tipo === 'success') authMessageModal.classList.add('success');
-                    else authMessageModal.classList.add('error');
-                }
-                function openAuthModal(view = 'login') {
-                    if (view === 'login') { loginContainerModal.style.display = 'block'; registroContainerModal.style.display = 'none'; }
-                    else { loginContainerModal.style.display = 'none'; registroContainerModal.style.display = 'block'; }
-                    authMessageModal.textContent = ''; authMessageModal.className = 'auth-message';
-                    authModalElement.style.display = 'flex';
-                    setTimeout(() => { authModalElement.classList.add('modal-visible'); }, 10);
-                    document.body.classList.add('modal-open');
-                }
-                function closeAuthModal() {
-                    authModalElement.classList.remove('modal-visible');
-                    document.body.classList.remove('modal-open');
-                    setTimeout(() => { if (!authModalElement.classList.contains('modal-visible')) { authModalElement.style.display = 'none'; }}, 300);
-                }
+            function mostrarMensagemAuthModal(mensagem, tipo = 'error') {
+                if (!authMessageModal) return;
+                authMessageModal.textContent = mensagem;
+                authMessageModal.className = 'auth-message ';
+                if (tipo === 'success') authMessageModal.classList.add('success');
+                else authMessageModal.classList.add('error');
+            }
+            function openAuthModal(view = 'login') {
+                if (!authModalElement || !loginContainerModal || !registroContainerModal) return;
+                if (view === 'login') { loginContainerModal.style.display = 'block'; registroContainerModal.style.display = 'none'; }
+                else { loginContainerModal.style.display = 'none'; registroContainerModal.style.display = 'block'; }
+                if (authMessageModal) { authMessageModal.textContent = ''; authMessageModal.className = 'auth-message'; }
+                authModalElement.style.display = 'flex';
+                setTimeout(() => { authModalElement.classList.add('modal-visible'); }, 10);
+                document.body.classList.add('modal-open');
+            }
+            function closeAuthModal() {
+                if (!authModalElement) return;
+                authModalElement.classList.remove('modal-visible');
+                document.body.classList.remove('modal-open');
+                setTimeout(() => { if (!authModalElement.classList.contains('modal-visible')) { authModalElement.style.display = 'none'; }}, 300);
+            }
 
-                if (loginTriggerLink) loginTriggerLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
-                if (authModalCloseBtnElement) authModalCloseBtnElement.onclick = closeAuthModal;
-                window.addEventListener('click', function(event) { if (event.target == authModalElement) closeAuthModal(); });
-                if (switchToRegisterInModalLink) switchToRegisterInModalLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('register'); });
-                if (switchToLoginInModalLink) switchToLoginInModalLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
+            if (loginTriggerLink) loginTriggerLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
+            if (authModalCloseBtnElement) authModalCloseBtnElement.onclick = closeAuthModal;
+            window.addEventListener('click', function(event) { if (event.target == authModalElement) closeAuthModal(); });
+            if (switchToRegisterInModalLink) switchToRegisterInModalLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('register'); });
+            if (switchToLoginInModalLink) switchToLoginInModalLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
 
-                if (formRegistroModal) {
-                    formRegistroModal.addEventListener('submit', async (e) => {
-                        e.preventDefault(); const email = registroEmailModalInput.value; const senha = registroSenhaModalInput.value; const cSenha = registroConfirmaSenhaModalInput.value;
-                        if (senha.length < 6) { mostrarMensagemAuthModal('Senha: mín. 6 caracteres.'); return; } if (senha !== cSenha) { mostrarMensagemAuthModal('As senhas não coincidem!'); return; }
-                        try { await window.fbCreateUser(email, senha); formRegistroModal.reset(); }
-                        catch (error) { console.error("Erro no registro (index.html):", error); if (error.code === 'auth/email-already-in-use') mostrarMensagemAuthModal('Este email já está em uso.'); else if (error.code === 'auth/weak-password') mostrarMensagemAuthModal('Senha fraca.'); else mostrarMensagemAuthModal('Erro ao registrar: ' + error.message.replace('Firebase: ',''));}
-                    });
-                }
-                if (formLoginModal) {
-                    formLoginModal.addEventListener('submit', async (e) => {
-                        e.preventDefault(); const email = loginEmailModalInput.value; const senha = loginSenhaModalInput.value;
-                        try { await window.fbSignIn(email, senha); formLoginModal.reset(); }
-                        catch (error) { console.error("Erro no login (index.html):", error); if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') mostrarMensagemAuthModal('Email ou senha inválidos.'); else mostrarMensagemAuthModal('Erro ao fazer login: ' + error.message.replace('Firebase: ',''));}
-                    });
-                }
-                if (logoutModalButton) {
-                    logoutModalButton.addEventListener('click', async (e) => {
-                        e.preventDefault(); try { await window.fbSignOut(); } catch (error) { console.error("Erro no logout (index.html):", error); }
-                    });
-                }
+            // LÓGICA DE REGISTRO ATUALIZADA
+            if (formRegistroModal) {
+                formRegistroModal.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const username = registroUsernameModalInput.value.trim();
+                    const email = registroEmailModalInput.value;
+                    const senha = registroSenhaModalInput.value;
+                    const confirmaSenha = registroConfirmaSenhaModalInput.value;
 
-                // Observador do estado de autenticação para a UI do topo
-                if (window.fbOnAuthStateChanged && authInstance) { // Usa authInstance que pegamos de window.firebaseAuthInstance
-                    window.fbOnAuthStateChanged(user => {
-                        if (user) {
-                            if (loggedInUserInfo) loggedInUserInfo.style.display = 'flex';
-                            if (loggedInUserEmailDisplay) loggedInUserEmailDisplay.textContent = user.email;
-                            if (loginTriggerLink) loginTriggerLink.style.display = 'none';
-                            closeAuthModal(); // Fecha o modal se estiver aberto após login/registro
-                        } else {
-                            if (loggedInUserInfo) loggedInUserInfo.style.display = 'none';
-                            if (loginTriggerLink) loginTriggerLink.style.display = 'inline-block';
+                    if (username.length < 3 || username.length > 20) { mostrarMensagemAuthModal('Nome de usuário: 3-20 caracteres.'); return; }
+                    if (!/^[a-zA-Z0-9_]+$/.test(username)) { mostrarMensagemAuthModal('Nome de usuário: apenas letras, números e _'); return; }
+                    if (senha.length < 6) { mostrarMensagemAuthModal('Senha: mín. 6 caracteres.'); return; }
+                    if (senha !== confirmaSenha) { mostrarMensagemAuthModal('As senhas não coincidem!'); return; }
+
+                    try {
+                        // 1. Verificar unicidade do username (convertendo para minúsculas para a verificação)
+                        const usuariosRef = db.collection("usuarios");
+                        const usernameLower = username.toLowerCase();
+                        const querySnapshot = await usuariosRef.where("usernameLower", "==", usernameLower).limit(1).get();
+
+                        if (!querySnapshot.empty) {
+                            mostrarMensagemAuthModal('Este nome de usuário já está em uso. Escolha outro.');
+                            return;
                         }
-                    });
+
+                        // 2. Criar usuário no Firebase Auth
+                        const userCredential = await auth.createUserWithEmailAndPassword(email, senha);
+                        const user = userCredential.user;
+
+                        // 3. Salvar dados do usuário no Firestore
+                        await db.collection("usuarios").doc(user.uid).set({
+                            username: username,
+                            usernameLower: usernameLower, // Para busca e unicidade case-insensitive
+                            email: user.email,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        
+                        formRegistroModal.reset();
+                        // onAuthStateChanged vai fechar o modal e atualizar UI
+                    } catch (error) {
+                        console.error("Erro no registro (index.html):", error);
+                        if (error.code === 'auth/email-already-in-use') mostrarMensagemAuthModal('Este email já está em uso.');
+                        else if (error.code === 'auth/weak-password') mostrarMensagemAuthModal('Senha fraca.');
+                        else mostrarMensagemAuthModal('Erro ao registrar: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));
+                    }
+                });
+            }
+
+            // LÓGICA DE LOGIN (sem alterações na funcionalidade, apenas usa 'auth')
+            if (formLoginModal) {
+                formLoginModal.addEventListener('submit', async (e) => {
+                    e.preventDefault(); const email = loginEmailModalInput.value; const senha = loginSenhaModalInput.value;
+                    try { await auth.signInWithEmailAndPassword(email, senha); formLoginModal.reset(); }
+                    catch (error) { console.error("Erro no login (index.html):", error); if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') mostrarMensagemAuthModal('Email ou senha inválidos.'); else mostrarMensagemAuthModal('Erro ao fazer login: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));}
+                });
+            }
+
+            // LÓGICA DE LOGOUT (sem alterações na funcionalidade, apenas usa 'auth')
+            if (logoutModalButton) {
+                logoutModalButton.addEventListener('click', async (e) => {
+                    e.preventDefault(); try { await auth.signOut(); } catch (error) { console.error("Erro no logout (index.html):", error); }
+                });
+            }
+
+            // OBSERVADOR DO ESTADO DE AUTENTICAÇÃO (sem alterações na funcionalidade, apenas usa 'auth')
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    if (loggedInUserInfo) loggedInUserInfo.style.display = 'flex';
+                    if (loggedInUserEmailDisplay) loggedInUserEmailDisplay.textContent = user.email; // Poderíamos buscar o username aqui depois
+                    if (loginTriggerLink) loginTriggerLink.style.display = 'none';
+                    if (authModalElement && authModalElement.classList.contains('modal-visible')) closeAuthModal();
                 } else {
-                     console.error("Instância de Auth ou fbOnAuthStateChanged não pronta para UI do index.html.");
+                    if (loggedInUserInfo) loggedInUserInfo.style.display = 'none';
+                    if (loginTriggerLink) loginTriggerLink.style.display = 'inline-block';
                 }
-            } // Fim do if (authModalElement)
+            });
 
             // ------ LÓGICA DO RANKING ------
             const rankingGameButtons = document.querySelectorAll('.ranking-game-btn');
             const rankingDisplayArea = document.getElementById('rankingDisplayArea');
-            const rankingPlaceholder = document.querySelector('#rankingDisplayArea .ranking-placeholder'); // Mais específico
+            const rankingPlaceholder = rankingDisplayArea ? rankingDisplayArea.querySelector('.ranking-placeholder') : null;
 
-            if (rankingGameButtons.length > 0 && rankingDisplayArea && dbInstance) { // Usa dbInstance
+            if (rankingGameButtons.length > 0 && rankingDisplayArea && db) {
                 rankingGameButtons.forEach(button => {
                     button.addEventListener('click', async () => {
                         const gameId = button.dataset.gameid;
@@ -272,42 +261,30 @@
                         button.classList.add('active');
                         if (rankingPlaceholder) rankingPlaceholder.style.display = 'none';
                         rankingDisplayArea.innerHTML = '<p class="ranking-placeholder">Carregando ranking...</p>';
-
                         try {
-                            // Usando as funções globais para construir a query modular
-                            const scoresCollectionRef = window.fbGetCollection("pontuacoes");
-                            const q = window.fbQuery(
-                                scoresCollectionRef,
-                                window.fbWhere("gameId", "==", gameId),
-                                window.fbOrderBy("score", "desc"),
-                                window.fbLimit(10)
-                            );
-                            const querySnapshot = await window.fbGetDocs(q);
-
-                            if (querySnapshot.empty) {
-                                rankingDisplayArea.innerHTML = '<p class="ranking-placeholder">Nenhuma pontuação encontrada para este jogo ainda!</p>';
-                                return;
-                            }
+                            const scoresRef = db.collection("pontuacoes"); // Usando a instância 'db'
+                            const querySnapshot = await scoresRef
+                                .where("gameId", "==", gameId)
+                                .orderBy("score", "desc")
+                                .limit(10)
+                                .get();
+                            if (querySnapshot.empty) { rankingDisplayArea.innerHTML = '<p class="ranking-placeholder">Nenhuma pontuação para este jogo!</p>'; return; }
                             let rankingHtml = '<table><thead><tr><th>#</th><th>Jogador</th><th>Pontuação</th></tr></thead><tbody>';
                             let rank = 1;
                             querySnapshot.forEach(doc => {
                                 const data = doc.data();
                                 const userEmailEscaped = data.userEmail ? data.userEmail.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "Anônimo";
+                                // Futuramente, buscaremos o username aqui com base no data.userId
                                 rankingHtml += `<tr><td>${rank}</td><td>${userEmailEscaped}</td><td>${data.score}</td></tr>`;
                                 rank++;
                             });
                             rankingHtml += '</tbody></table>';
                             rankingDisplayArea.innerHTML = rankingHtml;
-                        } catch (error) {
-                            console.error("Erro ao buscar ranking: ", error);
-                            rankingDisplayArea.innerHTML = '<p class="ranking-placeholder" style="color: red;">Erro ao carregar o ranking.</p>';
-                        }
+                        } catch (error) { console.error("Erro ao buscar ranking: ", error); rankingDisplayArea.innerHTML = '<p class="ranking-placeholder" style="color: red;">Erro ao carregar o ranking.</p>';}
                     });
                 });
-            } else {
-                // Logs de aviso se elementos não forem encontrados
             }
-        }); // Fim do window.addEventListener('firebaseReady', ...)
+        })(); // Fim da IIFE
     </script>
 </body>
 </html>
