@@ -31,9 +31,7 @@
                  <p class="game-start-message">Use as <strong>Setas Direcionais</strong> ou <strong>A/D</strong> para mover a barra e iniciar.</p>
                  <p class="game-start-message">Quebre todos os tijolos! Você tem 3 vidas.</p>
             </div>
-
             <canvas id="gameCanvas" width="550" height="450"></canvas>
-            
             <div id="levelCompleteScreenQB" class="modal" style="position: absolute; display: none;">
                 <div class="modal-content">
                     <h2 id="levelCompleteMessageQB">Nível X Completo!</h2>
@@ -42,7 +40,6 @@
                     <button id="nextLevelButtonQB">Próximo Nível</button>
                 </div>
             </div>
-
             <div id="quebraBlocosGameInfo" class="game-info-bar" style="display: none;">
                 <p>Pontos: <span id="scoreQB">0</span></p>
                 <p>Vidas: <span id="livesQB">3</span></p>
@@ -91,15 +88,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script>
-      // SUA CONFIGURAÇÃO DO FIREBASE - VERIFIQUE E USE OS SEUS VALORES REAIS!
-      const firebaseConfig = {
-        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA
-        authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA
-        projectId: "central-de-jogos-4bdf1", // SUBSTITUA
-        storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR
-        messagingSenderId: "552827412845", // SUBSTITUA
-        appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SUBSTITUA
-        measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA (opcional)
+      const firebaseConfig = { 
+        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", 
+        authDomain: "central-de-jogos-4bdf1.firebaseapp.com", 
+        projectId: "central-de-jogos-4bdf1", 
+        storageBucket: "central-de-jogos-4bdf1.appspot.com",
+        messagingSenderId: "552827412845",
+        appId: "1:552827412845:web:57af946ce0b1a53a113a64", 
+        measurementId: "G-RDL4Y8ELKQ" 
       };
       };
       firebase.initializeApp(firebaseConfig);
@@ -109,8 +105,82 @@
     </script>
 
     <script>
-        // COPIE E ADAPTE A LÓGICA COMPLETA DO MODAL DE AUTENTICAÇÃO DO INDEX.HTML OU SNAKE.HTML AQUI
-        // Certifique-se de usar os IDs corretos com sufixo "QuebraBlocos"
+        (function() {
+            if (!window.firebaseAuth || !window.firebaseDb) { return; }
+            const auth = window.firebaseAuth; const db = window.firebaseDb;
+
+            const loginTriggerLink = document.getElementById('loginTriggerLinkQuebraBlocos');
+            const loggedInUserInfo = document.getElementById('loggedInUserInfoQuebraBlocos');
+            const loggedInUserDisplay = document.getElementById('loggedInUserDisplayQuebraBlocos');
+            const logoutButton = document.getElementById('logoutButtonQuebraBlocos');
+            const authModal = document.getElementById('authModalQuebraBlocos');
+            
+            const authModalCloseBtn = authModal ? authModal.querySelector('.auth-modal-close-qb') : null;
+            const loginContainerModal = document.getElementById('loginContainerModalQuebraBlocos');
+            const registroContainerModal = document.getElementById('registroContainerModalQuebraBlocos');
+            const formLoginModal = document.getElementById('formLoginModalQuebraBlocos');
+            const loginEmailModalInput = document.getElementById('loginEmailModalQuebraBlocos');
+            const loginSenhaModalInput = document.getElementById('loginSenhaModalQuebraBlocos');
+            const formRegistroModal = document.getElementById('formRegistroModalQuebraBlocos');
+            const registroUsernameModalInput = document.getElementById('registroUsernameModalQuebraBlocos');
+            const registroEmailModalInput = document.getElementById('registroEmailModalQuebraBlocos');
+            const registroSenhaModalInput = document.getElementById('registroSenhaModalQuebraBlocos');
+            const registroConfirmaSenhaModalInput = document.getElementById('registroConfirmaSenhaModalQuebraBlocos');
+            const switchToRegisterLink = document.getElementById('switchToRegisterInModalLinkQuebraBlocos');
+            const switchToLoginLink = document.getElementById('switchToLoginInModalLinkQuebraBlocos');
+            const authMessageModal = document.getElementById('authMessageModalQuebraBlocos');
+
+            function mostrarMensagemAuthModal(mensagem, tipo = 'error') { if (!authMessageModal) return; authMessageModal.textContent = mensagem; authMessageModal.className = 'auth-message '; if (tipo === 'success') authMessageModal.classList.add('success'); else authMessageModal.classList.add('error');}
+            function openAuthModal(view = 'login') { if (!authModal || !loginContainerModal || !registroContainerModal) return; if (view === 'login') { loginContainerModal.style.display = 'block'; registroContainerModal.style.display = 'none'; } else { loginContainerModal.style.display = 'none'; registroContainerModal.style.display = 'block'; } if (authMessageModal) { authMessageModal.textContent = ''; authMessageModal.className = 'auth-message';} authModal.style.display = 'flex'; setTimeout(() => { authModal.classList.add('modal-visible'); }, 10); document.body.classList.add('modal-open');}
+            function closeAuthModal() { if (!authModal) return; authModal.classList.remove('modal-visible'); document.body.classList.remove('modal-open'); setTimeout(() => { if (!authModal.classList.contains('modal-visible')) { authModal.style.display = 'none'; }}, 300);}
+
+            if (loginTriggerLink) loginTriggerLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
+            if (authModalCloseBtn) authModalCloseBtn.onclick = closeAuthModal;
+            if (authModal) authModal.addEventListener('click', function(event) { if (event.target == authModal) closeAuthModal(); });
+            if (switchToRegisterLink) switchToRegisterLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('register'); });
+            if (switchToLoginLink) switchToLoginLink.addEventListener('click', (e) => { e.preventDefault(); openAuthModal('login'); });
+            
+            if (formRegistroModal) {
+                formRegistroModal.addEventListener('submit', async (e) => {
+                    e.preventDefault(); const username = registroUsernameModalInput.value.trim(); const email = registroEmailModalInput.value; const senha = registroSenhaModalInput.value; const cSenha = registroConfirmaSenhaModalInput.value;
+                    if (username.length < 3 || username.length > 20) { mostrarMensagemAuthModal('Nome de usuário: 3-20 caracteres.'); return; } if (!/^[a-zA-Z0-9_]+$/.test(username)) { mostrarMensagemAuthModal('Nome de usuário: apenas letras, números e _'); return; } if (senha.length < 6) { mostrarMensagemAuthModal('Senha: mín. 6 caracteres.'); return; } if (senha !== cSenha) { mostrarMensagemAuthModal('As senhas não coincidem!'); return; }
+                    try {
+                        const usuariosRef = db.collection("usuarios"); const usernameLower = username.toLowerCase(); const querySnapshot = await usuariosRef.where("usernameLower", "==", usernameLower).limit(1).get();
+                        if (!querySnapshot.empty) { mostrarMensagemAuthModal('Este nome de usuário já está em uso.'); return; }
+                        const userCredential = await auth.createUserWithEmailAndPassword(email, senha); const user = userCredential.user;
+                        await db.collection("usuarios").doc(user.uid).set({ username: username, usernameLower: usernameLower, email: user.email, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                        formRegistroModal.reset(); mostrarMensagemAuthModal('Conta criada! Você está logado.', 'success'); setTimeout(closeAuthModal, 1500);
+                    } catch (error) { console.error("Erro registro (Quebra Blocos):", error); if (error.code === 'auth/email-already-in-use') mostrarMensagemAuthModal('Este email já está em uso.'); else if (error.code === 'auth/weak-password') mostrarMensagemAuthModal('Senha fraca.'); else if (error.code === 'permission-denied') mostrarMensagemAuthModal('Erro de permissão ao salvar dados.'); else mostrarMensagemAuthModal('Erro ao registrar: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));}
+                });
+            }
+            if (formLoginModal) {
+                formLoginModal.addEventListener('submit', async (e) => {
+                    e.preventDefault(); const email = loginEmailModalInput.value; const senha = loginSenhaModalInput.value;
+                    try { await auth.signInWithEmailAndPassword(email, senha); formLoginModal.reset(); }
+                    catch (error) { console.error("Erro login (Quebra Blocos):", error); if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential' || error.code === 'auth/invalid-email') mostrarMensagemAuthModal('Email ou senha inválidos.'); else mostrarMensagemAuthModal('Erro ao fazer login: ' + error.message.replace('FirebaseError: ','').replace('Firebase: ',''));}
+                });
+            }
+            if (logoutButton) {
+                logoutButton.addEventListener('click', async (e) => { e.preventDefault(); try { await auth.signOut(); } catch (error) { console.error("Erro logout (Quebra Blocos):", error); } });
+            }
+
+            auth.onAuthStateChanged(async user => {
+                if (user) {
+                    if (loggedInUserInfo) loggedInUserInfo.style.display = 'flex';
+                    if (loginTriggerLink) loginTriggerLink.style.display = 'none';
+                    try {
+                        const userDoc = await db.collection("usuarios").doc(user.uid).get();
+                        if (userDoc.exists && userDoc.data().username) {
+                            if (loggedInUserDisplay) loggedInUserDisplay.textContent = `Olá, ${userDoc.data().username}!`;
+                        } else { if (loggedInUserDisplay) loggedInUserDisplay.textContent = user.email; }
+                    } catch (error) { if (loggedInUserDisplay) loggedInUserDisplay.textContent = user.email; }
+                    if (authModal && authModal.classList.contains('modal-visible')) closeAuthModal();
+                } else {
+                    if (loggedInUserInfo) loggedInUserInfo.style.display = 'none';
+                    if (loginTriggerLink) loginTriggerLink.style.display = 'inline-block';
+                }
+            });
+        })();
     </script>
 
     <script src="quebra_blocos.js"></script>
