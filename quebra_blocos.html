@@ -28,7 +28,7 @@
         <main class="game-area">
             <button id="startButtonQuebraBlocos" class="game-start-button">Iniciar Jogo</button>
             <div id="quebraBlocosPreGameMessages" class="game-start-message-container">
-                 <p class="game-start-message">Use as <strong>Setas Direcionais</strong> ou <strong>A/D</strong> para mover a barra.</p>
+                 <p class="game-start-message">Use as <strong>Setas Direcionais</strong> ou <strong>A/D</strong> para mover a barra e iniciar.</p>
                  <p class="game-start-message">Quebre todos os tijolos! Você tem 3 vidas.</p>
             </div>
 
@@ -91,6 +91,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script>
+      // SUA CONFIGURAÇÃO DO FIREBASE - VERIFIQUE E USE OS SEUS VALORES REAIS!
       const firebaseConfig = {
         apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA
         authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA
@@ -99,6 +100,7 @@
         messagingSenderId: "552827412845", // SUBSTITUA
         appId: "1:552827412845:web:57af946ce0b1a53a113a64", // SUBSTITUA
         measurementId: "G-RDL4Y8ELKQ" // SUBSTITUA (opcional)
+      };
       };
       firebase.initializeApp(firebaseConfig);
       window.firebaseAuth = firebase.auth();
@@ -109,13 +111,6 @@
     <script>
         // COPIE E ADAPTE A LÓGICA COMPLETA DO MODAL DE AUTENTICAÇÃO DO INDEX.HTML OU SNAKE.HTML AQUI
         // Certifique-se de usar os IDs corretos com sufixo "QuebraBlocos"
-        // Esta parte é crucial para que o login e registro funcionem nesta página
-        (function() {
-            if (!window.firebaseAuth) return;
-            const auth = window.firebaseAuth;
-            const db = window.firebaseDb;
-            // ... (coloque aqui toda a lógica de UI de auth, igual fizemos para snake.html) ...
-        })();
     </script>
 
     <script src="quebra_blocos.js"></script>
