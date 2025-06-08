@@ -250,4 +250,4 @@ function gameLoop() {
     }
 }
 
-drawIntialPongScreen();
+drawInitialPongScreen();
