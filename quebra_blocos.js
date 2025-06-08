@@ -1,7 +1,8 @@
+// quebra_blocos.js - CORRIGIDO para o bug de rolagem de página
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Elementos de UI do Jogo
 const scoreDisplayQB = document.getElementById('scoreQB');
 const livesDisplayQB = document.getElementById('livesQB');
 const levelDisplayQB = document.getElementById('levelQB');
@@ -18,18 +19,15 @@ const ballRadius = 8;
 const paddleHeight = 12;
 const paddleWidth = 80;
 
-let score, lives, currentLevel;
-let gamePaused, gameOver, gameHasStartedQB, animationFrameIdQB;
-let qbCurrentUser, qbUsername;
-
+let score = 0, lives = INITIAL_LIVES, currentLevel = 1;
+let gamePaused = false, gameOver = false, gameHasStartedQB = false, animationFrameIdQB;
+let qbCurrentUser = null, qbUsername = null;
 let ballX, ballY, ballSpeedX, ballSpeedY;
 let paddleX;
 let rightPressedQB = false, leftPressedQB = false;
-
 let brickRowCount, brickColumnCount, brickWidth, brickHeight = 20, brickPadding = 5, brickOffsetTop = 40, brickOffsetLeft = 20;
 let bricks = [];
 const brickColors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#F1C40F', '#9B59B6', '#1ABC9C', '#E74C3C'];
-
 let paddleHitCount = 0;
 const HITS_FOR_SPEED_INCREASE = 8;
 const SPEED_INCREMENT = 0.2;
@@ -52,52 +50,68 @@ function drawBricksQB() { if (!ctx) return; for (let c = 0; c < brickColumnCount
 function drawInitialQuebraBlocosScreen() { if (!ctx || !canvas) return; gameHasStartedQB = false; gameOver = false; gamePaused = false; currentLevel = 1; score = 0; lives = INITIAL_LIVES; setupLevel(1); resetBallAndPaddleQB(); updateUIDisplaysQB(); ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, canvas.width, canvas.height); drawBricksQB(); drawPaddleQB(); drawBallQB(); if (quebraBlocosPreGameMessages) quebraBlocosPreGameMessages.style.display = 'block'; if (startButtonQuebraBlocos) startButtonQuebraBlocos.style.display = 'inline-block'; if (quebraBlocosGameInfo) { quebraBlocosGameInfo.style.display = 'flex'; } if (canvas) canvas.style.display = 'block'; if (levelCompleteScreenQB) levelCompleteScreenQB.style.display = 'none';}
 function initializeGameQuebraBlocos() { if (gameHasStartedQB) return; gameHasStartedQB = true; gameOver = false; gamePaused = false; if (startButtonQuebraBlocos) startButtonQuebraBlocos.style.display = 'none'; if (quebraBlocosPreGameMessages) quebraBlocosPreGameMessages.style.display = 'none'; if (quebraBlocosGameInfo) quebraBlocosGameInfo.style.display = 'flex'; if (levelCompleteScreenQB) levelCompleteScreenQB.style.display = 'none'; score = 0; lives = INITIAL_LIVES; currentLevel = 1; paddleHitCount = 0; setupLevel(currentLevel); resetBallAndPaddleQB(); updateUIDisplaysQB(); if (animationFrameIdQB) cancelAnimationFrame(animationFrameIdQB); gameLoopQB();}
 
-if (startButtonQuebraBlocos) startButtonQuebraBlocos.addEventListener('click', initializeGameQuebraBlocos);
+if (startButtonQuebraBlocos) { startButtonQuebraBlocos.addEventListener('click', initializeGameQuebraBlocos); }
 document.addEventListener('keydown', keyDownHandlerQB, false);
 document.addEventListener('keyup', keyUpHandlerQB, false);
 
-function keyDownHandlerQB(e) { const MOVE_KEYS = ['ArrowLeft', 'ArrowRight', 'a', 'd']; const ACTION_KEYS = ['Enter', ' ', 'ArrowUp', 'ArrowDown', ...MOVE_KEYS]; if (!gameHasStartedQB && MOVE_KEYS.includes(e.key.toLowerCase())) { e.preventDefault(); initializeGameQuebraBlocos(); } if (gameHasStartedQB && !gameOver && !gamePaused) { if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') rightPressedQB = true; else if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') leftPressedQB = true; if (MOVE_KEYS.includes(e.key.toLowerCase())) e.preventDefault(); } if (gamePaused && (ACTION_KEYS.includes(e.key) || e.code === 'Space')) { e.preventDefault(); if(nextLevelButtonQB) nextLevelButtonQB.click(); }}
-function keyUpHandlerQB(e) { if (e.key === 'Right' || e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') rightPressedQB = false; else if (e.key === 'Left' || e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') leftPressedQB = false; }
+// --- CONTROLES CORRIGIDOS PARA O BUG DE ROLAGEM ---
+function keyDownHandlerQB(e) {
+    const MOVE_KEYS = ['ArrowLeft', 'ArrowRight', 'a', 'd'];
+    const ACTION_KEYS = ['Enter', ' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+
+    // Se a tecla for QUALQUER tecla de ação do jogo, previne a rolagem.
+    if (ACTION_KEYS.includes(e.key) || MOVE_KEYS.includes(e.key.toLowerCase()) || e.code === 'Space') {
+        e.preventDefault();
+    }
+    
+    // Inicia o jogo com as teclas de movimento
+    if (!gameHasStartedQB && MOVE_KEYS.includes(e.key.toLowerCase())) {
+        initializeGameQuebraBlocos();
+    }
+    
+    // Controla o paddle se o jogo estiver ativo
+    if (gameHasStartedQB && !gameOver && !gamePaused) {
+        if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') rightPressedQB = true;
+        else if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') leftPressedQB = true;
+    }
+    
+    // Avança de nível na tela "Nível Completo"
+    if (gamePaused && (ACTION_KEYS.includes(e.key) || e.code === 'Space')) {
+        if(nextLevelButtonQB) nextLevelButtonQB.click(); 
+    }
+}
+function keyUpHandlerQB(e) {
+    if (e.key === 'Right' || e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') rightPressedQB = false;
+    else if (e.key === 'Left' || e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') leftPressedQB = false;
+}
 
 function collisionDetectionQB() { let allBricksCleared = true; for (let c = 0; c < brickColumnCount; c++) { for (let r = 0; r < brickRowCount; r++) { let b = bricks[c][r]; if (b.status === 1) { allBricksCleared = false; if (ballX + ballRadius > b.x && ballX - ballRadius < b.x + brickWidth && ballY + ballRadius > b.y && ballY - ballRadius < b.y + brickHeight) { ballSpeedY = -ballSpeedY; b.status = 0; score += 10; updateUIDisplaysQB(); }}}} if (allBricksCleared && gameHasStartedQB && !gameOver && !gamePaused) { gamePaused = true; if (levelCompleteScreenQB) { if (completedLevelDisplayQB) completedLevelDisplayQB.textContent = currentLevel; if (levelCompleteMessageQB) levelCompleteMessageQB.textContent = `Nível ${currentLevel} Completo!`; levelCompleteScreenQB.style.display = 'flex'; }}}
-
 async function saveHighScoreQuebraBlocos(finalScore) { if (qbCurrentUser && window.firebaseDb) { const userId = qbCurrentUser.uid; const gameId = "quebra_blocos"; const usernameToSave = qbUsername || qbCurrentUser.email; const highScoreDocId = `${userId}|${gameId}`; const highScoreRef = window.firebaseDb.collection("highscores").doc(highScoreDocId); try { const docSnap = await highScoreRef.get(); if (!docSnap.exists || finalScore > docSnap.data().score) { await highScoreRef.set({ userId, username: usernameToSave, gameId, score: finalScore, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); console.log(`Highscore de ${gameId} salvo/atualizado: ${finalScore}`); } } catch (error) { console.error(`Erro ao salvar highscore de ${gameId}: `, error); } } }
 function handleQuebraBlocosGameOver() { gameOver = true; gameHasStartedQB = false; if (animationFrameIdQB) { cancelAnimationFrame(animationFrameIdQB); animationFrameIdQB = null; } alert(`FIM DE JOGO!\nNível: ${currentLevel}\nPontuação: ${score}`); saveHighScoreQuebraBlocos(score); setTimeout(() => { drawInitialQuebraBlocosScreen(); }, 1500); }
 
 function updateQB() {
     if (gameOver || gamePaused) return;
     if (ballX + ballSpeedX > canvas.width - ballRadius || ballX + ballSpeedX < ballRadius) ballSpeedX = -ballSpeedX;
-    
-    // LÓGICA DE COLISÃO COM PADDLE E CHÃO CORRIGIDA
     if (ballY + ballSpeedY < ballRadius) {
-        ballSpeedY = -ballSpeedY; // Colisão com teto
+        ballSpeedY = -ballSpeedY;
     } else if (ballY + ballSpeedY > canvas.height - ballRadius) {
-        // Verifica se a bola está na posição horizontal do paddle
-        if (ballX > paddleX && ballX < paddleX + paddleWidth) {
-            // A colisão com a barra só acontece se a bola estiver na altura certa
-            if (ballY < canvas.height - paddleHeight) {
-                ballSpeedY = -ballSpeedY;
-                paddleHitCount++;
-                if (paddleHitCount > 0 && paddleHitCount % HITS_FOR_SPEED_INCREASE === 0) {
-                    let currentMagnitude = Math.sqrt(ballSpeedX*ballSpeedX + ballSpeedY*ballSpeedY);
-                    currentMagnitude += SPEED_INCREMENT;
-                    const angle = Math.atan2(ballSpeedY, ballSpeedX);
-                    ballSpeedX = currentMagnitude * Math.cos(angle);
-                    ballSpeedY = currentMagnitude * Math.sin(angle);
-                }
-            }
-            // Se a bola já estiver "dentro" ou "abaixo" do paddle, pode ter passado, então cai no 'else'
+        if (ballX > paddleX && ballX < paddleX + paddleWidth && ballY < canvas.height - paddleHeight) {
+             ballSpeedY = -ballSpeedY;
+             paddleHitCount++;
+             if (paddleHitCount > 0 && paddleHitCount % HITS_FOR_SPEED_INCREASE === 0) {
+                 let currentMagnitude = Math.sqrt(ballSpeedX*ballSpeedX + ballSpeedY*ballSpeedY);
+                 currentMagnitude += SPEED_INCREMENT;
+                 const angle = Math.atan2(ballSpeedY, ballSpeedX); 
+                 ballSpeedX = currentMagnitude * Math.cos(angle); ballSpeedY = currentMagnitude * Math.sin(angle);
+             }
         } else {
-            // Bola passou, perdeu vida
             lives--; updateUIDisplaysQB();
             if (lives <= 0) { handleQuebraBlocosGameOver(); return; }
             else { resetBallAndPaddleQB(); }
         }
     }
-
     if (rightPressedQB && paddleX < canvas.width - paddleWidth) paddleX += PADDLE_SPEED_QB;
     else if (leftPressedQB && paddleX > 0) paddleX -= PADDLE_SPEED_QB;
-
     ballX += ballSpeedX; ballY += ballSpeedY;
     collisionDetectionQB();
 }
@@ -124,5 +138,4 @@ if (nextLevelButtonQB) {
     });
 }
 
-// Prepara e desenha a tela inicial do Quebra Blocos
 drawInitialQuebraBlocosScreen();
