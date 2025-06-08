@@ -31,7 +31,8 @@
                  <p class="game-start-message">Para iniciar, use <strong>W/S</strong> (Jogador 1) e <strong>Setas Cima/Baixo</strong> (Jogador 2) ou clique no botão.</p>
                  <p class="game-start-message">Cada jogador tem 3 vidas. Último com vidas vence!</p>
             </div>
-            <canvas id="gameCanvas" width="600" height="400"></canvas> <div id="pongGameInfo" class="game-info-bar pong-info-bar" style="display: none;">
+            <canvas id="gameCanvas" width="600" height="400" style="display: none;"></canvas>
+            <div id="pongGameInfo" class="game-info-bar pong-info-bar" style="display: none;">
                 <p>P1 Vidas: <span id="player1Lives">3</span></p>
                 <p>P1 Pontos: <span id="player1Score">0</span></p>
                 <p>P2 Pontos: <span id="player2Score">0</span></p>
@@ -47,7 +48,9 @@
         <footer>
             <p>&copy; 2025 Central de Jogos.</p>
         </footer>
-    </div> <div id="authModalPong" class="modal">
+    </div>
+
+    <div id="authModalPong" class="modal">
         <div class="modal-content auth-modal-content">
             <span class="close-button auth-modal-close-pong">&times;</span>
             <div class="auth-form" id="loginContainerModalPong">
@@ -80,7 +83,7 @@
     <script>
       // SUA CONFIGURAÇÃO DO FIREBASE - VERIFIQUE E USE OS SEUS VALORES REAIS!
       const firebaseConfig = {
-           apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA
+        apiKey: "AIzaSyBYLGHFCAe_Go88NLg9huffQcaH65O8AxU", // SUBSTITUA
         authDomain: "central-de-jogos-4bdf1.firebaseapp.com", // SUBSTITUA
         projectId: "central-de-jogos-4bdf1", // SUBSTITUA
         storageBucket: "central-de-jogos-4bdf1.appspot.com", // CONFIRA ESTE VALOR
@@ -96,45 +99,7 @@
 
     <script>
         // COPIE E ADAPTE A LÓGICA COMPLETA DO MODAL DE AUTENTICAÇÃO DA PÁGINA SNAKE.HTML OU INDEX.HTML AQUI
-        // Certifique-se de usar os IDs corretos com sufixo "Pong" (ex: authModalPong, loginTriggerLinkPong, etc.)
-        // Isso inclui:
-        // - Seletores de todos os elementos do modal e do topo da página.
-        // - Funções openAuthModalPong, closeAuthModalPong, mostrarMensagemAuthModalPong.
-        // - Event listeners para os formulários de login/registro e links de alternância.
-        // - O auth.onAuthStateChanged para atualizar a UI do topo (loggedInUserInfoPong, etc.).
-        // Por exemplo (início do onAuthStateChanged para UI do topo):
-        (function() {
-            if (!window.firebaseAuth || !window.firebaseDb) { return; }
-            const auth = window.firebaseAuth;
-            const db = window.firebaseDb;
-            const loggedInUserInfoPong = document.getElementById('loggedInUserInfoPong');
-            const loggedInUserDisplayPong = document.getElementById('loggedInUserDisplayPong');
-            const loginTriggerLinkPong = document.getElementById('loginTriggerLinkPong');
-             // ... (resto dos seletores e toda a lógica do modal de auth)
-
-            auth.onAuthStateChanged(async user => {
-                if (user) {
-                    if (loggedInUserInfoPong) loggedInUserInfoPong.style.display = 'flex';
-                    if (loginTriggerLinkPong) loginTriggerLinkPong.style.display = 'none';
-                    try {
-                        const userDoc = await db.collection("usuarios").doc(user.uid).get();
-                        if (userDoc.exists && userDoc.data().username) {
-                            if (loggedInUserDisplayPong) loggedInUserDisplayPong.textContent = `Olá, ${userDoc.data().username}!`;
-                        } else {
-                            if (loggedInUserDisplayPong) loggedInUserDisplayPong.textContent = user.email;
-                        }
-                    } catch (error) {
-                        if (loggedInUserDisplayPong) loggedInUserDisplayPong.textContent = user.email;
-                    }
-                    // Fechar modal de auth se estiver aberto (função closeAuthModalPong deve estar definida)
-                    // if (document.getElementById('authModalPong').classList.contains('modal-visible')) closeAuthModalPong();
-                } else {
-                    if (loggedInUserInfoPong) loggedInUserInfoPong.style.display = 'none';
-                    if (loginTriggerLinkPong) loginTriggerLinkPong.style.display = 'inline-block';
-                }
-            });
-             // ... (RESTANTE DA LÓGICA DO MODAL DE AUTH ADAPTADA PARA OS IDs DO PONG)
-        })();
+        // Certifique-se de usar os IDs corretos com sufixo "Pong"
     </script>
 
     <script src="pong.js"></script>
