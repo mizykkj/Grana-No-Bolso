@@ -1,4 +1,4 @@
-// pong.js - ATUALIZADO com novo sistema de pontuação (Defesa/Ataque)
+// pong.js - ATUALIZADO com preventDefault e lógica de highscore
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -11,7 +11,6 @@ const startButtonPong = document.getElementById('startButtonPong');
 const pongGameInfo = document.getElementById('pongGameInfo');
 const pongPreGameMessages = document.getElementById('pongPreGameMessages');
 
-// --- Configurações do Jogo ---
 const paddleHeight = 100;
 const paddleWidth = 10;
 const ballRadius = 8;
@@ -24,19 +23,17 @@ let player1Score = 0;
 let player2Score = 0;
 let player1Lives = INITIAL_LIVES;
 let player2Lives = INITIAL_LIVES;
-let lastHitBy = null; // NOVO: 'player1' ou 'player2'
+let lastHitBy = null;
 
 let upPressed = false, downPressed = false, wPressed = false, sPressed = false;
 let gameHasStartedPong = false;
 let animationFrameId;
 
-// Para aumento gradual de velocidade
 let paddleHitCount = 0;
-const HITS_FOR_SPEED_INCREASE = 4; // Aumenta velocidade a cada 4 rebatidas no total
+const HITS_FOR_SPEED_INCREASE = 4;
 const SPEED_INCREMENT = 0.4;
 const MAX_BALL_SPEED_MAGNITUDE = 10;
 
-// Usuário Logado
 let pongGameCurrentUser = null;
 let pongGameUsername = null;
 
@@ -54,7 +51,6 @@ if (window.firebaseAuth && window.firebaseDb) {
     });
 }
 
-// --- Funções de Setup e UI ---
 function updateUIDisplays() {
     if (player1ScoreDisplay) player1ScoreDisplay.textContent = player1Score;
     if (player2ScoreDisplay) player2ScoreDisplay.textContent = player2Score;
@@ -109,46 +105,52 @@ function startGamePong() {
     gameLoop();
 }
 
-if (startButtonPong) startButtonPong.addEventListener('click', startGamePong);
+if (startButtonPong) { startButtonPong.addEventListener('click', startGamePong); }
 
-// --- Controles ---
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
 function keyDownHandler(e) {
     const relevantKeys = ['ArrowUp', 'ArrowDown', 'w', 's'];
-    if (!gameHasStartedPong && relevantKeys.some(k => k === e.key.toLowerCase())) {
+    const keyLower = e.key.toLowerCase();
+    
+    // CORREÇÃO: Garante que o preventDefault seja chamado para as teclas de controle
+    if (relevantKeys.includes(keyLower)) {
+        e.preventDefault();
+    }
+
+    if (!gameHasStartedPong && relevantKeys.includes(keyLower)) {
         startGamePong();
     }
-    if (relevantKeys.some(k => k === e.key.toLowerCase())) e.preventDefault();
+
     if (e.key === 'Up' || e.key === 'ArrowUp') upPressed = true;
     if (e.key === 'Down' || e.key === 'ArrowDown') downPressed = true;
-    if (e.key.toLowerCase() === 'w') wPressed = true;
-    if (e.key.toLowerCase() === 's') sPressed = true;
+    if (keyLower === 'w') wPressed = true;
+    if (keyLower === 's') sPressed = true;
 }
 function keyUpHandler(e) {
+    const keyLower = e.key.toLowerCase();
     if (e.key === 'Up' || e.key === 'ArrowUp') upPressed = false;
     if (e.key === 'Down' || e.key === 'ArrowDown') downPressed = false;
-    if (e.key.toLowerCase() === 'w') wPressed = false;
-    if (e.key.toLowerCase() === 's') sPressed = false;
+    if (keyLower === 'w') wPressed = false;
+    if (keyLower === 's') sPressed = false;
 }
 
-// --- Funções de Desenho ---
 function drawBall() { ctx.beginPath(); ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.closePath(); }
 function drawPaddle(x, y) { ctx.beginPath(); ctx.rect(x, y, paddleWidth, paddleHeight); ctx.fillStyle = '#fff'; ctx.fill(); ctx.closePath(); }
 function drawNet() { ctx.beginPath(); ctx.setLineDash([10, 15]); ctx.moveTo(canvas.width / 2, 0); ctx.lineTo(canvas.width / 2, canvas.height); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke(); ctx.closePath(); ctx.setLineDash([]); }
 
-// --- Lógica de Jogo ---
 function resetBall(scorer) {
     ballX = canvas.width / 2;
     ballY = canvas.height / 2;
     let directionX = (Math.random() > 0.5 ? 1 : -1);
-    if (scorer === 'player1') directionX = -1; // Bola vai para quem marcou o ponto
+    if (scorer === 'player1') directionX = -1; 
     if (scorer === 'player2') directionX = 1;
-    
-    ballSpeedX = baseBallSpeedX * directionX;
-    ballSpeedY = baseBallSpeedY * (Math.random() > 0.5 ? 1 : -1);
-    lastHitBy = null; // Reseta quem tocou por último
+    let speedMagnitude = Math.sqrt((ballSpeedX**2) + (ballSpeedY**2)) || baseBallSpeedX;
+    if (speedMagnitude < baseBallSpeedX) speedMagnitude = baseBallSpeedX;
+    ballSpeedX = speedMagnitude * 0.707 * directionX;
+    ballSpeedY = speedMagnitude * 0.707 * (Math.random() > 0.5 ? 1 : -1);
+    lastHitBy = null;
 }
 
 function increaseBallSpeed() {
@@ -165,7 +167,7 @@ async function saveHighScorePong(playerIdentifier, scoreToSave) {
         const userId = pongGameCurrentUser.uid;
         const gameId = "pong";
         const usernameToSave = pongGameUsername || pongGameCurrentUser.email;
-        const highScoreDocId = `${userId}|${gameId}`;
+        const highScoreDocId = `${userId}|${gameId}`; // Usa '|' como separador
         const highScoreRef = window.firebaseDb.collection("highscores").doc(highScoreDocId);
         try {
             const docSnap = await highScoreRef.get();
@@ -185,12 +187,8 @@ function handleGameOver(winner) {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     let winnerName = winner === "player1" ? (pongGameUsername || "Jogador 1") : "Jogador 2";
     alert(`FIM DE JOGO! ${winnerName} venceu!\nPlacar Final: P1 ${player1Score} - P2 ${player2Score}`);
-    
-    if (pongGameCurrentUser) { // Se houver um usuário logado
-        saveHighScorePong("player1", player1Score); // Salva o score final do Jogador 1 (que é o usuário logado)
-    }
-
-    setTimeout(() => { drawInitialPongScreen(); }, 2000); // Mostra a tela inicial após 2 segundos
+    if (pongGameCurrentUser) { saveHighScorePong("player1", player1Score); }
+    setTimeout(() => { drawInitialPongScreen(); }, 2000);
 }
 
 function update() {
@@ -207,31 +205,18 @@ function update() {
     if (ballY + ballRadius > canvas.height || ballY - ballRadius < 0) ballSpeedY = -ballSpeedY;
 
     let paddleHit = false;
-    // Colisão com paddle 1 (esquerda)
-    if (ballX - ballRadius < paddleWidth && ballX - ballRadius > 0 && ballY > player1Y && ballY < player1Y + paddleHeight) {
+    if (ballX - ballRadius < paddleWidth && ballX > 0 && ballY > player1Y && ballY < player1Y + paddleHeight) {
         ballSpeedX = -ballSpeedX;
         let deltaY = ballY - (player1Y + paddleHeight / 2);
-        ballSpeedY = deltaY * 0.25; // Leve ângulo de rebote
-        
-        // NOVO: Adiciona ponto de defesa
-        if (lastHitBy !== 'player1') { // Evita ganhar pontos rebatendo em sequência
-             player1Score += 1;
-             updateUIDisplays();
-        }
+        ballSpeedY = deltaY * 0.25;
+        if (lastHitBy !== 'player1') { player1Score += 1; updateUIDisplays(); }
         lastHitBy = 'player1';
         paddleHit = true;
-    } 
-    // Colisão com paddle 2 (direita)
-    else if (ballX + ballRadius > canvas.width - paddleWidth && ballX + ballRadius < canvas.width && ballY > player2Y && ballY < player2Y + paddleHeight) {
+    } else if (ballX + ballRadius > canvas.width - paddleWidth && ballX < canvas.width && ballY > player2Y && ballY < player2Y + paddleHeight) {
         ballSpeedX = -ballSpeedX;
         let deltaY = ballY - (player2Y + paddleHeight / 2);
         ballSpeedY = deltaY * 0.25;
-        
-        // NOVO: Adiciona ponto de defesa
-        if (lastHitBy !== 'player2') {
-            player2Score += 1;
-            updateUIDisplays();
-        }
+        if (lastHitBy !== 'player2') { player2Score += 1; updateUIDisplays(); }
         lastHitBy = 'player2';
         paddleHit = true;
     }
@@ -243,17 +228,12 @@ function update() {
         }
     }
 
-    // Ponto marcado / Perda de vida
-    if (ballX - ballRadius < 0) { // Ponto para Jogador 2
-        player1Lives--; // Jogador 1 perde vida
-        player2Score += 2; // Jogador 2 ganha 2 pontos de ataque
-        updateUIDisplays();
+    if (ballX - ballRadius < 0) {
+        player1Lives--; player2Score += 2; updateUIDisplays();
         if (player1Lives <= 0) { handleGameOver("player2"); return; }
         resetBall("player2");
-    } else if (ballX + ballRadius > canvas.width) { // Ponto para Jogador 1
-        player2Lives--; // Jogador 2 perde vida
-        player1Score += 2; // Jogador 1 ganha 2 pontos de ataque
-        updateUIDisplays();
+    } else if (ballX + ballRadius > canvas.width) {
+        player2Lives--; player1Score += 2; updateUIDisplays();
         if (player2Lives <= 0) { handleGameOver("player1"); return; }
         resetBall("player1");
     }
@@ -275,5 +255,4 @@ function gameLoop() {
     }
 }
 
-// Prepara e desenha a tela inicial do Pong
 drawInitialPongScreen();
