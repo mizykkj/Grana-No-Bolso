@@ -48,7 +48,7 @@ const brickColors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#F1C40F', '#9B
 let paddleHitCount = 0;
 const HITS_FOR_SPEED_INCREASE = 8;
 const SPEED_INCREMENT = 0.25;
-const MAX_BALL_SPEED_MAGNITUDE_QB = 9;
+const MAX_BALL_SPEED_MAGNITUDE_QB = 20;
 const initialBallSpeedMagnitude = 3.5;
 
 // --- INICIALIZAÇÃO DO FIREBASE E AUTH ---
