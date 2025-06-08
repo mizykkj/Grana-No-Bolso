@@ -1,4 +1,4 @@
-// pong.js - ATUALIZADO com preventDefault e lógica de highscore
+// pong.js - VERSÃO COMPLETA E CORRIGIDA (preventDefault e Highscore)
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -19,10 +19,7 @@ const INITIAL_LIVES = 3;
 let ballX, ballY, baseBallSpeedX, baseBallSpeedY, ballSpeedX, ballSpeedY;
 let player1Y, player2Y;
 const PADDLE_SPEED = 7;
-let player1Score = 0;
-let player2Score = 0;
-let player1Lives = INITIAL_LIVES;
-let player2Lives = INITIAL_LIVES;
+let player1Score = 0, player2Score = 0, player1Lives = INITIAL_LIVES, player2Lives = INITIAL_LIVES;
 let lastHitBy = null;
 
 let upPressed = false, downPressed = false, wPressed = false, sPressed = false;
@@ -82,16 +79,9 @@ function drawInitialPongScreen() {
 function initializePongVariables() {
     player1Y = (canvas.height - paddleHeight) / 2;
     player2Y = (canvas.height - paddleHeight) / 2;
-    player1Score = 0;
-    player2Score = 0;
-    player1Lives = INITIAL_LIVES;
-    player2Lives = INITIAL_LIVES;
-    paddleHitCount = 0;
-    lastHitBy = null;
-    baseBallSpeedX = 4;
-    baseBallSpeedY = 4;
-    resetBall();
-    updateUIDisplays();
+    player1Score = 0; player2Score = 0; player1Lives = INITIAL_LIVES; player2Lives = INITIAL_LIVES;
+    paddleHitCount = 0; lastHitBy = null; baseBallSpeedX = 4; baseBallSpeedY = 4;
+    resetBall(); updateUIDisplays();
 }
 
 function startGamePong() {
@@ -110,30 +100,40 @@ if (startButtonPong) { startButtonPong.addEventListener('click', startGamePong);
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
+// --- CONTROLES CORRIGIDOS ---
 function keyDownHandler(e) {
-    const relevantKeys = ['ArrowUp', 'ArrowDown', 'w', 's'];
     const keyLower = e.key.toLowerCase();
-    
-    // CORREÇÃO: Garante que o preventDefault seja chamado para as teclas de controle
-    if (relevantKeys.includes(keyLower)) {
+    const isUp = keyLower === 'arrowup' || keyLower === 'up';
+    const isDown = keyLower === 'arrowdown' || keyLower === 'down';
+    const isW = keyLower === 'w';
+    const isS = keyLower === 's';
+
+    // Se a tecla for uma das de controle, previne a rolagem da página
+    if (isUp || isDown || isW || isS) {
         e.preventDefault();
     }
 
-    if (!gameHasStartedPong && relevantKeys.includes(keyLower)) {
+    if (!gameHasStartedPong && (isUp || isDown || isW || isS)) {
         startGamePong();
     }
 
-    if (e.key === 'Up' || e.key === 'ArrowUp') upPressed = true;
-    if (e.key === 'Down' || e.key === 'ArrowDown') downPressed = true;
-    if (keyLower === 'w') wPressed = true;
-    if (keyLower === 's') sPressed = true;
+    if (isUp) upPressed = true;
+    if (isDown) downPressed = true;
+    if (isW) wPressed = true;
+    if (isS) sPressed = true;
 }
+
 function keyUpHandler(e) {
     const keyLower = e.key.toLowerCase();
-    if (e.key === 'Up' || e.key === 'ArrowUp') upPressed = false;
-    if (e.key === 'Down' || e.key === 'ArrowDown') downPressed = false;
-    if (keyLower === 'w') wPressed = false;
-    if (keyLower === 's') sPressed = false;
+    const isUp = keyLower === 'arrowup' || keyLower === 'up';
+    const isDown = keyLower === 'arrowdown' || keyLower === 'down';
+    const isW = keyLower === 'w';
+    const isS = keyLower === 's';
+
+    if (isUp) upPressed = false;
+    if (isDown) downPressed = false;
+    if (isW) wPressed = false;
+    if (isS) sPressed = false;
 }
 
 function drawBall() { ctx.beginPath(); ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.closePath(); }
@@ -206,19 +206,13 @@ function update() {
 
     let paddleHit = false;
     if (ballX - ballRadius < paddleWidth && ballX > 0 && ballY > player1Y && ballY < player1Y + paddleHeight) {
-        ballSpeedX = -ballSpeedX;
-        let deltaY = ballY - (player1Y + paddleHeight / 2);
-        ballSpeedY = deltaY * 0.25;
+        ballSpeedX = -ballSpeedX; let deltaY = ballY - (player1Y + paddleHeight / 2); ballSpeedY = deltaY * 0.25;
         if (lastHitBy !== 'player1') { player1Score += 1; updateUIDisplays(); }
-        lastHitBy = 'player1';
-        paddleHit = true;
+        lastHitBy = 'player1'; paddleHit = true;
     } else if (ballX + ballRadius > canvas.width - paddleWidth && ballX < canvas.width && ballY > player2Y && ballY < player2Y + paddleHeight) {
-        ballSpeedX = -ballSpeedX;
-        let deltaY = ballY - (player2Y + paddleHeight / 2);
-        ballSpeedY = deltaY * 0.25;
+        ballSpeedX = -ballSpeedX; let deltaY = ballY - (player2Y + paddleHeight / 2); ballSpeedY = deltaY * 0.25;
         if (lastHitBy !== 'player2') { player2Score += 1; updateUIDisplays(); }
-        lastHitBy = 'player2';
-        paddleHit = true;
+        lastHitBy = 'player2'; paddleHit = true;
     }
 
     if (paddleHit) {
@@ -250,9 +244,10 @@ function draw() {
 function gameLoop() {
     update();
     draw();
-    if (gameHasStartedPong) {
-        animationFrameId = requestAnimationFrame(gameLoop);
+    if(gameHasStartedPong) {
+        animationFrameld =
+    requestAnimationFrame(gameLoop);
     }
 }
 
-drawInitialPongScreen();
+drawIntialPongScreen();
