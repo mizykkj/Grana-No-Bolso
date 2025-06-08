@@ -21,9 +21,17 @@ const ballRadius = 8;
 const paddleHeight = 12;
 const paddleWidth = 80;
 
-let score, lives, currentLevel;
-let gamePaused, gameOver, gameHasStartedQB, animationFrameIdQB;
-let qbCurrentUser, qbUsername;
+let score = 0;
+let lives = INITIAL_LIVES;
+let currentLevel = 1;
+
+let gamePaused = false;
+let gameOver = false;
+let gameHasStartedQB = false;
+let animationFrameIdQB;
+
+let qbCurrentUser = null;
+let qbUsername = null;
 
 let ballX, ballY, ballSpeedX, ballSpeedY;
 let paddleX;
@@ -33,7 +41,6 @@ let brickRowCount, brickColumnCount, brickWidth, brickHeight = 20, brickPadding 
 let bricks = [];
 const brickColors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#F1C40F', '#9B59B6', '#1ABC9C', '#E74C3C'];
 
-// Lógica de Velocidade
 let paddleHitCount = 0;
 const HITS_FOR_SPEED_INCREASE = 8;
 const SPEED_INCREMENT = 0.2;
@@ -52,9 +59,11 @@ if (window.firebaseAuth && window.firebaseDb) {
             qbCurrentUser = null; qbUsername = null;
         }
     });
+} else {
+    console.error("QuebraBlocos.js: Instâncias do Firebase não disponíveis!");
 }
 
-// --- FUNÇÕES DE SETUP E INÍCIO ---
+// --- FUNÇÕES DE SETUP E UI ---
 function updateUIDisplaysQB() {
     if (scoreDisplayQB) scoreDisplayQB.textContent = score;
     if (livesDisplayQB) livesDisplayQB.textContent = lives;
@@ -137,8 +146,12 @@ function drawBricksQB() {
 
 function drawInitialQuebraBlocosScreen() {
     if (!ctx || !canvas) return;
-    gameHasStartedQB = false; gameOver = false; gamePaused = false;
-    currentLevel = 1; score = 0; lives = INITIAL_LIVES;
+    gameHasStartedQB = false;
+    gameOver = false;
+    gamePaused = false;
+    currentLevel = 1;
+    score = 0;
+    lives = INITIAL_LIVES;
     setupLevel(1);
     resetBallAndPaddleQB();
     updateUIDisplaysQB();
@@ -149,7 +162,9 @@ function drawInitialQuebraBlocosScreen() {
     drawBallQB();
     if (quebraBlocosPreGameMessages) quebraBlocosPreGameMessages.style.display = 'block';
     if (startButtonQuebraBlocos) startButtonQuebraBlocos.style.display = 'inline-block';
-    if (quebraBlocosGameInfo) { quebraBlocosGameInfo.style.display = 'flex'; }
+    if (quebraBlocosGameInfo) {
+        quebraBlocosGameInfo.style.display = 'flex';
+    }
     if (canvas) canvas.style.display = 'block';
     if (levelCompleteScreenQB) levelCompleteScreenQB.style.display = 'none';
 }
@@ -184,28 +199,29 @@ document.addEventListener('keyup', keyUpHandlerQB, false);
 function keyDownHandlerQB(e) {
     const MOVE_KEYS = ['ArrowLeft', 'ArrowRight', 'a', 'd'];
     const ACTION_KEYS = ['Enter', ' ', 'ArrowUp', 'ArrowDown', ...MOVE_KEYS];
+    const keyLower = e.key.toLowerCase();
 
-    if (!gameHasStartedQB && MOVE_KEYS.includes(e.key.toLowerCase())) {
+    if (ACTION_KEYS.includes(e.key) || MOVE_KEYS.includes(keyLower) || e.code === 'Space') {
         e.preventDefault();
+    }
+    if (!gameHasStartedQB && MOVE_KEYS.includes(keyLower)) {
         initializeGameQuebraBlocos();
     }
     if (gameHasStartedQB && !gameOver && !gamePaused) {
-        if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') rightPressedQB = true;
-        else if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') leftPressedQB = true;
-        if (MOVE_KEYS.includes(e.key.toLowerCase())) e.preventDefault();
+        if (e.key === 'ArrowRight' || keyLower === 'd') rightPressedQB = true;
+        else if (e.key === 'ArrowLeft' || keyLower === 'a') leftPressedQB = true;
     }
     if (gamePaused && (ACTION_KEYS.includes(e.key) || e.code === 'Space')) {
-        e.preventDefault();
         if (nextLevelButtonQB) nextLevelButtonQB.click();
     }
 }
 
 function keyUpHandlerQB(e) {
-    if (e.key === 'Right' || e.key.toLowerCase() === 'd') rightPressedQB = false;
-    else if (e.key === 'Left' || e.key.toLowerCase() === 'a') leftPressedQB = false;
+    const keyLower = e.key.toLowerCase();
+    if (e.key === 'ArrowRight' || keyLower === 'd') rightPressedQB = false;
+    else if (e.key === 'ArrowLeft' || keyLower === 'a') leftPressedQB = false;
 }
 
-// --- LÓGICA DO JOGO ---
 function collisionDetectionQB() {
     let allBricksCleared = true;
     for (let c = 0; c < brickColumnCount; c++) {
@@ -244,7 +260,9 @@ async function saveHighScoreQuebraBlocos(finalScore) {
             if (!docSnap.exists || finalScore > docSnap.data().score) {
                 await highScoreRef.set({ userId, username: usernameToSave, gameId, score: finalScore, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
             }
-        } catch (error) { console.error(`Erro ao salvar highscore de ${gameId}: `, error); }
+        } catch (error) {
+            console.error(`Erro ao salvar highscore de ${gameId}: `, error);
+        }
     }
 }
 
@@ -257,7 +275,9 @@ function handleQuebraBlocosGameOver() {
     }
     alert(`FIM DE JOGO!\nNível: ${currentLevel}\nPontuação: ${score}`);
     saveHighScoreQuebraBlocos(score);
-    setTimeout(() => { drawInitialQuebraBlocosScreen(); }, 1500);
+    setTimeout(() => {
+        drawInitialQuebraBlocosScreen();
+    }, 1500);
 }
 
 function increaseBallSpeed() {
@@ -276,35 +296,46 @@ function updateQB() {
         paddleX -= PADDLE_SPEED_QB;
     }
 
-    let nextX = ballX + ballSpeedX;
-    let nextY = ballY + ballSpeedY;
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
 
-    if (nextX > canvas.width - ballRadius || nextX < ballRadius) {
+    if (ballX > canvas.width - ballRadius || ballX < ballRadius) {
         ballSpeedX = -ballSpeedX;
     }
-
-    if (nextY < ballRadius) {
+    if (ballY < ballRadius) {
         ballSpeedY = -ballSpeedY;
-    } else if (nextY > canvas.height - ballRadius) {
-        if (ballX > paddleX && ballX < paddleX + paddleWidth) {
-            ballSpeedY = -ballSpeedY;
+    } else if (ballY > canvas.height - ballRadius) { // Bola bateu no fundo (sem paddle)
+        lives--;
+        updateUIDisplaysQB();
+        if (lives <= 0) {
+            handleQuebraBlocosGameOver();
+            return;
         } else {
-            lives--;
-            updateUIDisplaysQB();
-            if (lives <= 0) {
-                handleQuebraBlocosGameOver();
-                return;
-            } else {
-                resetBallAndPaddleQB();
-                return; 
+            resetBallAndPaddleQB();
+            return; // Retorna para a bola resetar a posição antes do próximo frame
+        }
+    }
+
+    // Colisão com a barra (paddle) - LÓGICA CORRIGIDA
+    if (
+        ballY + ballRadius > canvas.height - paddleHeight && // A parte de baixo da bola está na altura do paddle
+        ballY - ballRadius < canvas.height && // A parte de cima da bola está acima do fundo do canvas
+        ballX + ballRadius > paddleX && // Bola está na horizontal do paddle
+        ballX - ballRadius < paddleX + paddleWidth
+    ) {
+        if (ballSpeedY > 0) { // Garante que a bola está vindo de cima para baixo
+            ballSpeedY = -ballSpeedY;
+            ballY = canvas.height - paddleHeight - ballRadius; // Reposiciona para evitar que "grude"
+
+            // Aumento de velocidade por rebatida
+            paddleHitCount++;
+            if (paddleHitCount > 0 && paddleHitCount % HITS_FOR_SPEED_INCREASE === 0) {
+                increaseBallSpeed();
             }
         }
     }
-    
-    collisionDetectionQB();
 
-    ballX += ballSpeedX;
-    ballY += ballSpeedY;
+    collisionDetectionQB();
 }
 
 function drawQB() {
