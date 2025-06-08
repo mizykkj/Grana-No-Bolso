@@ -15,7 +15,7 @@ const completedLevelDisplayQB = document.getElementById('completedLevelDisplayQB
 const nextLevelButtonQB = document.getElementById('nextLevelButtonQB');
 
 // --- Variáveis Globais do Jogo ---
-const INITIAL_LIVES = 3;
+const INITIAL_LIVES = 333333333333;
 const PADDLE_SPEED_QB = 7;
 const ballRadius = 8;
 const paddleHeight = 12;
