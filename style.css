@@ -315,3 +315,22 @@ footer { width: 100%; max-width: 980px; margin-top: auto; padding: 25px 0; font-
     #levelCompleteScreen button { padding: 8px 15px; font-size: 0.85em; }
     .auth-modal-content .auth-form { padding: 15px 0px; }
 }
+/* ... (seu CSS existente) ... */
+
+/* Estilos para a Seleção de Modo do Pong */
+#pongModeSelection {
+    padding: 40px 0;
+}
+#pongModeSelection .game-start-message {
+    margin-bottom: 25px;
+    font-size: 1.2em;
+}
+.mode-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.mode-buttons .game-start-button {
+    margin: 0; /* Remove a margem padrão para usar o gap do flex */
+}
