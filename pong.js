@@ -1,113 +1,230 @@
-// quebra_blocos.js - VERSÃO COM COLISÃO E CONTROLES CORRIGIDOS
+// pong.js - VERSÃO FINAL CORRIGIDA
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
+const player1ScoreDisplay = document.getElementById('player1Score');
+const player2ScoreDisplay = document.getElementById('player2Score');
+const player1LivesDisplay = document.getElementById('player1Lives');
+const player2LivesDisplay = document.getElementById('player2Lives');
 
-const scoreDisplayQB = document.getElementById('scoreQB');
-const livesDisplayQB = document.getElementById('livesQB');
-const levelDisplayQB = document.getElementById('levelQB');
-const startButtonQuebraBlocos = document.getElementById('startButtonQuebraBlocos');
-const quebraBlocosPreGameMessages = document.getElementById('quebraBlocosPreGameMessages');
-const quebraBlocosGameInfo = document.getElementById('quebraBlocosGameInfo');
-const levelCompleteScreenQB = document.getElementById('levelCompleteScreenQB');
-const completedLevelDisplayQB = document.getElementById('completedLevelDisplayQB');
-const nextLevelButtonQB = document.getElementById('nextLevelButtonQB');
+const pongModeSelection = document.getElementById('pongModeSelection');
+const onePlayerBtn = document.getElementById('onePlayerBtn');
+const twoPlayerBtn = document.getElementById('twoPlayerBtn');
+const pongGameInfo = document.getElementById('pongGameInfo');
 
-const INITIAL_LIVES = 3;
-const PADDLE_SPEED_QB = 7;
-const ballRadius = 8;
-const paddleHeight = 12;
-const paddleWidth = 80;
+const paddleHeight = 100, paddleWidth = 10, ballRadius = 8, INITIAL_LIVES = 3;
+const AI_PADDLE_SPEED = 5.5; 
+const PLAYER_PADDLE_SPEED = 7;
 
-let score, lives, currentLevel;
-let gamePaused, gameOver, gameHasStartedQB, animationFrameIdQB;
-let qbCurrentUser, qbUsername;
-let ballX, ballY, ballSpeedX, ballSpeedY;
-let paddleX;
-let rightPressedQB = false, leftPressedQB = false;
-let brickRowCount, brickColumnCount, brickWidth, brickHeight = 20, brickPadding = 5, brickOffsetTop = 40, brickOffsetLeft = 20;
-let bricks = [];
-const brickColors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#F1C40F', '#9B59B6', '#1ABC9C', '#E74C3C'];
-let paddleHitCount = 0;
-const HITS_FOR_SPEED_INCREASE = 8;
-const SPEED_INCREMENT = 0.2;
-const initialBallSpeedMagnitude = 3.5;
+let ballX, ballY, baseBallSpeedX, baseBallSpeedY, ballSpeedX, ballSpeedY;
+let player1Y, player2Y;
+let player1Score, player2Score, player1Lives, player2Lives;
+let lastHitBy = null;
+
+let upPressed = false, downPressed = false, wPressed = false, sPressed = false;
+let gameHasStartedPong = false, animationFrameId, gameMode = null;
+let speedIncreaseInterval = null;
+const TIME_FOR_SPEED_INCREASE = 8000; // Aumenta a cada 8 segundos
+const SPEED_INCREMENT_TIME = 0.3;     
+
+let pongGameCurrentUser = null, pongGameUsername = null;
 
 if (window.firebaseAuth && window.firebaseDb) {
     window.firebaseAuth.onAuthStateChanged(async user => {
-        if (user) { qbCurrentUser = user; try { const userDoc = await window.firebaseDb.collection("usuarios").doc(user.uid).get(); qbUsername = (userDoc.exists && userDoc.data().username) ? userDoc.data().username : user.email; } catch (error) { qbUsername = user.email; } }
-        else { qbCurrentUser = null; qbUsername = null; }
+        if (user) { pongGameCurrentUser = user; try { const userDoc = await window.firebaseDb.collection("usuarios").doc(user.uid).get(); pongGameUsername = (userDoc.exists && userDoc.data().username) ? userDoc.data().username : user.email; } catch (error) { pongGameUsername = user.email; } } 
+        else { pongGameCurrentUser = null; pongGameUsername = null; }
     });
 }
 
-function updateUIDisplaysQB() { if (scoreDisplayQB) scoreDisplayQB.textContent = score; if (livesDisplayQB) livesDisplayQB.textContent = lives; if (levelDisplayQB) levelDisplayQB.textContent = currentLevel; }
-function setupLevel(levelNum) { brickRowCount = 2 + levelNum; if (brickRowCount > 7) brickRowCount = 7; brickColumnCount = 5 + levelNum; if (brickColumnCount > 10) brickColumnCount = 10; let totalPaddingWidth = brickPadding * (brickColumnCount - 1) || 0; let totalOffsetWidth = brickOffsetLeft * 2; brickWidth = (canvas.width - totalOffsetWidth - totalPaddingWidth) / brickColumnCount; if (brickWidth < 25) { brickWidth = 25; let totalBrickWidth = brickColumnCount * brickWidth; totalPaddingWidth = brickColumnCount > 1 ? brickPadding * (brickColumnCount - 1) : 0; brickOffsetLeft = (canvas.width - totalBrickWidth - totalPaddingWidth) / 2; } bricks = []; for (let c = 0; c < brickColumnCount; c++) { bricks[c] = []; for (let r = 0; r < brickRowCount; r++) { bricks[c][r] = { x: 0, y: 0, status: 1, color: brickColors[(c + r + levelNum) % brickColors.length] }; } } }
-function resetBallAndPaddleQB() { ballX = canvas.width / 2; ballY = canvas.height - paddleHeight - ballRadius - 25; paddleX = (canvas.width - paddleWidth) / 2; let speedMultiplier = 1 + (currentLevel - 1) * 0.15; let currentSpeedMagnitude = initialBallSpeedMagnitude * speedMultiplier; let angle = (Math.PI / 4) + (Math.random() * Math.PI / 2); ballSpeedX = currentSpeedMagnitude * Math.cos(angle) * (Math.random() > 0.5 ? 1 : -1); ballSpeedY = -currentSpeedMagnitude * Math.sin(angle); if (Math.abs(ballSpeedX) < 2) ballSpeedX = (ballSpeedX >= 0 ? 2 : -2); if (ballSpeedY >= 0) ballSpeedY = -2; }
-function drawBallQB() { if (!ctx) return; ctx.beginPath(); ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2); ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.closePath(); }
-function drawPaddleQB() { if (!ctx) return; ctx.beginPath(); ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight); ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.closePath(); }
-function drawBricksQB() { if (!ctx) return; for (let c = 0; c < brickColumnCount; c++) { for (let r = 0; r < brickRowCount; r++) { if (bricks[c] && bricks[c][r] && bricks[c][r].status === 1) { let brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft; let brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop; bricks[c][r].x = brickX; bricks[c][r].y = brickY; ctx.beginPath(); ctx.rect(brickX, brickY, brickWidth, brickHeight); ctx.fillStyle = bricks[c][r].color; ctx.fill(); ctx.closePath(); }}}}
-function drawInitialQuebraBlocosScreen() { if (!ctx || !canvas) return; gameHasStartedQB = false; gameOver = false; gamePaused = false; currentLevel = 1; score = 0; lives = INITIAL_LIVES; setupLevel(1); resetBallAndPaddleQB(); updateUIDisplaysQB(); ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, canvas.width, canvas.height); drawBricksQB(); drawPaddleQB(); drawBallQB(); if (quebraBlocosPreGameMessages) quebraBlocosPreGameMessages.style.display = 'block'; if (startButtonQuebraBlocos) startButtonQuebraBlocos.style.display = 'inline-block'; if (quebraBlocosGameInfo) { quebraBlocosGameInfo.style.display = 'flex'; } if (canvas) canvas.style.display = 'block'; if (levelCompleteScreenQB) levelCompleteScreenQB.style.display = 'none';}
-function initializeGameQuebraBlocos() { if (gameHasStartedQB) return; gameHasStartedQB = true; gameOver = false; gamePaused = false; if (startButtonQuebraBlocos) startButtonQuebraBlocos.style.display = 'none'; if (quebraBlocosPreGameMessages) quebraBlocosPreGameMessages.style.display = 'none'; if (quebraBlocosGameInfo) quebraBlocosGameInfo.style.display = 'flex'; if (levelCompleteScreenQB) levelCompleteScreenQB.style.display = 'none'; score = 0; lives = INITIAL_LIVES; currentLevel = 1; paddleHitCount = 0; setupLevel(currentLevel); resetBallAndPaddleQB(); updateUIDisplaysQB(); if (animationFrameIdQB) cancelAnimationFrame(animationFrameIdQB); gameLoopQB();}
+function updateUIDisplays() { if (player1ScoreDisplay) player1ScoreDisplay.textContent = player1Score; if (player2ScoreDisplay) player2ScoreDisplay.textContent = player2Score; if (player1LivesDisplay) player1LivesDisplay.textContent = player1Lives; if (player2LivesDisplay) player2LivesDisplay.textContent = player2Lives; }
+function drawBall() { ctx.beginPath(); ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill(); ctx.closePath(); }
+function drawPaddle(x, y) { ctx.beginPath(); ctx.rect(x, y, paddleWidth, paddleHeight); ctx.fillStyle = '#fff'; ctx.fill(); ctx.closePath(); }
+function drawNet() { ctx.beginPath(); ctx.setLineDash([10, 15]); ctx.moveTo(canvas.width / 2, 0); ctx.lineTo(canvas.width / 2, canvas.height); ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke(); ctx.closePath(); ctx.setLineDash([]); }
 
-if (startButtonQuebraBlocos) startButtonQuebraBlocos.addEventListener('click', initializeGameQuebraBlocos);
-document.addEventListener('keydown', keyDownHandlerQB, false);
-document.addEventListener('keyup', keyUpHandlerQB, false);
+function drawInitialPongScreen() {
+    gameHasStartedPong = false;
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    if (speedIncreaseInterval) clearInterval(speedIncreaseInterval);
+    if (pongModeSelection) pongModeSelection.style.display = 'block';
+    if (pongGameInfo) pongGameInfo.style.display = 'none';
+    if (canvas) canvas.style.display = 'none';
+}
 
-function keyDownHandlerQB(e) { const MOVE_KEYS = ['ArrowLeft', 'ArrowRight', 'a', 'd']; const ACTION_KEYS = ['Enter', ' ', 'ArrowUp', 'ArrowDown', ...MOVE_KEYS]; const keyLower = e.key.toLowerCase(); if (ACTION_KEYS.includes(e.key) || MOVE_KEYS.includes(keyLower) || e.code === 'Space') { e.preventDefault(); } if (!gameHasStartedQB && MOVE_KEYS.includes(keyLower)) { initializeGameQuebraBlocos(); } if (gameHasStartedQB && !gameOver && !gamePaused) { if (e.key === 'ArrowRight' || keyLower === 'd') rightPressedQB = true; else if (e.key === 'ArrowLeft' || keyLower === 'a') leftPressedQB = true; } if (gamePaused && (ACTION_KEYS.includes(e.key) || e.code === 'Space')) { if(nextLevelButtonQB) nextLevelButtonQB.click(); }}
-function keyUpHandlerQB(e) { const keyLower = e.key.toLowerCase(); if (e.key === 'ArrowRight' || keyLower === 'd') rightPressedQB = false; else if (e.key === 'ArrowLeft' || keyLower === 'a') leftPressedQB = false; }
+function initializePongVariables() {
+    player1Y = (canvas.height - paddleHeight) / 2;
+    player2Y = (canvas.height - paddleHeight) / 2;
+    player1Score = 0; player2Score = 0; player1Lives = INITIAL_LIVES; player2Lives = INITIAL_LIVES;
+    lastHitBy = null; baseBallSpeedX = 4; baseBallSpeedY = 4;
+    resetBall(); updateUIDisplays();
+}
 
-function collisionDetectionQB() { let allBricksCleared = true; for (let c = 0; c < brickColumnCount; c++) { for (let r = 0; r < brickRowCount; r++) { let b = bricks[c][r]; if (b.status === 1) { allBricksCleared = false; if (ballX + ballRadius > b.x && ballX - ballRadius < b.x + brickWidth && ballY + ballRadius > b.y && ballY - ballRadius < b.y + brickHeight) { ballSpeedY = -ballSpeedY; b.status = 0; score += 10; updateUIDisplaysQB(); paddleHitCount++; if (paddleHitCount > 0 && paddleHitCount % HITS_FOR_SPEED_INCREASE === 0) { increaseBallSpeed(); } }}}} if (allBricksCleared && gameHasStartedQB && !gameOver && !gamePaused) { gamePaused = true; if (levelCompleteScreenQB) { if (completedLevelDisplayQB) completedLevelDisplayQB.textContent = currentLevel; if (levelCompleteMessageQB) levelCompleteMessageQB.textContent = `Nível ${currentLevel} Completo!`; levelCompleteScreenQB.style.display = 'flex'; }}}
-async function saveHighScoreQuebraBlocos(finalScore) { if (qbCurrentUser && window.firebaseDb) { const userId = qbCurrentUser.uid; const gameId = "quebra_blocos"; const usernameToSave = qbUsername || qbCurrentUser.email; const highScoreDocId = `${userId}|${gameId}`; const highScoreRef = window.firebaseDb.collection("highscores").doc(highScoreDocId); try { const docSnap = await highScoreRef.get(); if (!docSnap.exists || finalScore > docSnap.data().score) { await highScoreRef.set({ userId, username: usernameToSave, gameId, score: finalScore, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); } } catch (error) { console.error(`Erro ao salvar highscore de ${gameId}: `, error); } } }
-function handleQuebraBlocosGameOver() { gameOver = true; gameHasStartedQB = false; if (animationFrameIdQB) { cancelAnimationFrame(animationFrameIdQB); animationFrameIdQB = null; } alert(`FIM DE JOGO!\nNível: ${currentLevel}\nPontuação: ${score}`); saveHighScoreQuebraBlocos(score); setTimeout(() => { drawInitialQuebraBlocosScreen(); }, 1500); }
-function increaseBallSpeed() { let currentMagnitude = Math.sqrt(ballSpeedX*ballSpeedX + ballSpeedY*ballSpeedY); let newMagnitude = currentMagnitude + SPEED_INCREMENT; ballSpeedX = (ballSpeedX / currentMagnitude) * newMagnitude; ballSpeedY = (ballSpeedY / currentMagnitude) * newMagnitude; }
+function startGamePong() {
+    if (gameHasStartedPong || !gameMode) return;
+    gameHasStartedPong = true;
+    if (pongModeSelection) pongModeSelection.style.display = 'none';
+    if (pongGameInfo) pongGameInfo.style.display = 'flex';
+    if (canvas) canvas.style.display = 'block';
+    initializePongVariables();
+    speedIncreaseInterval = setInterval(increaseBallSpeed, TIME_FOR_SPEED_INCREASE);
+    gameLoop();
+}
 
-function updateQB() {
-    if (gameOver || gamePaused) return;
+if (onePlayerBtn) { onePlayerBtn.addEventListener('click', () => { gameMode = 'AI'; startGamePong(); }); }
+if (twoPlayerBtn) { twoPlayerBtn.addEventListener('click', () => { gameMode = '2P'; startGamePong(); }); }
 
-    if (rightPressedQB && paddleX < canvas.width - paddleWidth) paddleX += PADDLE_SPEED_QB;
-    else if (leftPressedQB && paddleX > 0) paddleX -= PADDLE_SPEED_QB;
+document.addEventListener('keydown', keyDownHandler, false);
+document.addEventListener('keyup', keyUpHandler, false);
+
+function keyDownHandler(e) {
+    const keyLower = e.key.toLowerCase();
+    const isUp = keyLower === 'arrowup' || keyLower === 'up';
+    const isDown = keyLower === 'arrowdown' || keyLower === 'down';
+    const isW = keyLower === 'w';
+    const isS = keyLower === 's';
+    const isControlKey = isUp || isDown || isW || isS;
+    if (isControlKey) e.preventDefault();
+    if (!gameHasStartedPong && isControlKey) { startGamePong(); }
+    if (isUp) upPressed = true; if (isDown) downPressed = true;
+    if (isW) wPressed = true; if (isS) sPressed = true;
+}
+function keyUpHandler(e) {
+    const keyLower = e.key.toLowerCase();
+    const isUp = keyLower === 'arrowup' || keyLower === 'up';
+    const isDown = keyLower === 'arrowdown' || keyLower === 'down';
+    const isW = keyLower === 'w';
+    const isS = keyLower === 's';
+    if (isUp) upPressed = false; if (isDown) downPressed = false;
+    if (isW) wPressed = false; if (isS) sPressed = false;
+}
+
+function resetBall(scorer) {
+    ballX = canvas.width / 2; ballY = canvas.height / 2;
+    let directionX = (Math.random() > 0.5 ? 1 : -1);
+    if (scorer === 'player1') directionX = -1; 
+    if (scorer === 'player2') directionX = 1;
+    let speedMagnitude = Math.sqrt((ballSpeedX**2) + (ballSpeedY**2)) || baseBallSpeedX;
+    if (speedMagnitude < baseBallSpeedX) speedMagnitude = baseBallSpeedX;
+    ballSpeedX = speedMagnitude * 0.707 * directionX;
+    ballSpeedY = speedMagnitude * 0.707 * (Math.random() > 0.5 ? 1 : -1);
+    lastHitBy = null;
+}
+
+function increaseBallSpeed() {
+    if (!gameHasStartedPong) return;
+    let mag = Math.sqrt(ballSpeedX**2 + ballSpeedY**2); let newMag = mag + SPEED_INCREMENT_TIME;
+    ballSpeedX = (ballSpeedX/mag)*newMag; ballSpeedY = (ballSpeedY/mag)*newMag;
+    console.log("Velocidade do Pong aumentada para:", newMag.toFixed(2));
+}
+
+async function saveHighScorePong(playerIdentifier, scoreToSave) {
+    if (pongGameCurrentUser && playerIdentifier === "player1" && window.firebaseDb) {
+        const userId = pongGameCurrentUser.uid; const gameId = "pong"; const usernameToSave = pongGameUsername || pongGameCurrentUser.email;
+        const highScoreDocId = `${userId}|${gameId}`;
+        const highScoreRef = window.firebaseDb.collection("highscores").doc(highScoreDocId);
+        try {
+            const docSnap = await highScoreRef.get();
+            if (!docSnap.exists || scoreToSave > docSnap.data().score) {
+                await highScoreRef.set({ userId, username: usernameToSave, gameId, score: scoreToSave, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                console.log(`Highscore de Pong salvo/atualizado: ${scoreToSave}`);
+            }
+        } catch (error) { console.error("Erro ao salvar highscore de Pong: ", error); }
+    }
+}
+
+function handleGameOver(winner) {
+    gameHasStartedPong = false;
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    if (speedIncreaseInterval) clearInterval(speedIncreaseInterval);
+    let winnerName = winner === "player1" ? (pongGameUsername || "Jogador 1") : "Jogador 2";
+    alert(`FIM DE JOGO! ${winnerName} venceu!\nPlacar Final: P1 ${player1Score} - P2 ${player2Score}`);
+    if (pongGameCurrentUser) { saveHighScorePong("player1", player1Score); }
+    setTimeout(() => { drawInitialPongScreen(); }, 2000);
+}
+
+function moveAIPaddle() {
+    const paddleCenter = player2Y + (paddleHeight / 2);
+    const deadZone = 15;
+    if (ballSpeedX > 0 && ballX > canvas.width / 3) {
+        if (paddleCenter < ballY - deadZone) { player2Y += AI_PADDLE_SPEED; } 
+        else if (paddleCenter > ballY + deadZone) { player2Y -= AI_PADDLE_SPEED; }
+    }
+    if (player2Y < 0) { player2Y = 0; } 
+    else if (player2Y + paddleHeight > canvas.height) { player2Y = canvas.height - paddleHeight; }
+}
+
+function update() {
+    if (!gameHasStartedPong) return;
+
+    if (wPressed && player1Y > 0) player1Y -= PLAYER_PADDLE_SPEED;
+    if (sPressed && player1Y < canvas.height - paddleHeight) player1Y += PLAYER_PADDLE_SPEED;
+
+    if (gameMode === '2P') {
+        if (upPressed && player2Y > 0) player2Y -= PLAYER_PADDLE_SPEED;
+        if (downPressed && player2Y < canvas.height - paddleHeight) player2Y += PLAYER_PADDLE_SPEED;
+    } else { moveAIPaddle(); }
 
     ballX += ballSpeedX;
     ballY += ballSpeedY;
 
-    if (ballX > canvas.width - ballRadius || ballX < ballRadius) ballSpeedX = -ballSpeedX;
-    if (ballY < ballRadius) { ballSpeedY = -ballSpeedY; } 
-    else if (ballY + ballRadius > canvas.height - paddleHeight) {
-        if (ballX > paddleX && ballX < paddleX + paddleWidth) {
-            ballSpeedY = -ballSpeedY;
+    if (ballY + ballRadius > canvas.height || ballY - ballRadius < 0) {
+        ballSpeedY = -ballSpeedY;
+    }
+
+    let paddleHit = false;
+    // Colisão com paddle 1 (esquerda)
+    if (ballSpeedX < 0 && ballX - ballRadius < paddleWidth) {
+        if (ballY > player1Y && ballY < player1Y + paddleHeight) {
+            let speedMagnitude = Math.sqrt(ballSpeedX**2 + ballSpeedY**2);
+            ballSpeedX = -ballSpeedX;
+            let deltaY = ballY - (player1Y + paddleHeight / 2);
+            ballSpeedY = deltaY * 0.35;
+            let newVectorMagnitude = Math.sqrt(ballSpeedX**2 + ballSpeedY**2);
+            ballSpeedX = (ballSpeedX / newVectorMagnitude) * speedMagnitude;
+            ballSpeedY = (ballSpeedY / newVectorMagnitude) * speedMagnitude;
+            if (lastHitBy !== 'player1') { player1Score += 1; updateUIDisplays(); }
+            lastHitBy = 'player1';
+        }
+    } 
+    // Colisão com paddle 2 (direita)
+    else if (ballSpeedX > 0 && ballX + ballRadius > canvas.width - paddleWidth) {
+        if (ballY > player2Y && ballY < player2Y + paddleHeight) {
+            let speedMagnitude = Math.sqrt(ballSpeedX**2 + ballSpeedY**2);
+            ballSpeedX = -ballSpeedX;
+            let deltaY = ballY - (player2Y + paddleHeight / 2);
+            ballSpeedY = deltaY * 0.35;
+            let newVectorMagnitude = Math.sqrt(ballSpeedX**2 + ballSpeedY**2);
+            ballSpeedX = (ballSpeedX / newVectorMagnitude) * speedMagnitude;
+            ballSpeedY = (ballSpeedY / newVectorMagnitude) * speedMagnitude;
+            if (lastHitBy !== 'player2') { player2Score += 1; updateUIDisplays(); }
+            lastHitBy = 'player2';
         }
     }
-    
-    if (ballY + ballRadius > canvas.height) {
-        lives--; updateUIDisplaysQB();
-        if (lives <= 0) { handleQuebraBlocosGameOver(); return; }
-        else { resetBallAndPaddleQB(); }
+
+    if (ballX + ballRadius < 0) {
+        player1Lives--; player2Score += 2; updateUIDisplays();
+        if (player1Lives <= 0) { handleGameOver("player2"); return; }
+        resetBall("player2");
+    } else if (ballX - ballRadius > canvas.width) {
+        player2Lives--; player1Score += 2; updateUIDisplays();
+        if (player2Lives <= 0) { handleGameOver("player1"); return; }
+        resetBall("player1");
     }
-    
-    collisionDetectionQB();
 }
 
-function drawQB() {
+function draw() {
     ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    drawBricksQB(); drawPaddleQB(); drawBallQB();
-}
-
-function gameLoopQB() {
-    if (!gameOver) {
-        if (!gamePaused) { updateQB(); }
-        drawQB();
-        animationFrameIdQB = requestAnimationFrame(gameLoopQB);
+    if (gameHasStartedPong) {
+        drawNet(); drawBall();
+        drawPaddle(0, player1Y); drawPaddle(canvas.width - paddleWidth, player2Y);
     }
 }
 
-if (nextLevelButtonQB) {
-    nextLevelButtonQB.addEventListener('click', () => {
-        if (!gamePaused) return;
-        if (levelCompleteScreenQB) levelCompleteScreenQB.style.display = 'none';
-        gamePaused = false; currentLevel++; updateUIDisplaysQB();
-        setupLevel(currentLevel); resetBallAndPaddleQB();
-        blocksBrokenSinceLastSpeedIncrease = 0;
-    });
+function gameLoop() {
+    update();
+    draw();
+    if (gameHasStartedPong) {
+        animationFrameId = requestAnimationFrame(gameLoop);
+    }
 }
 
-drawInitialQuebraBlocosScreen();
+drawInitialPongScreen();
