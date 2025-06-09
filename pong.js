@@ -1,180 +1,113 @@
-// pong.js - ATUALIZADO com modo de 1 Jogador (IA)
+// quebra_blocos.js - VERSÃO COM COLISÃO E CONTROLES CORRIGIDOS
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-const player1ScoreDisplay = document.getElementById('player1Score');
-const player2ScoreDisplay = document.getElementById('player2Score');
-const player1LivesDisplay = document.getElementById('player1Lives');
-const player2LivesDisplay = document.getElementById('player2Lives');
 
-// --- Novos Seletores para Modo de Jogo ---
-const pongModeSelection = document.getElementById('pongModeSelection');
-const onePlayerBtn = document.getElementById('onePlayerBtn');
-const twoPlayerBtn = document.getElementById('twoPlayerBtn');
+const scoreDisplayQB = document.getElementById('scoreQB');
+const livesDisplayQB = document.getElementById('livesQB');
+const levelDisplayQB = document.getElementById('levelQB');
+const startButtonQuebraBlocos = document.getElementById('startButtonQuebraBlocos');
+const quebraBlocosPreGameMessages = document.getElementById('quebraBlocosPreGameMessages');
+const quebraBlocosGameInfo = document.getElementById('quebraBlocosGameInfo');
+const levelCompleteScreenQB = document.getElementById('levelCompleteScreenQB');
+const completedLevelDisplayQB = document.getElementById('completedLevelDisplayQB');
+const nextLevelButtonQB = document.getElementById('nextLevelButtonQB');
 
-const pongGameInfo = document.getElementById('pongGameInfo');
+const INITIAL_LIVES = 3;
+const PADDLE_SPEED_QB = 7;
+const ballRadius = 8;
+const paddleHeight = 12;
+const paddleWidth = 80;
 
-// --- Configurações do Jogo ---
-const paddleHeight = 100, paddleWidth = 10, ballRadius = 8, INITIAL_LIVES = 3;
-const AI_PADDLE_SPEED = 5; // Velocidade da IA (um pouco mais lenta que o jogador)
-const PLAYER_PADDLE_SPEED = 7;
-
-let ballX, ballY, baseBallSpeedX, baseBallSpeedY, ballSpeedX, ballSpeedY;
-let player1Y, player2Y;
-let player1Score, player2Score, player1Lives, player2Lives;
-let lastHitBy = null;
-
-let upPressed = false, downPressed = false, wPressed = false, sPressed = false;
-let gameHasStartedPong = false;
-let animationFrameId;
-let gameMode = null; // NOVO: 'AI' ou '2P'
-
+let score, lives, currentLevel;
+let gamePaused, gameOver, gameHasStartedQB, animationFrameIdQB;
+let qbCurrentUser, qbUsername;
+let ballX, ballY, ballSpeedX, ballSpeedY;
+let paddleX;
+let rightPressedQB = false, leftPressedQB = false;
+let brickRowCount, brickColumnCount, brickWidth, brickHeight = 20, brickPadding = 5, brickOffsetTop = 40, brickOffsetLeft = 20;
+let bricks = [];
+const brickColors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#F1C40F', '#9B59B6', '#1ABC9C', '#E74C3C'];
 let paddleHitCount = 0;
-const HITS_FOR_SPEED_INCREASE = 4, SPEED_INCREMENT = 0.4, MAX_BALL_SPEED_MAGNITUDE = 10;
-let pongGameCurrentUser = null, pongGameUsername = null;
+const HITS_FOR_SPEED_INCREASE = 8;
+const SPEED_INCREMENT = 0.2;
+const initialBallSpeedMagnitude = 3.5;
 
-if (window.firebaseAuth && window.firebaseDb) { /* ... (onAuthStateChanged como antes) ... */ }
-
-function updateUIDisplays() { /* ... (igual antes) ... */ }
-function drawBall() { /* ... (igual antes) ... */ }
-function drawPaddle(x, y) { /* ... (igual antes) ... */ }
-function drawNet() { /* ... (igual antes) ... */ }
-async function saveHighScorePong(playerIdentifier, scoreToSave) { /* ... (igual antes) ... */ }
-
-function drawInitialPongScreen() {
-    gameHasStartedPong = false;
-    if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    if (pongModeSelection) pongModeSelection.style.display = 'block';
-    if (pongGameInfo) pongGameInfo.style.display = 'none';
-    if (canvas) canvas.style.display = 'none'; // Esconde o canvas na tela inicial de seleção de modo
-}
-
-function initializePongVariables() {
-    player1Y = (canvas.height - paddleHeight) / 2;
-    player2Y = (canvas.height - paddleHeight) / 2;
-    player1Score = 0; player2Score = 0; player1Lives = INITIAL_LIVES; player2Lives = INITIAL_LIVES;
-    paddleHitCount = 0; lastHitBy = null; baseBallSpeedX = 4; baseBallSpeedY = 4;
-    resetBall(); updateUIDisplays();
-}
-
-function startGamePong() {
-    if (gameHasStartedPong || !gameMode) return; // Só inicia se um modo foi escolhido
-    gameHasStartedPong = true;
-    if (pongModeSelection) pongModeSelection.style.display = 'none';
-    if (pongGameInfo) pongGameInfo.style.display = 'flex';
-    if (canvas) canvas.style.display = 'block';
-    initializePongVariables();
-    gameLoop();
-}
-
-// --- Listeners para Seleção de Modo ---
-if (onePlayerBtn) {
-    onePlayerBtn.addEventListener('click', () => {
-        gameMode = 'AI';
-        startGamePong();
-    });
-}
-if (twoPlayerBtn) {
-    twoPlayerBtn.addEventListener('click', () => {
-        gameMode = '2P';
-        startGamePong();
+if (window.firebaseAuth && window.firebaseDb) {
+    window.firebaseAuth.onAuthStateChanged(async user => {
+        if (user) { qbCurrentUser = user; try { const userDoc = await window.firebaseDb.collection("usuarios").doc(user.uid).get(); qbUsername = (userDoc.exists && userDoc.data().username) ? userDoc.data().username : user.email; } catch (error) { qbUsername = user.email; } }
+        else { qbCurrentUser = null; qbUsername = null; }
     });
 }
 
-document.addEventListener('keydown', keyDownHandler, false);
-document.addEventListener('keyup', keyUpHandler, false);
+function updateUIDisplaysQB() { if (scoreDisplayQB) scoreDisplayQB.textContent = score; if (livesDisplayQB) livesDisplayQB.textContent = lives; if (levelDisplayQB) levelDisplayQB.textContent = currentLevel; }
+function setupLevel(levelNum) { brickRowCount = 2 + levelNum; if (brickRowCount > 7) brickRowCount = 7; brickColumnCount = 5 + levelNum; if (brickColumnCount > 10) brickColumnCount = 10; let totalPaddingWidth = brickPadding * (brickColumnCount - 1) || 0; let totalOffsetWidth = brickOffsetLeft * 2; brickWidth = (canvas.width - totalOffsetWidth - totalPaddingWidth) / brickColumnCount; if (brickWidth < 25) { brickWidth = 25; let totalBrickWidth = brickColumnCount * brickWidth; totalPaddingWidth = brickColumnCount > 1 ? brickPadding * (brickColumnCount - 1) : 0; brickOffsetLeft = (canvas.width - totalBrickWidth - totalPaddingWidth) / 2; } bricks = []; for (let c = 0; c < brickColumnCount; c++) { bricks[c] = []; for (let r = 0; r < brickRowCount; r++) { bricks[c][r] = { x: 0, y: 0, status: 1, color: brickColors[(c + r + levelNum) % brickColors.length] }; } } }
+function resetBallAndPaddleQB() { ballX = canvas.width / 2; ballY = canvas.height - paddleHeight - ballRadius - 25; paddleX = (canvas.width - paddleWidth) / 2; let speedMultiplier = 1 + (currentLevel - 1) * 0.15; let currentSpeedMagnitude = initialBallSpeedMagnitude * speedMultiplier; let angle = (Math.PI / 4) + (Math.random() * Math.PI / 2); ballSpeedX = currentSpeedMagnitude * Math.cos(angle) * (Math.random() > 0.5 ? 1 : -1); ballSpeedY = -currentSpeedMagnitude * Math.sin(angle); if (Math.abs(ballSpeedX) < 2) ballSpeedX = (ballSpeedX >= 0 ? 2 : -2); if (ballSpeedY >= 0) ballSpeedY = -2; }
+function drawBallQB() { if (!ctx) return; ctx.beginPath(); ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2); ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.closePath(); }
+function drawPaddleQB() { if (!ctx) return; ctx.beginPath(); ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight); ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.closePath(); }
+function drawBricksQB() { if (!ctx) return; for (let c = 0; c < brickColumnCount; c++) { for (let r = 0; r < brickRowCount; r++) { if (bricks[c] && bricks[c][r] && bricks[c][r].status === 1) { let brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft; let brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop; bricks[c][r].x = brickX; bricks[c][r].y = brickY; ctx.beginPath(); ctx.rect(brickX, brickY, brickWidth, brickHeight); ctx.fillStyle = bricks[c][r].color; ctx.fill(); ctx.closePath(); }}}}
+function drawInitialQuebraBlocosScreen() { if (!ctx || !canvas) return; gameHasStartedQB = false; gameOver = false; gamePaused = false; currentLevel = 1; score = 0; lives = INITIAL_LIVES; setupLevel(1); resetBallAndPaddleQB(); updateUIDisplaysQB(); ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, canvas.width, canvas.height); drawBricksQB(); drawPaddleQB(); drawBallQB(); if (quebraBlocosPreGameMessages) quebraBlocosPreGameMessages.style.display = 'block'; if (startButtonQuebraBlocos) startButtonQuebraBlocos.style.display = 'inline-block'; if (quebraBlocosGameInfo) { quebraBlocosGameInfo.style.display = 'flex'; } if (canvas) canvas.style.display = 'block'; if (levelCompleteScreenQB) levelCompleteScreenQB.style.display = 'none';}
+function initializeGameQuebraBlocos() { if (gameHasStartedQB) return; gameHasStartedQB = true; gameOver = false; gamePaused = false; if (startButtonQuebraBlocos) startButtonQuebraBlocos.style.display = 'none'; if (quebraBlocosPreGameMessages) quebraBlocosPreGameMessages.style.display = 'none'; if (quebraBlocosGameInfo) quebraBlocosGameInfo.style.display = 'flex'; if (levelCompleteScreenQB) levelCompleteScreenQB.style.display = 'none'; score = 0; lives = INITIAL_LIVES; currentLevel = 1; paddleHitCount = 0; setupLevel(currentLevel); resetBallAndPaddleQB(); updateUIDisplaysQB(); if (animationFrameIdQB) cancelAnimationFrame(animationFrameIdQB); gameLoopQB();}
 
-function keyDownHandler(e) {
-    const keyLower = e.key.toLowerCase();
-    const isUp = keyLower === 'arrowup' || keyLower === 'up';
-    const isDown = keyLower === 'arrowdown' || keyLower === 'down';
-    const isW = keyLower === 'w';
-    const isS = keyLower === 's';
-    if (isUp || isDown || isW || isS) e.preventDefault();
-    if (isUp) upPressed = true; if (isDown) downPressed = true;
-    if (isW) wPressed = true; if (isS) sPressed = true;
-}
-function keyUpHandler(e) {
-    const keyLower = e.key.toLowerCase();
-    const isUp = keyLower === 'arrowup' || keyLower === 'up';
-    const isDown = keyLower === 'arrowdown' || keyLower === 'down';
-    const isW = keyLower === 'w';
-    const isS = keyLower === 's';
-    if (isUp) upPressed = false; if (isDown) downPressed = false;
-    if (isW) wPressed = false; if (isS) sPressed = false;
-}
+if (startButtonQuebraBlocos) startButtonQuebraBlocos.addEventListener('click', initializeGameQuebraBlocos);
+document.addEventListener('keydown', keyDownHandlerQB, false);
+document.addEventListener('keyup', keyUpHandlerQB, false);
 
-function resetBall(scorer) { /* ... (igual antes) ... */ }
-function increaseBallSpeed() { /* ... (igual antes) ... */ }
+function keyDownHandlerQB(e) { const MOVE_KEYS = ['ArrowLeft', 'ArrowRight', 'a', 'd']; const ACTION_KEYS = ['Enter', ' ', 'ArrowUp', 'ArrowDown', ...MOVE_KEYS]; const keyLower = e.key.toLowerCase(); if (ACTION_KEYS.includes(e.key) || MOVE_KEYS.includes(keyLower) || e.code === 'Space') { e.preventDefault(); } if (!gameHasStartedQB && MOVE_KEYS.includes(keyLower)) { initializeGameQuebraBlocos(); } if (gameHasStartedQB && !gameOver && !gamePaused) { if (e.key === 'ArrowRight' || keyLower === 'd') rightPressedQB = true; else if (e.key === 'ArrowLeft' || keyLower === 'a') leftPressedQB = true; } if (gamePaused && (ACTION_KEYS.includes(e.key) || e.code === 'Space')) { if(nextLevelButtonQB) nextLevelButtonQB.click(); }}
+function keyUpHandlerQB(e) { const keyLower = e.key.toLowerCase(); if (e.key === 'ArrowRight' || keyLower === 'd') rightPressedQB = false; else if (e.key === 'ArrowLeft' || keyLower === 'a') leftPressedQB = false; }
 
-function handleGameOver(winner) {
-    gameHasStartedPong = false;
-    if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    let winnerName = winner === "player1" ? (pongGameUsername || "Jogador 1") : "Jogador 2";
-    alert(`FIM DE JOGO! ${winnerName} venceu!\nPlacar Final: P1 ${player1Score} - P2 ${player2Score}`);
-    if (pongGameCurrentUser) { saveHighScorePong("player1", player1Score); }
-    setTimeout(() => { drawInitialPongScreen(); }, 2000);
-}
+function collisionDetectionQB() { let allBricksCleared = true; for (let c = 0; c < brickColumnCount; c++) { for (let r = 0; r < brickRowCount; r++) { let b = bricks[c][r]; if (b.status === 1) { allBricksCleared = false; if (ballX + ballRadius > b.x && ballX - ballRadius < b.x + brickWidth && ballY + ballRadius > b.y && ballY - ballRadius < b.y + brickHeight) { ballSpeedY = -ballSpeedY; b.status = 0; score += 10; updateUIDisplaysQB(); paddleHitCount++; if (paddleHitCount > 0 && paddleHitCount % HITS_FOR_SPEED_INCREASE === 0) { increaseBallSpeed(); } }}}} if (allBricksCleared && gameHasStartedQB && !gameOver && !gamePaused) { gamePaused = true; if (levelCompleteScreenQB) { if (completedLevelDisplayQB) completedLevelDisplayQB.textContent = currentLevel; if (levelCompleteMessageQB) levelCompleteMessageQB.textContent = `Nível ${currentLevel} Completo!`; levelCompleteScreenQB.style.display = 'flex'; }}}
+async function saveHighScoreQuebraBlocos(finalScore) { if (qbCurrentUser && window.firebaseDb) { const userId = qbCurrentUser.uid; const gameId = "quebra_blocos"; const usernameToSave = qbUsername || qbCurrentUser.email; const highScoreDocId = `${userId}|${gameId}`; const highScoreRef = window.firebaseDb.collection("highscores").doc(highScoreDocId); try { const docSnap = await highScoreRef.get(); if (!docSnap.exists || finalScore > docSnap.data().score) { await highScoreRef.set({ userId, username: usernameToSave, gameId, score: finalScore, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); } } catch (error) { console.error(`Erro ao salvar highscore de ${gameId}: `, error); } } }
+function handleQuebraBlocosGameOver() { gameOver = true; gameHasStartedQB = false; if (animationFrameIdQB) { cancelAnimationFrame(animationFrameIdQB); animationFrameIdQB = null; } alert(`FIM DE JOGO!\nNível: ${currentLevel}\nPontuação: ${score}`); saveHighScoreQuebraBlocos(score); setTimeout(() => { drawInitialQuebraBlocosScreen(); }, 1500); }
+function increaseBallSpeed() { let currentMagnitude = Math.sqrt(ballSpeedX*ballSpeedX + ballSpeedY*ballSpeedY); let newMagnitude = currentMagnitude + SPEED_INCREMENT; ballSpeedX = (ballSpeedX / currentMagnitude) * newMagnitude; ballSpeedY = (ballSpeedY / currentMagnitude) * newMagnitude; }
 
-// --- NOVA FUNÇÃO PARA A IA ---
-function moveAIPaddle() {
-    const paddleCenter = player2Y + (paddleHeight / 2);
-    const deadZone = 15; // A IA não se move se a bola estiver muito perto do centro da barra
+function updateQB() {
+    if (gameOver || gamePaused) return;
 
-    // A IA só reage se a bola estiver se movendo em sua direção e na sua metade do campo
-    if (ballSpeedX > 0 && ballX > canvas.width / 3) {
-        if (paddleCenter < ballY - deadZone) {
-            // Bola está abaixo, mover para baixo
-            player2Y += AI_PADDLE_SPEED;
-        } else if (paddleCenter > ballY + deadZone) {
-            // Bola está acima, mover para cima
-            player2Y -= AI_PADDLE_SPEED;
-        }
-    }
-
-    // Limitar o movimento da IA dentro do canvas
-    if (player2Y < 0) { player2Y = 0; }
-    else if (player2Y + paddleHeight > canvas.height) { player2Y = canvas.height - paddleHeight; }
-}
-
-// --- FUNÇÃO UPDATE ATUALIZADA ---
-function update() {
-    if (!gameHasStartedPong) return;
-
-    // Movimento do Jogador 1 (sempre humano)
-    if (wPressed && player1Y > 0) player1Y -= PLAYER_PADDLE_SPEED;
-    if (sPressed && player1Y < canvas.height - paddleHeight) player1Y += PLAYER_PADDLE_SPEED;
-
-    // Movimento do Jogador 2 (depende do modo de jogo)
-    if (gameMode === '2P') {
-        // Modo 2 Jogadores: usa as teclas
-        if (upPressed && player2Y > 0) player2Y -= PLAYER_PADDLE_SPEED;
-        if (downPressed && player2Y < canvas.height - paddleHeight) player2Y += PLAYER_PADDLE_SPEED;
-    } else { // gameMode === 'AI'
-        // Modo 1 Jogador: usa a lógica da IA
-        moveAIPaddle();
-    }
+    if (rightPressedQB && paddleX < canvas.width - paddleWidth) paddleX += PADDLE_SPEED_QB;
+    else if (leftPressedQB && paddleX > 0) paddleX -= PADDLE_SPEED_QB;
 
     ballX += ballSpeedX;
     ballY += ballSpeedY;
 
-    // ... (toda a lógica de colisão e pontuação continua a mesma) ...
-    // ...
+    if (ballX > canvas.width - ballRadius || ballX < ballRadius) ballSpeedX = -ballSpeedX;
+    if (ballY < ballRadius) { ballSpeedY = -ballSpeedY; } 
+    else if (ballY + ballRadius > canvas.height - paddleHeight) {
+        if (ballX > paddleX && ballX < paddleX + paddleWidth) {
+            ballSpeedY = -ballSpeedY;
+        }
+    }
+    
+    if (ballY + ballRadius > canvas.height) {
+        lives--; updateUIDisplaysQB();
+        if (lives <= 0) { handleQuebraBlocosGameOver(); return; }
+        else { resetBallAndPaddleQB(); }
+    }
+    
+    collisionDetectionQB();
 }
 
-function draw() { /* ... (igual antes) ... */ }
+function drawQB() {
+    ctx.fillStyle = '#0a0a0a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawBricksQB(); drawPaddleQB(); drawBallQB();
+}
 
-function gameLoop() {
-    update();
-    draw();
-    if (gameHasStartedPong) {
-        animationFrameId = requestAnimationFrame(gameLoop);
+function gameLoopQB() {
+    if (!gameOver) {
+        if (!gamePaused) { updateQB(); }
+        drawQB();
+        animationFrameIdQB = requestAnimationFrame(gameLoopQB);
     }
 }
 
-// Prepara a tela inicial de seleção de modo
-drawInitialPongScreen();
+if (nextLevelButtonQB) {
+    nextLevelButtonQB.addEventListener('click', () => {
+        if (!gamePaused) return;
+        if (levelCompleteScreenQB) levelCompleteScreenQB.style.display = 'none';
+        gamePaused = false; currentLevel++; updateUIDisplaysQB();
+        setupLevel(currentLevel); resetBallAndPaddleQB();
+        blocksBrokenSinceLastSpeedIncrease = 0;
+    });
+}
 
-// Para garantir que as funções omitidas para brevidade estejam no seu código final,
-// cole aqui as versões completas de: updateUIDisplays, drawBall, drawPaddle, drawNet,
-// saveHighScorePong, resetBall, e increaseBallSpeed da última versão completa do pong.js que te enviei.
+drawInitialQuebraBlocosScreen();
