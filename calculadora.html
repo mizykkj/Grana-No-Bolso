@@ -45,27 +45,42 @@
             <h1 class="page-title">Calculadora de Juros Compostos</h1>
             <p class="page-subtitle">Veja o poder dos juros compostos em ação! Preencha os campos abaixo para simular o crescimento do seu patrimônio ao longo do tempo.</p>
             
-            <div class="calculator-container">
-                <div class="calc-input-group">
-                    <label for="initialValue">Valor Inicial (R$)</label>
-                    <input type="number" id="initialValue" placeholder="Ex: 1000">
-                </div>
-                <div class="calc-input-group">
-                    <label for="monthlyValue">Aporte Mensal (R$)</label>
-                    <input type="number" id="monthlyValue" placeholder="Ex: 200">
-                </div>
-                <div class="calc-input-group">
-                    <label for="interestRate">Taxa de Juros (% ao mês)</label>
-                    <input type="number" id="interestRate" placeholder="Ex: 1">
-                </div>
-                <div class="calc-input-group">
-                    <label for="period">Período (em meses)</label>
-                    <input type="number" id="period" placeholder="Ex: 120">
-                </div>
-                <button id="calculateBtn">Calcular</button>
-                <div id="resultContainer" class="result-container">
-                    </div>
-            </div>
+           <div class="calculator-container">
+    <div class="calc-input-group">
+        <label for="initialValue">Valor Inicial (R$)</label>
+        <input type="number" id="initialValue" placeholder="Ex: 1000">
+    </div>
+    <div class="calc-input-group">
+        <label for="monthlyValue">Aporte Mensal (R$)</label>
+        <input type="number" id="monthlyValue" placeholder="Ex: 200">
+    </div>
+
+    <div class="calc-input-group">
+        <label for="interestRate">Taxa de Juros</label>
+        <div class="input-with-select">
+            <input type="number" id="interestRate" placeholder="Ex: 12">
+            <select id="interestRateType">
+                <option value="yearly">ao Ano</option>
+                <option value="monthly">ao Mês</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="calc-input-group">
+        <label for="period">Período</label>
+        <div class="input-with-select">
+            <input type="number" id="period" placeholder="Ex: 10">
+            <select id="periodType">
+                <option value="years">Anos</option>
+                <option value="months">Meses</option>
+            </select>
+        </div>
+    </div>
+
+    <button id="calculateBtn">Calcular</button>
+    <div id="resultContainer" class="result-container">
+        </div>
+</div>
         </div>
     </main>
 
