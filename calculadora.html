@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Juros Compostos - Grana no Bolso</title>
+    
+    <link rel="shortcut icon" href="Favicon/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <header class="site-header">
+        </header>
+
+    <main class="container">
+        <div class="content-page">
+            <h1 class="page-title">Calculadora de Juros Compostos</h1>
+            <p>Veja o poder dos juros compostos em ação! Preencha os campos abaixo para simular o crescimento do seu patrimônio ao longo do tempo.</p>
+            
+            <div class="calculator-container">
+                <div class="calc-input-group">
+                    <label for="initialValue">Valor Inicial (R$)</label>
+                    <input type="number" id="initialValue" placeholder="Ex: 1000">
+                </div>
+                <div class="calc-input-group">
+                    <label for="monthlyValue">Aporte Mensal (R$)</label>
+                    <input type="number" id="monthlyValue" placeholder="Ex: 200">
+                </div>
+                <div class="calc-input-group">
+                    <label for="interestRate">Taxa de Juros (% ao mês)</label>
+                    <input type="number" id="interestRate" placeholder="Ex: 1">
+                </div>
+                <div class="calc-input-group">
+                    <label for="period">Período (em meses)</label>
+                    <input type="number" id="period" placeholder="Ex: 120">
+                </div>
+                <button id="calculateBtn">Calcular</button>
+                <div id="resultContainer" class="result-container">
+                    </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
