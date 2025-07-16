@@ -517,3 +517,21 @@ img {
     margin-top: -20px;
     margin-bottom: 30px;
 }
+/* --- AJUSTES DE ESTILO PARA A CALCULADORA AVANÇADA --- */
+.input-with-select {
+    display: flex;
+    gap: 10px;
+}
+
+.input-with-select input {
+    flex-grow: 1; /* Faz o campo de número ocupar o espaço disponível */
+}
+
+.input-with-select select {
+    flex-basis: 120px; /* Define uma base de largura para o seletor */
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: white;
+}
