@@ -266,7 +266,7 @@ img {
     flex: 1;
     margin-top: 15px;
 }
-.article-header, .content-page {
+.article-header {
     text-align: left;
     margin-bottom: 30px;
 }
@@ -365,7 +365,7 @@ img {
 }
 
 
-/* --- 6. SEÇÕES EXTRAS DA HOME (NEWSLETTER, FERRAMENTAS, VÍDEO) --- */
+/* --- 6. SEÇÕES EXTRAS DA HOME --- */
 .newsletter-section { background-color: var(--primary-color); color: white; padding: 50px 0; margin-top: 40px; text-align: center; }
 .newsletter-box i { font-size: 40px; margin-bottom: 15px; }
 .newsletter-box h3 { font-family: var(--font-heading); font-size: 28px; margin-bottom: 10px; }
@@ -406,7 +406,86 @@ img {
 .copyright { text-align: center; font-size: 13px; color: var(--grey-color); }
 
 
-/* --- 9. RESPONSIVIDADE (MEDIA QUERIES) --- */
+/* --- 9. CALCULADORA DE JUROS COMPOSTOS --- */
+.calculator-container {
+    background-color: var(--light-color);
+    padding: 30px;
+    border-radius: 12px;
+    margin-top: 30px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+.calc-input-group {
+    margin-bottom: 20px;
+}
+.calc-input-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #555;
+}
+.calc-input-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    color: var(--dark-color);
+}
+.calc-input-group input::placeholder {
+    color: #aaa;
+}
+#calculateBtn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+#calculateBtn:hover {
+    background-color: #256d42;
+}
+.result-container {
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 8px;
+    background-color: #f4fbf8;
+    text-align: center;
+}
+.result-container h3 {
+    font-family: var(--font-heading);
+    margin-bottom: 20px;
+    color: var(--dark-color);
+    font-size: 22px;
+}
+.result-container p {
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: var(--grey-color);
+    line-height: 1.6;
+}
+.result-container p strong {
+    color: var(--dark-color);
+}
+.result-container .success {
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 20px;
+}
+.result-container .error {
+    color: #D8000C;
+    font-weight: bold;
+}
+
+
+/* --- 10. RESPONSIVIDADE (MEDIA QUERIES) --- */
 @media(max-width: 992px) {
     .featured-posts-grid { grid-template-columns: 1fr; grid-template-rows: 350px repeat(2, 200px); }
     .featured-large { grid-column: 1 / 2; grid-row: 1 / 2; }
@@ -424,63 +503,4 @@ img {
     .newsletter-form { flex-direction: column; align-items: center; }
     .newsletter-form input { width: 100%; max-width: 400px; }
     .footer-content { flex-direction: column; text-align: center; }
-}
-/* --- ESTILOS DA CALCULADORA --- */
-.calculator-container {
-    background-color: var(--light-color);
-    padding: 30px;
-    border-radius: 8px;
-    margin-top: 30px;
-    border: 1px solid #eee;
-}
-.calc-input-group {
-    margin-bottom: 20px;
-}
-.calc-input-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-.calc-input-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 16px;
-}
-#calculateBtn {
-    width: 100%;
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    color: white;
-    background-color: var(--primary-color);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-#calculateBtn:hover {
-    background-color: #256d42;
-}
-.result-container {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
-    font-size: 18px;
-}
-.result-container h3 {
-    font-family: var(--font-heading);
-    margin-bottom: 15px;
-}
-.result-container p {
-    margin-bottom: 10px;
-}
-.result-container .success {
-    color: var(--primary-color);
-    font-weight: bold;
-}
-.result-container .error {
-    color: #D8000C;
-    font-weight: bold;
 }
