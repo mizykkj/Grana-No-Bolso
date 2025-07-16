@@ -504,3 +504,16 @@ img {
     .newsletter-form input { width: 100%; max-width: 400px; }
     .footer-content { flex-direction: column; text-align: center; }
 }
+/* --- CORREÇÃO DE LAYOUT PARA PÁGINAS DE FERRAMENTAS --- */
+.page-wrapper {
+    max-width: 800px;
+    margin: 40px auto; /* Centraliza o conteúdo da página */
+    text-align: left;
+}
+
+.page-subtitle {
+    font-size: 18px;
+    color: var(--grey-color);
+    margin-top: -20px;
+    margin-bottom: 30px;
+}
