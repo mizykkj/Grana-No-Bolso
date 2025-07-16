@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // --- FUNCIONALIDADE DO MENU MOBILE (HAMBURGUER) ---
+    // --- LÓGICA DO MENU MOBILE (HAMBURGUER) ---
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const mainNav = document.querySelector('.main-nav');
 
     if (mobileMenuToggle && mainNav) {
         mobileMenuToggle.addEventListener('click', function() {
             mainNav.classList.toggle('active');
-
-            // Troca o ícone de hamburguer para "X" e vice-versa
             const icon = mobileMenuToggle.querySelector('i');
             if (mainNav.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
@@ -20,14 +18,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- FUNCIONALIDADE DO HEADER FIXO (STICKY HEADER) ---
-    const header = document.querySelector('.site-header');
-    if (header) {
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
-                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-            } else {
-                header.style.boxShadow = 'none';
+    // --- LÓGICA PARA O POP-UP "SOBRE" ---
+    const sobreLink = document.getElementById('sobre-link');
+    const modalOverlay = document.getElementById('sobre-modal-overlay');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+
+    function openModal(event) {
+        event.preventDefault(); 
+        if (modalOverlay) {
+            modalOverlay.classList.add('active');
+        }
+    }
+
+    function closeModal() {
+        if (modalOverlay) {
+            modalOverlay.classList.remove('active');
+        }
+    }
+
+    // Adiciona evento de clique para todos os links que devem abrir o modal
+    const sobreLinks = document.querySelectorAll('#sobre-link, #sobre-link-footer');
+    sobreLinks.forEach(link => {
+        if(link) link.addEventListener('click', openModal);
+    });
+
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeModal);
+    }
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', function(event) {
+            if (event.target === modalOverlay) {
+                closeModal();
             }
         });
     }
