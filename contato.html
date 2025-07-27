@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Grana no Bolso</title>
+
+    <link rel="shortcut icon" href="Favicon/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9402908836616610"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html">Grana no Bolso</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="artigo-organizacao-50-30-20.html">Organização</a></li>
+                    <li><a href="artigo-negociar-divida.html">Dívidas</a></li>
+                    <li><a href="artigo-renda-extra-freelancer.html">Renda Extra</a></li>
+                    <li><a href="artigo-tesouro-selic.html">Investimentos</a></li>
+                    <li><a href="#" id="sobre-link">Sobre</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <i class="fas fa-search"></i>
+                <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="content-page">
+            <h1 class="page-title">Entre em Contato</h1>
+            <p>Tem alguma dúvida, sugestão, ou quer falar sobre parcerias? Adoramos ouvir nossos leitores e a comunidade! Utilize o formulário abaixo ou, se preferir, envie um e-mail direto.</p>
+
+            <div class="contact-container">
+                <div class="contact-form-wrapper">
+                    <h3>Envie uma mensagem</h3>
+                    <form class="contact-form" action="https://formspree.io/f/xnnzvqzb" method="POST">
+                        <div class="form-group">
+                            <label for="name">Seu Nome</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Seu E-mail</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Sua Mensagem</label>
+                            <textarea id="message" name="message" rows="6" required></textarea>
+                        </div>
+                        <button type="submit">Enviar Mensagem</button>
+                    </form>
+                </div>
+
+                <div class="contact-info-wrapper">
+                    <h3>Informações de Contato</h3>
+                    <p>Você também pode nos encontrar aqui:</p>
+                    <div class="contact-direct-email">
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:contato.grananobolso@gmail.com">contato.grananobolso@gmail.com</a>
+                    </div>
+                    <div class="contact-social">
+                        <h4>Siga-nos</h4>
+                        <div class="social-icons">
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+             <div class="footer-content">
+                 <div class="footer-about">
+                     <h4 class="footer-title">Grana no Bolso</h4>
+                     <p>Descomplicando suas finanças para um futuro mais próspero. Educação financeira prática e para todos.</p>
+                 </div>
+                 <div class="footer-links">
+                     <h4 class="footer-title">Navegue</h4>
+                     <ul>
+                         <li><a href="artigo-tesouro-selic.html">Investimentos</a></li>
+                         <li><a href="artigo-organizacao-50-30-20.html">Organização</a></li>
+                         <li><a href="artigo-negociar-divida.html">Dívidas</a></li>
+                         <li><a href="artigo-renda-extra-freelancer.html">Renda Extra</a></li>
+                     </ul>
+                 </div>
+                 <div class="footer-legal">
+                     <h4 class="footer-title">Legal</h4>
+                     <ul>
+                         <li><a href="#" id="sobre-link-footer">Sobre Nós</a></li>
+                         <li><a href="contato.html">Contato</a></li>
+                         <li><a href="politica-de-privacidade.html">Política de Privacidade</a></li>
+                     </ul>
+                 </div>
+             </div>
+             <p class="disclaimer">O conteúdo apresentado no site Grana no Bolso é de caráter exclusivamente educacional e não constitui uma recomendação de investimento. Busque sempre um profissional certificado para aconselhamento financeiro.</p>
+             <p class="copyright">&copy; 2025 Grana no Bolso. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="sobre-modal-overlay">
+        <div class="modal-box">
+            <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+            <h2>Sobre o Grana no Bolso</h2>
+            <p>Bem-vindo(a) ao Grana no Bolso! Sabemos que lidar com dinheiro pode parecer complicado, estressante e, muitas vezes, um assunto para especialistas. Foi exatamente por isso que este espaço nasceu: da vontade de provar que a educação financeira é para todos. Nossa missão é derrubar os mitos, traduzir o "economês" e transformar a maneira como você enxerga e gerencia suas finanças. Aqui, você não vai encontrar fórmulas mágicas, mas sim ferramentas práticas e guias passo a passo para a vida real. Falamos sobre como organizar o salário que parece curto demais, como dar os primeiros passos para sair das dívidas do cartão de crédito, como encontrar formas realistas de fazer uma renda extra e, claro, como iniciar sua jornada no mundo dos investimentos de forma segura, mesmo com pouco dinheiro. Acreditamos que ter controle sobre suas finanças é a forma mais pura de liberdade. É poder fazer escolhas, realizar sonhos e, acima de tudo, ter a paz de espírito de saber que você está construindo um futuro mais seguro para você e sua família. Obrigado por estar aqui. Explore os artigos, use as dicas e sinta-se em casa. A jornada para ter mais "grana no bolso" começa agora, e estamos felizes em fazer parte dela com você.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
