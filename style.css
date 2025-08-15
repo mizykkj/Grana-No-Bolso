@@ -321,4 +321,27 @@ img { max-width: 100%; display: block; }
 .callout-box a {
     font-weight: bold;
     text-decoration: underline;
+
+}
+/* --- ESTILOS PARA LAYOUT DE PÁGINAS (SOBRE, CONTATO, ETC) --- */
+.page-layout-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.main-content-column {
+    flex: 3; /* Ocupa a maior parte do espaço */
+}
+
+.sidebar-column {
+    flex: 1; /* Ocupa a menor parte do espaço */
+    margin-top: 15px;
+}
+
+/* Regra de responsividade para o novo layout */
+@media(max-width: 992px) {
+    .page-layout-container {
+        flex-direction: column;
+    }
 }
