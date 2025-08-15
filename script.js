@@ -18,38 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- LÓGICA PARA O POP-UP "SOBRE" ---
-    const sobreLink = document.getElementById('sobre-link');
-    const modalOverlay = document.getElementById('sobre-modal-overlay');
-    const modalCloseBtn = document.getElementById('modal-close-btn');
-
-    function openModal(event) {
-        event.preventDefault(); 
-        if (modalOverlay) {
-            modalOverlay.classList.add('active');
-        }
-    }
-
-    function closeModal() {
-        if (modalOverlay) {
-            modalOverlay.classList.remove('active');
-        }
-    }
-
-    if (sobreLink) {
-        sobreLink.addEventListener('click', openModal);
-    }
-    if (modalCloseBtn) {
-        modalCloseBtn.addEventListener('click', closeModal);
-    }
-    if (modalOverlay) {
-        modalOverlay.addEventListener('click', function(event) {
-            if (event.target === modalOverlay) {
-                closeModal();
-            }
-        });
-    }
-
 
     // --- LÓGICA CORRIGIDA DA CALCULADORA DE JUROS COMPOSTOS ---
     const calculateBtn = document.getElementById('calculateBtn');
@@ -121,3 +89,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 });
+
